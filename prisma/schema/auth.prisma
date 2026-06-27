@@ -1,3 +1,4 @@
+// BetterAuth core models — extended with ProFile AI custom fields
 
 model User {
   id            String    @id
@@ -7,8 +8,22 @@ model User {
   image         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+
+  // ProFile AI extensions
+  role              Role      @default(USER)
+  isActive          Boolean   @default(true)
+  twoFactorEnabled  Boolean   @default(false)
+  twoFactorSecret   String?   // AES-256-GCM encrypted TOTP secret
+
+  // Relations
   sessions      Session[]
   accounts      Account[]
+  profile       UserProfile?
+  adminProfile  AdminProfile?
+  devices       LoginDevice[]
+  resumes       Resume[]
+  otps          OtpCode[]
+  limits        UserLimit?
 
   @@unique([email])
   @@map("user")
@@ -23,7 +38,10 @@ model Session {
   ipAddress String?
   userAgent String?
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deviceId  String?
+
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  device    LoginDevice? @relation(fields: [deviceId], references: [id])
 
   @@unique([token])
   @@index([userId])

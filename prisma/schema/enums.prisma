@@ -1,5 +1,29 @@
 enum Role {
   ADMIN
-  TEACHER
-  STUDENT
+  USER
+}
+
+enum OtpType {
+  EMAIL_VERIFY
+  FORGET_PASSWORD
+  RESET_PASSWORD
+  TWO_FACTOR
+}
+
+enum ResumeType {
+  RESUME
+  CV
+}
+
+enum ResumeStatus {
+  DRAFT
+  GENERATED
+  EXPORTED
+}
+
+enum TemplateCategory {
+  MODERN
+  CLASSIC
+  CREATIVE
+  ATS
 }

@@ -1,0 +1,69 @@
+// ─────────────────────────────────────────────────────
+// Platform Config, User Limits, OTP & Device Models
+// ─────────────────────────────────────────────────────
+
+model PlatformConfig {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String
+  description String?
+  updatedBy   String   // Admin userId
+  updatedAt   DateTime @updatedAt
+
+  // Keys:
+  //   default_resume_limit | default_api_limit
+  //   max_devices_per_user | otp_expiry_minutes
+  //   session_ttl_days     | maintenance_mode
+
+  @@map("platform_config")
+}
+
+model UserLimit {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  resumeLimit    Int      @default(5)  // Max resumes/CVs per cycle
+  apiLimit       Int      @default(50) // Max AI API calls per month
+  resumeUsed     Int      @default(0)
+  apiUsed        Int      @default(0)
+  resetAt        DateTime // Next monthly reset timestamp
+  overrideByAdmin Boolean @default(false)
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("user_limit")
+}
+
+model OtpCode {
+  id        String   @id @default(cuid())
+  userId    String
+  codeHash  String   // bcrypt hash of 6-digit OTP
+  type      OtpType
+  expiresAt DateTime // TTL: 10 minutes from creation
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("otp_code")
+}
+
+model LoginDevice {
+  id          String   @id @default(cuid())
+  userId      String
+  deviceName  String   // e.g. 'Chrome on Windows 11'
+  deviceType  String   // desktop | mobile | tablet
+  browser     String?
+  os          String?
+  ipAddress   String?
+  userAgent   String
+  fingerprint String   // SHA-256 hash(browser+os+ua)
+  isTrusted   Boolean  @default(false)
+  lastSeenAt  DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessions Session[]
+
+  // Rule: Max 3 devices per user, enforced at service layer
+  @@map("login_device")
+}

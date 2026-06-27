@@ -1,0 +1,49 @@
+// ─────────────────────────────────────────────────────
+// Profile Models
+// ─────────────────────────────────────────────────────
+
+model UserProfile {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  firstName      String
+  lastName       String
+  phone          String?
+  avatarUrl      String?  // MinIO URL
+  headline       String?  // e.g. 'Senior Software Engineer'
+  bio            String?
+  location       String?
+  website        String?
+  linkedIn       String?
+  github         String?
+  skills         String[] // Array of skill tags
+  languages      String[]
+  education      Json     // [{school, degree, field, from, to, gpa}]
+  experience     Json     // [{company, role, from, to, current, desc}]
+  certifications Json?    // [{name, issuer, year, url}]
+  resumeCount    Int      @default(0)
+  apiCallCount   Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profile")
+}
+
+model AdminProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  firstName   String
+  lastName    String
+  phone       String?
+  avatarUrl   String?  // MinIO URL
+  department  String?
+  permissions String[] // Fine-grained permission flags
+  notes       String?  // Internal admin notes
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("admin_profile")
+}
