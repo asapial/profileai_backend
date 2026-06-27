@@ -1,37 +1,41 @@
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { success } from "better-auth";
 import jwt, { JwtPayload, SignOptions } from "jsonwebtoken";
 
 
-const createToken = (payload: JwtPayload, secret: string, { expiresIn }: SignOptions) => {
-    const token = jwt.sign(payload, secret, { expiresIn });
-    return token;
-}
 
-const verifyToken = (token: string, secret: string) => {
+const createToken=(payload:JwtPayload,secret:string,{expiresIn}:SignOptions)=>{
+    const token = jwt.sign(payload,secret,{expiresIn:expiresIn!});
+    return token;
+};
+
+
+const vefifyToken=(token:string,secret:string)=>{
+
     try {
-        const decoded = jwt.verify(token, secret) as JwtPayload;
-        return {
-            success: true,
-            data: decoded
+        
+        const decoded= jwt.verify(token,secret) 
+        return{
+            success:true,
+            data:decoded
         }
-    } catch (error: any) {
-        return {
-            success: false,
-            message: error.message,
+    } catch (error:any) {
+        
+        return{
+            success:false,
+            message:error.message,
             error
         }
     }
 }
 
-const decodeToken = (token: string) => {
-    const decoded = jwt.decode(token) as JwtPayload;
-    return decoded;
+const decodedToken=(token:string)=>{
+
+    const decodedToken= jwt.decode(token);
+    return decodedToken;
 }
 
-
-export const jwtUtils = {
+export const jwtUtils={
     createToken,
-    verifyToken,
-    decodeToken,
+    vefifyToken,
+    decodedToken
 }

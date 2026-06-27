@@ -3,6 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
+import { indexRouter } from ".";
 
 const app: Application = express();
 
@@ -36,7 +37,7 @@ app.use(
 );
 
 // Better Auth API Route
-app.all('/api/auth/*', toNodeHandler(auth));
+app.all('/api/auth/*splat', toNodeHandler(auth));
 
 // Health Check Route
 app.get("/", (_req, res) => {
@@ -50,5 +51,8 @@ app.get("/", (_req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
+
+
+app.use("/api/v1",indexRouter)
 
 export default app;
