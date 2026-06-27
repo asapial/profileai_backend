@@ -8,7 +8,7 @@ import * as authService from './auth.service';
 export const register = catchAsync(async (req: Request, res: Response) => {
   const result = await authService.registerUser(req.body);
   sendResponse(res, {
-    statusCode: status.CREATED,
+    status: status.CREATED,
     success: true,
     message: 'Account created. Please check your email for the verification OTP.',
     data: result,
@@ -18,7 +18,7 @@ export const register = catchAsync(async (req: Request, res: Response) => {
 export const verifyEmail = catchAsync(async (req: Request, res: Response) => {
   const result = await authService.verifyEmail(req.body);
   sendResponse(res, {
-    statusCode: status.OK,
+    status: status.OK,
     success: true,
     message: result.message,
     data: null,
@@ -30,7 +30,7 @@ export const login = catchAsync(async (req: Request, res: Response) => {
 
   if (result.twoFactorRequired) {
     return sendResponse(res, {
-      statusCode: status.OK,
+      status: status.OK,
       success: true,
       message: '2FA required. OTP sent to your email.',
       data: { twoFactorRequired: true, email: result.email },
@@ -38,21 +38,14 @@ export const login = catchAsync(async (req: Request, res: Response) => {
   }
 
   // Set cookies
-  if (result.accessToken) {
-    tokenUtils.setAccessTokenCookie(res, result.accessToken);
-  }
-  if (result.refreshToken) {
-    tokenUtils.setRefreshTokenCookie(res, result.refreshToken);
-  }
+  if (result.accessToken) tokenUtils.setAccessTokenCookie(res, result.accessToken);
+  if (result.refreshToken) tokenUtils.setRefreshTokenCookie(res, result.refreshToken);
 
   sendResponse(res, {
-    statusCode: status.OK,
+    status: status.OK,
     success: true,
     message: 'Login successful.',
-    data: {
-      user: result.user,
-      accessToken: result.accessToken,
-    },
+    data: { user: result.user, accessToken: result.accessToken },
   });
 });
 
@@ -63,20 +56,17 @@ export const verifyTwoFactor = catchAsync(async (req: Request, res: Response) =>
   tokenUtils.setRefreshTokenCookie(res, result.refreshToken);
 
   sendResponse(res, {
-    statusCode: status.OK,
+    status: status.OK,
     success: true,
     message: '2FA verification successful.',
-    data: {
-      user: result.user,
-      accessToken: result.accessToken,
-    },
+    data: { user: result.user, accessToken: result.accessToken },
   });
 });
 
 export const forgotPassword = catchAsync(async (req: Request, res: Response) => {
   const result = await authService.forgotPassword(req.body.email);
   sendResponse(res, {
-    statusCode: status.OK,
+    status: status.OK,
     success: true,
     message: result.message,
     data: null,
@@ -86,7 +76,7 @@ export const forgotPassword = catchAsync(async (req: Request, res: Response) => 
 export const resetPassword = catchAsync(async (req: Request, res: Response) => {
   const result = await authService.resetPassword(req.body);
   sendResponse(res, {
-    statusCode: status.OK,
+    status: status.OK,
     success: true,
     message: result.message,
     data: null,
@@ -103,7 +93,7 @@ export const logout = catchAsync(async (req: Request, res: Response) => {
   res.clearCookie('refreshToken');
 
   sendResponse(res, {
-    statusCode: status.OK,
+    status: status.OK,
     success: true,
     message: 'Logged out successfully.',
     data: null,
@@ -114,7 +104,7 @@ export const resendOtp = catchAsync(async (req: Request, res: Response) => {
   const { email, type } = req.body;
   const result = await authService.resendOtp(email, type);
   sendResponse(res, {
-    statusCode: status.OK,
+    status: status.OK,
     success: true,
     message: result.message,
     data: null,
@@ -124,7 +114,7 @@ export const resendOtp = catchAsync(async (req: Request, res: Response) => {
 export const enable2FA = catchAsync(async (req: Request, res: Response) => {
   const result = await authService.enable2FA(req.user.userId);
   sendResponse(res, {
-    statusCode: status.OK,
+    status: status.OK,
     success: true,
     message: result.message,
     data: null,
@@ -134,7 +124,7 @@ export const enable2FA = catchAsync(async (req: Request, res: Response) => {
 export const confirm2FA = catchAsync(async (req: Request, res: Response) => {
   const result = await authService.confirm2FA(req.user.userId, req.body.otp);
   sendResponse(res, {
-    statusCode: status.OK,
+    status: status.OK,
     success: true,
     message: result.message,
     data: null,
@@ -144,7 +134,7 @@ export const confirm2FA = catchAsync(async (req: Request, res: Response) => {
 export const disable2FA = catchAsync(async (req: Request, res: Response) => {
   const result = await authService.disable2FA(req.user.userId, req.body.otp);
   sendResponse(res, {
-    statusCode: status.OK,
+    status: status.OK,
     success: true,
     message: result.message,
     data: null,
