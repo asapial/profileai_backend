@@ -61,3 +61,48 @@ export type Account = Prisma.AccountModel
  * 
  */
 export type Verification = Prisma.VerificationModel
+/**
+ * Model PlatformConfig
+ * 
+ */
+export type PlatformConfig = Prisma.PlatformConfigModel
+/**
+ * Model UserLimit
+ * 
+ */
+export type UserLimit = Prisma.UserLimitModel
+/**
+ * Model OtpCode
+ * 
+ */
+export type OtpCode = Prisma.OtpCodeModel
+/**
+ * Model LoginDevice
+ * 
+ */
+export type LoginDevice = Prisma.LoginDeviceModel
+/**
+ * Model UserProfile
+ * 
+ */
+export type UserProfile = Prisma.UserProfileModel
+/**
+ * Model AdminProfile
+ * 
+ */
+export type AdminProfile = Prisma.AdminProfileModel
+/**
+ * Model ResumeTemplate
+ * 
+ */
+export type ResumeTemplate = Prisma.ResumeTemplateModel
+/**
+ * Model Resume
+ * 
+ */
+export type Resume = Prisma.ResumeModel
+/**
+ * Model ResumeHistory
+ * 
+ */
+export type ResumeHistory = Prisma.ResumeHistoryModel

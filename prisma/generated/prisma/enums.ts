@@ -11,8 +11,44 @@
 
 export const Role = {
   ADMIN: 'ADMIN',
-  TEACHER: 'TEACHER',
-  STUDENT: 'STUDENT'
+  USER: 'USER'
 } as const
 
 export type Role = (typeof Role)[keyof typeof Role]
+
+
+export const OtpType = {
+  EMAIL_VERIFY: 'EMAIL_VERIFY',
+  FORGET_PASSWORD: 'FORGET_PASSWORD',
+  RESET_PASSWORD: 'RESET_PASSWORD',
+  TWO_FACTOR: 'TWO_FACTOR'
+} as const
+
+export type OtpType = (typeof OtpType)[keyof typeof OtpType]
+
+
+export const ResumeType = {
+  RESUME: 'RESUME',
+  CV: 'CV'
+} as const
+
+export type ResumeType = (typeof ResumeType)[keyof typeof ResumeType]
+
+
+export const ResumeStatus = {
+  DRAFT: 'DRAFT',
+  GENERATED: 'GENERATED',
+  EXPORTED: 'EXPORTED'
+} as const
+
+export type ResumeStatus = (typeof ResumeStatus)[keyof typeof ResumeStatus]
+
+
+export const TemplateCategory = {
+  MODERN: 'MODERN',
+  CLASSIC: 'CLASSIC',
+  CREATIVE: 'CREATIVE',
+  ATS: 'ATS'
+} as const
+
+export type TemplateCategory = (typeof TemplateCategory)[keyof typeof TemplateCategory]

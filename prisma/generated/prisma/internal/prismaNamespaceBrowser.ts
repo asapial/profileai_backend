@@ -54,7 +54,16 @@ export const ModelName = {
   User: 'User',
   Session: 'Session',
   Account: 'Account',
-  Verification: 'Verification'
+  Verification: 'Verification',
+  PlatformConfig: 'PlatformConfig',
+  UserLimit: 'UserLimit',
+  OtpCode: 'OtpCode',
+  LoginDevice: 'LoginDevice',
+  UserProfile: 'UserProfile',
+  AdminProfile: 'AdminProfile',
+  ResumeTemplate: 'ResumeTemplate',
+  Resume: 'Resume',
+  ResumeHistory: 'ResumeHistory'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -80,7 +89,11 @@ export const UserScalarFieldEnum = {
   emailVerified: 'emailVerified',
   image: 'image',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  role: 'role',
+  isActive: 'isActive',
+  twoFactorEnabled: 'twoFactorEnabled',
+  twoFactorSecret: 'twoFactorSecret'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -94,7 +107,8 @@ export const SessionScalarFieldEnum = {
   updatedAt: 'updatedAt',
   ipAddress: 'ipAddress',
   userAgent: 'userAgent',
-  userId: 'userId'
+  userId: 'userId',
+  deviceId: 'deviceId'
 } as const
 
 export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
@@ -131,12 +145,180 @@ export const VerificationScalarFieldEnum = {
 export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
 
 
+export const PlatformConfigScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  value: 'value',
+  description: 'description',
+  updatedBy: 'updatedBy',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PlatformConfigScalarFieldEnum = (typeof PlatformConfigScalarFieldEnum)[keyof typeof PlatformConfigScalarFieldEnum]
+
+
+export const UserLimitScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  resumeLimit: 'resumeLimit',
+  apiLimit: 'apiLimit',
+  resumeUsed: 'resumeUsed',
+  apiUsed: 'apiUsed',
+  resetAt: 'resetAt',
+  overrideByAdmin: 'overrideByAdmin'
+} as const
+
+export type UserLimitScalarFieldEnum = (typeof UserLimitScalarFieldEnum)[keyof typeof UserLimitScalarFieldEnum]
+
+
+export const OtpCodeScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  codeHash: 'codeHash',
+  type: 'type',
+  expiresAt: 'expiresAt',
+  used: 'used',
+  createdAt: 'createdAt'
+} as const
+
+export type OtpCodeScalarFieldEnum = (typeof OtpCodeScalarFieldEnum)[keyof typeof OtpCodeScalarFieldEnum]
+
+
+export const LoginDeviceScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  deviceName: 'deviceName',
+  deviceType: 'deviceType',
+  browser: 'browser',
+  os: 'os',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  fingerprint: 'fingerprint',
+  isTrusted: 'isTrusted',
+  lastSeenAt: 'lastSeenAt',
+  createdAt: 'createdAt'
+} as const
+
+export type LoginDeviceScalarFieldEnum = (typeof LoginDeviceScalarFieldEnum)[keyof typeof LoginDeviceScalarFieldEnum]
+
+
+export const UserProfileScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  phone: 'phone',
+  avatarUrl: 'avatarUrl',
+  headline: 'headline',
+  bio: 'bio',
+  location: 'location',
+  website: 'website',
+  linkedIn: 'linkedIn',
+  github: 'github',
+  skills: 'skills',
+  languages: 'languages',
+  education: 'education',
+  experience: 'experience',
+  certifications: 'certifications',
+  resumeCount: 'resumeCount',
+  apiCallCount: 'apiCallCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UserProfileScalarFieldEnum = (typeof UserProfileScalarFieldEnum)[keyof typeof UserProfileScalarFieldEnum]
+
+
+export const AdminProfileScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  phone: 'phone',
+  avatarUrl: 'avatarUrl',
+  department: 'department',
+  permissions: 'permissions',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AdminProfileScalarFieldEnum = (typeof AdminProfileScalarFieldEnum)[keyof typeof AdminProfileScalarFieldEnum]
+
+
+export const ResumeTemplateScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  thumbnailUrl: 'thumbnailUrl',
+  htmlLayout: 'htmlLayout',
+  cssStyles: 'cssStyles',
+  category: 'category',
+  isActive: 'isActive',
+  isDefault: 'isDefault',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ResumeTemplateScalarFieldEnum = (typeof ResumeTemplateScalarFieldEnum)[keyof typeof ResumeTemplateScalarFieldEnum]
+
+
+export const ResumeScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  templateId: 'templateId',
+  title: 'title',
+  type: 'type',
+  status: 'status',
+  targetJobTitle: 'targetJobTitle',
+  jobDescription: 'jobDescription',
+  atsScore: 'atsScore',
+  contentData: 'contentData',
+  aiSuggestions: 'aiSuggestions',
+  pdfUrl: 'pdfUrl',
+  version: 'version',
+  isPublic: 'isPublic',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ResumeScalarFieldEnum = (typeof ResumeScalarFieldEnum)[keyof typeof ResumeScalarFieldEnum]
+
+
+export const ResumeHistoryScalarFieldEnum = {
+  id: 'id',
+  resumeId: 'resumeId',
+  version: 'version',
+  snapshot: 'snapshot',
+  changedBy: 'changedBy',
+  createdAt: 'createdAt'
+} as const
+
+export type ResumeHistoryScalarFieldEnum = (typeof ResumeHistoryScalarFieldEnum)[keyof typeof ResumeHistoryScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -153,4 +335,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
