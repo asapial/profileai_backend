@@ -8,8 +8,8 @@ export const createTemplateSchema = z.object({
     htmlLayout: z.string().min(10, 'HTML layout is required'),
     cssStyles: z.string().optional().default(''),
     category: z.enum(['MODERN', 'CLASSIC', 'CREATIVE', 'ATS']),
-    isActive: z.boolean().optional().default(true),
-    isDefault: z.boolean().optional().default(false),
+    isActive: z.coerce.boolean().optional().default(true),
+    isDefault: z.coerce.boolean().optional().default(false),
   }),
 });
 
@@ -20,8 +20,8 @@ export const updateTemplateSchema = z.object({
     htmlLayout: z.string().min(10).optional(),
     cssStyles: z.string().optional(),
     category: z.enum(['MODERN', 'CLASSIC', 'CREATIVE', 'ATS']).optional(),
-    isActive: z.boolean().optional(),
-    isDefault: z.boolean().optional(),
+    isActive: z.coerce.boolean().optional(),
+    isDefault: z.coerce.boolean().optional(),
   }),
 });
 
