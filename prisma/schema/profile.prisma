@@ -22,6 +22,7 @@ model UserProfile {
   certifications Json?    // [{name, issuer, year, url}]
   resumeCount    Int      @default(0)
   apiCallCount   Int      @default(0)
+  referredByCode String?  // Optional referral code captured at signup
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 

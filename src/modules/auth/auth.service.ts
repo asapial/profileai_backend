@@ -218,11 +218,14 @@ const registerDevice = async (
 // ─── Auth Services ───────────────────────────────────
 
 export const registerUser = async (data: RegisterInput) => {
-  const { firstName, lastName, email, password } = data;
+  const { firstName, lastName, email, password, referredByCode } = data;
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
-    throw new AppError(status.CONFLICT, 'An account with this email already exists.');
+    throw new AppError(
+      status.CONFLICT,
+      'An account with this email already exists.'
+    );
   }
 
   // BetterAuth manages account creation via /api/auth routes
@@ -230,49 +233,92 @@ export const registerUser = async (data: RegisterInput) => {
   const passwordHash = await bcrypt.hash(password, 12);
   const userId = crypto.randomUUID();
 
-  // Create BetterAuth-compatible user
-  const user = await prisma.user.create({
-    data: {
-      id: userId,
-      name: `${firstName} ${lastName}`,
-      email,
-      emailVerified: false,
-      role: 'USER',
-      isActive: true,
-      twoFactorEnabled: false,
-      accounts: {
-        create: {
-          id: crypto.randomUUID(),
-          accountId: userId,
-          providerId: 'credential',
-          password: passwordHash,
+  // Pull default limits from PlatformConfig; fall back to safe defaults so a
+  // missing config row never blocks signups.
+  const [resumeLimitCfg, apiLimitCfg] = await Promise.all([
+    prisma.platformConfig.findUnique({ where: { key: 'default_resume_limit' } }),
+    prisma.platformConfig.findUnique({ where: { key: 'default_api_limit' } }),
+  ]);
+  const resumeLimit = parseInt(resumeLimitCfg?.value ?? '', 10) || 5;
+  const apiLimit = parseInt(apiLimitCfg?.value ?? '', 10) || 50;
+
+  // We create User + Account + UserProfile + UserLimit + NotificationPreference
+  // in a single transaction. If any insert fails the whole registration is
+  // rolled back so we never leave an orphan user with no limits or profile.
+  const user = await prisma.$transaction(async (tx) => {
+    return tx.user.create({
+      data: {
+        id: userId,
+        name: `${firstName} ${lastName}`,
+        email,
+        emailVerified: false,
+        role: 'USER',
+        isActive: true,
+        twoFactorEnabled: false,
+        accounts: {
+          create: {
+            id: crypto.randomUUID(),
+            accountId: userId,
+            providerId: 'credential',
+            password: passwordHash,
+          },
+        },
+        profile: {
+          create: {
+            firstName,
+            lastName,
+            education: [] as unknown as Prisma.InputJsonValue,
+            experience: [] as unknown as Prisma.InputJsonValue,
+            skills: [],
+            languages: [],
+            // Persist referral code if it was supplied + validated by the
+            // Zod schema. We don't burn the code here — a separate analytics
+            // / referral-attribution job consumes it later.
+            ...(referredByCode ? { referredByCode } : {}),
+          },
+        },
+        limits: {
+          create: {
+            resumeLimit,
+            apiLimit,
+            resetAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+          },
+        },
+        notificationPreference: {
+          create: {
+            // Sensible defaults: security + product + tips on, marketing off,
+            // in-app on, push off, weekly digest. Users can change in Settings.
+            emailMarketing: false,
+            emailProduct: true,
+            emailSecurity: true,
+            emailResumeTips: true,
+            pushEnabled: false,
+            inAppEnabled: true,
+            digestFrequency: 'WEEKLY',
+          },
         },
       },
-      profile: {
-        create: {
-          firstName,
-          lastName,
-          education: [] as unknown as Prisma.InputJsonValue,
-          experience: [] as unknown as Prisma.InputJsonValue,
-          skills: [] as unknown as Prisma.InputJsonValue,
-          languages: [] as unknown as Prisma.InputJsonValue,
-        },
-      },
-      limits: {
-        create: {
-          resumeLimit: 5,
-          apiLimit: 50,
-          resetAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-        },
-      },
-    },
+    });
   });
 
-  // Send email verification OTP
+  // Persist the verification OTP after the user row is committed so a
+  // transaction rollback never strands a valid OTP pointing nowhere.
   const otp = generateOtp();
   await saveOtp(user.id, otp, 'EMAIL_VERIFY');
-  const firstNameSafe = firstName ?? '';
-  await sendOtpEmail({ to: email, otp, type: 'EMAIL_VERIFY', firstName: firstNameSafe });
+
+  // Fire-and-forget the verification email so SMTP latency never extends
+  // the request or holds the transaction. The user is already created and
+  // the OTP is persisted — the email is purely a notification.
+  void sendOtpEmail({
+    to: email,
+    otp,
+    type: 'EMAIL_VERIFY',
+    firstName: firstName ?? '',
+  }).catch((err) => {
+    // Log loudly but don't throw — registration is already complete.
+    // eslint-disable-next-line no-console
+    console.error('[registerUser] verification email failed:', err);
+  });
 
   return { userId: user.id, email: user.email };
 };

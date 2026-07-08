@@ -16,14 +16,15 @@ model User {
   twoFactorSecret   String?   // AES-256-GCM encrypted TOTP secret
 
   // Relations
-  sessions      Session[]
-  accounts      Account[]
-  profile       UserProfile?
-  adminProfile  AdminProfile?
-  devices       LoginDevice[]
-  resumes       Resume[]
-  otps          OtpCode[]
-  limits        UserLimit?
+  sessions               Session[]
+  accounts               Account[]
+  profile                UserProfile?
+  adminProfile           AdminProfile?
+  devices                LoginDevice[]
+  resumes                Resume[]
+  otps                   OtpCode[]
+  limits                 UserLimit?
+  notificationPreference NotificationPreference?
 
   @@unique([email])
   @@map("user")

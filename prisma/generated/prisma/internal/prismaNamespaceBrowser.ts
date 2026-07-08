@@ -56,6 +56,7 @@ export const ModelName = {
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification',
+  NotificationPreference: 'NotificationPreference',
   PlatformConfig: 'PlatformConfig',
   UserLimit: 'UserLimit',
   OtpCode: 'OtpCode',
@@ -159,6 +160,23 @@ export const VerificationScalarFieldEnum = {
 export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
 
 
+export const NotificationPreferenceScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  emailMarketing: 'emailMarketing',
+  emailProduct: 'emailProduct',
+  emailSecurity: 'emailSecurity',
+  emailResumeTips: 'emailResumeTips',
+  pushEnabled: 'pushEnabled',
+  inAppEnabled: 'inAppEnabled',
+  digestFrequency: 'digestFrequency',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NotificationPreferenceScalarFieldEnum = (typeof NotificationPreferenceScalarFieldEnum)[keyof typeof NotificationPreferenceScalarFieldEnum]
+
+
 export const PlatformConfigScalarFieldEnum = {
   id: 'id',
   key: 'key',
@@ -236,6 +254,7 @@ export const UserProfileScalarFieldEnum = {
   certifications: 'certifications',
   resumeCount: 'resumeCount',
   apiCallCount: 'apiCallCount',
+  referredByCode: 'referredByCode',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

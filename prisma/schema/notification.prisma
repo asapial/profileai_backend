@@ -1,0 +1,21 @@
+// ─────────────────────────────────────────────────────
+// Notification Preferences
+// ─────────────────────────────────────────────────────
+
+model NotificationPreference {
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  emailMarketing     Boolean  @default(false)
+  emailProduct       Boolean  @default(true)
+  emailSecurity      Boolean  @default(true)
+  emailResumeTips    Boolean  @default(true)
+  pushEnabled        Boolean  @default(false)
+  inAppEnabled       Boolean  @default(true)
+  digestFrequency    String   @default("WEEKLY") // OFF | DAILY | WEEKLY
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notification_preference")
+}

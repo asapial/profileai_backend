@@ -1,6 +1,9 @@
 import { z } from 'zod';
 
 // ─── Register ────────────────────────────────────────
+// Optional `referredByCode` is validated as an alphanumeric token (typically
+// 6-20 chars) when present. `acceptTerms` must be true — we never persist
+// accounts unless the user explicitly opts in to the ToS.
 export const registerSchema = z.object({
   body: z.object({
     firstName: z.string().min(1, 'First name is required').max(50),
@@ -13,6 +16,16 @@ export const registerSchema = z.object({
       .regex(/[0-9]/, 'Password must contain at least one number')
       .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character'),
     confirmPassword: z.string(),
+    referredByCode: z
+      .string()
+      .trim()
+      .min(4, 'Referral code is too short')
+      .max(24, 'Referral code is too long')
+      .regex(/^[A-Za-z0-9_-]+$/, 'Referral code contains invalid characters')
+      .optional(),
+    acceptTerms: z.literal(true, {
+      message: 'You must accept the terms to continue.',
+    }),
   }).refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
     path: ['confirmPassword'],
