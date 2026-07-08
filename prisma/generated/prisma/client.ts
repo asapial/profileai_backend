@@ -47,6 +47,11 @@ export { Prisma }
  */
 export type AnalyticsEvent = Prisma.AnalyticsEventModel
 /**
+ * Model JobApplication
+ * 
+ */
+export type JobApplication = Prisma.JobApplicationModel
+/**
  * Model User
  * 
  */
@@ -66,6 +71,16 @@ export type Account = Prisma.AccountModel
  * 
  */
 export type Verification = Prisma.VerificationModel
+/**
+ * Model ExportJob
+ * 
+ */
+export type ExportJob = Prisma.ExportJobModel
+/**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel
 /**
  * Model NotificationPreference
  * 
@@ -101,6 +116,16 @@ export type UserProfile = Prisma.UserProfileModel
  * 
  */
 export type AdminProfile = Prisma.AdminProfileModel
+/**
+ * Model Project
+ * 
+ */
+export type Project = Prisma.ProjectModel
+/**
+ * Model Reference
+ * 
+ */
+export type Reference = Prisma.ReferenceModel
 /**
  * Model ResumeTemplate
  * 

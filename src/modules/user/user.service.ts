@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import status from 'http-status';
-import { Prisma } from '../../prisma/generated/prisma/client';
+import { Prisma } from '../../../prisma/generated/prisma/client';
 import { prisma } from '../../lib/prisma';
 import { uploadBuffer, getPresignedUrl, deleteObject } from '../../lib/minio';
 import AppError from '../../errorHelpers/AppError';
@@ -64,14 +64,14 @@ export const updateProfile = async (userId: string, data: UpdateProfileInput) =>
     where: { userId },
     update: updateData,
     create: {
+      ...(rest as unknown as Prisma.UserProfileUncheckedCreateInput),
       userId,
       firstName: firstName || '',
       lastName: lastName || '',
       education: [] as unknown as Prisma.InputJsonValue,
       experience: [] as unknown as Prisma.InputJsonValue,
-      skills: [] as unknown as Prisma.InputJsonValue,
-      languages: [] as unknown as Prisma.InputJsonValue,
-      ...rest,
+      skills: [] as string[],
+      languages: [] as string[],
     },
   });
 
@@ -111,8 +111,8 @@ export const uploadAvatar = async (
       lastName: '',
       education: [] as unknown as Prisma.InputJsonValue,
       experience: [] as unknown as Prisma.InputJsonValue,
-      skills: [] as unknown as Prisma.InputJsonValue,
-      languages: [] as unknown as Prisma.InputJsonValue,
+      skills: [] as string[],
+      languages: [] as string[],
       avatarUrl: presignedUrl,
     },
   });
@@ -192,4 +192,77 @@ export const getUserLimits = async (userId: string) => {
   const limits = await prisma.userLimit.findUnique({ where: { userId } });
   if (!limits) throw new AppError(status.NOT_FOUND, 'User limits not found.');
   return limits;
+};
+
+// ─── Notification Preferences ──────────────────────────
+
+export const getNotificationPreferences = async (userId: string) => {
+  const prefs = await prisma.notificationPreference.upsert({
+    where: { userId },
+    update: {},
+    create: { userId },
+  });
+  return prefs;
+};
+
+export type NotificationPreferencesInput = Partial<{
+  emailMarketing: boolean;
+  emailProduct: boolean;
+  emailSecurity: boolean;
+  emailResumeTips: boolean;
+  pushEnabled: boolean;
+  inAppEnabled: boolean;
+  digestFrequency: 'OFF' | 'DAILY' | 'WEEKLY';
+}>;
+
+export const updateNotificationPreferences = async (
+  userId: string,
+  input: NotificationPreferencesInput,
+) => {
+  const data: Record<string, boolean | string> = {};
+  if (input.emailMarketing !== undefined) data.emailMarketing = input.emailMarketing;
+  if (input.emailProduct !== undefined) data.emailProduct = input.emailProduct;
+  if (input.emailSecurity !== undefined) data.emailSecurity = input.emailSecurity;
+  if (input.emailResumeTips !== undefined) data.emailResumeTips = input.emailResumeTips;
+  if (input.pushEnabled !== undefined) data.pushEnabled = input.pushEnabled;
+  if (input.inAppEnabled !== undefined) data.inAppEnabled = input.inAppEnabled;
+  if (input.digestFrequency !== undefined) data.digestFrequency = input.digestFrequency;
+
+  return prisma.notificationPreference.upsert({
+    where: { userId },
+    create: { userId, ...(data as any) },
+    update: data,
+  });
+};
+
+// ─── Delete Account ────────────────────────────────────
+
+export const deleteAccount = async (userId: string, password: string) => {
+  const account = await prisma.account.findFirst({
+    where: { userId, providerId: 'credential' },
+  });
+  if (!account?.password) {
+    throw new AppError(status.BAD_REQUEST, 'No password set for this account.');
+  }
+  const isValid = await bcrypt.compare(password, account.password);
+  if (!isValid) throw new AppError(status.UNAUTHORIZED, 'Password is incorrect.');
+
+  // Cascade: notifications, applications, projects, references, export jobs, sessions, devices, otp codes.
+  await prisma.$transaction([
+    prisma.exportJob.deleteMany({ where: { userId } }),
+    prisma.jobApplication.deleteMany({ where: { userId } }),
+    prisma.notification.deleteMany({ where: { userId } }),
+    prisma.project.deleteMany({ where: { userId } }),
+    prisma.reference.deleteMany({ where: { userId } }),
+    prisma.notificationPreference.deleteMany({ where: { userId } }),
+    prisma.session.deleteMany({ where: { user: { id: userId } } }),
+    prisma.loginDevice.deleteMany({ where: { userId } }),
+    prisma.otpCode.deleteMany({ where: { userId } }),
+    prisma.userLimit.deleteMany({ where: { userId } }),
+    prisma.userProfile.deleteMany({ where: { userId } }),
+    prisma.account.deleteMany({ where: { userId } }),
+    prisma.user.delete({ where: { id: userId } }),
+  ]);
+
+  return { message: 'Account deleted.' };
 };

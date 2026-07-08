@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import { UAParser } from 'ua-parser-js';
 import status from 'http-status';
 import { Request } from 'express';
-import { Prisma } from '../../prisma/generated/prisma/client';
+import { Prisma } from '../../../prisma/generated/prisma/client';
 import { prisma } from '../../lib/prisma';
 import { redis } from '../../lib/redis';
 import { sendOtpEmail, sendPasswordChangedEmail, sendWelcomeEmail } from '../../lib/mailer';

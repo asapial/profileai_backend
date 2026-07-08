@@ -6,7 +6,7 @@ const QUEUE_NAME = 'profileai-scheduler';
 
 // ─── Queue ────────────────────────────────────────────
 export const schedulerQueue = new Queue(QUEUE_NAME, {
-  connection: redis,
+  connection: redis as any,
   defaultJobOptions: {
     attempts: 3,
     backoff: { type: 'exponential', delay: 5000 },
@@ -32,7 +32,7 @@ export const schedulerWorker = new Worker(
       console.log(`[Scheduler] Monthly limits reset for all users. Next reset: ${resetAt.toISOString()}`);
     }
   },
-  { connection: redis }
+  { connection: redis as any }
 );
 
 // ─── Schedule Monthly Reset ───────────────────────────

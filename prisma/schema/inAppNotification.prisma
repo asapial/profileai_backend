@@ -1,0 +1,27 @@
+// ─────────────────────────────────────────────────────
+// In-app notifications (separate from NotificationPreference)
+// ─────────────────────────────────────────────────────
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType @default(SYSTEM)
+  title     String
+  body      String?
+  link      String?
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read, createdAt])
+  @@map("notification")
+}
+
+enum NotificationType {
+  SYSTEM
+  RESUME
+  APPLICATION
+  BILLING
+  SECURITY
+}

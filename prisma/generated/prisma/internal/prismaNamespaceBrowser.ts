@@ -52,10 +52,13 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   AnalyticsEvent: 'AnalyticsEvent',
+  JobApplication: 'JobApplication',
   User: 'User',
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification',
+  ExportJob: 'ExportJob',
+  Notification: 'Notification',
   NotificationPreference: 'NotificationPreference',
   PlatformConfig: 'PlatformConfig',
   UserLimit: 'UserLimit',
@@ -63,6 +66,8 @@ export const ModelName = {
   LoginDevice: 'LoginDevice',
   UserProfile: 'UserProfile',
   AdminProfile: 'AdminProfile',
+  Project: 'Project',
+  Reference: 'Reference',
   ResumeTemplate: 'ResumeTemplate',
   Resume: 'Resume',
   ResumeHistory: 'ResumeHistory',
@@ -96,6 +101,24 @@ export const AnalyticsEventScalarFieldEnum = {
 } as const
 
 export type AnalyticsEventScalarFieldEnum = (typeof AnalyticsEventScalarFieldEnum)[keyof typeof AnalyticsEventScalarFieldEnum]
+
+
+export const JobApplicationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  company: 'company',
+  role: 'role',
+  status: 'status',
+  jobUrl: 'jobUrl',
+  location: 'location',
+  appliedAt: 'appliedAt',
+  notes: 'notes',
+  resumeId: 'resumeId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type JobApplicationScalarFieldEnum = (typeof JobApplicationScalarFieldEnum)[keyof typeof JobApplicationScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {
@@ -159,6 +182,36 @@ export const VerificationScalarFieldEnum = {
 } as const
 
 export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
+
+
+export const ExportJobScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  kind: 'kind',
+  status: 'status',
+  payload: 'payload',
+  resultUrl: 'resultUrl',
+  errorMsg: 'errorMsg',
+  createdAt: 'createdAt',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt'
+} as const
+
+export type ExportJobScalarFieldEnum = (typeof ExportJobScalarFieldEnum)[keyof typeof ExportJobScalarFieldEnum]
+
+
+export const NotificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  title: 'title',
+  body: 'body',
+  link: 'link',
+  read: 'read',
+  createdAt: 'createdAt'
+} as const
+
+export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
 
 
 export const NotificationPreferenceScalarFieldEnum = {
@@ -280,6 +333,39 @@ export const AdminProfileScalarFieldEnum = {
 export type AdminProfileScalarFieldEnum = (typeof AdminProfileScalarFieldEnum)[keyof typeof AdminProfileScalarFieldEnum]
 
 
+export const ProjectScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  description: 'description',
+  techStack: 'techStack',
+  url: 'url',
+  repoUrl: 'repoUrl',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  current: 'current',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
+
+
+export const ReferenceScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  name: 'name',
+  relationship: 'relationship',
+  company: 'company',
+  email: 'email',
+  phone: 'phone',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReferenceScalarFieldEnum = (typeof ReferenceScalarFieldEnum)[keyof typeof ReferenceScalarFieldEnum]
+
+
 export const ResumeTemplateScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -361,19 +447,19 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
-export const JsonNullValueInput = {
-  JsonNull: JsonNull
-} as const
-
-export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
-
-
 export const NullableJsonNullValueInput = {
   DbNull: DbNull,
   JsonNull: JsonNull
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

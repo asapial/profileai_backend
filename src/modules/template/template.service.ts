@@ -1,4 +1,5 @@
 import status from 'http-status';
+import { Prisma } from '../../../prisma/generated/prisma/client';
 import { prisma } from '../../lib/prisma';
 import { uploadBuffer, getPresignedUrl } from '../../lib/minio';
 import AppError from '../../errorHelpers/AppError';
@@ -150,7 +151,7 @@ export const updateTemplate = async (
 
   return prisma.resumeTemplate.update({
     where: { id },
-    data: { ...data, thumbnailUrl, category: data.category as any },
+    data: { ...(data as Prisma.ResumeTemplateUpdateInput), thumbnailUrl, category: data.category as any },
   });
 };
 

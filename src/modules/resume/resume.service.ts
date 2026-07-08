@@ -1,6 +1,6 @@
 import status from 'http-status';
 import Handlebars from 'handlebars';
-import { Prisma } from '../../prisma/generated/prisma/client';
+import { Prisma } from '../../../prisma/generated/prisma/client';
 import { prisma } from '../../lib/prisma';
 import { getAiResponse } from '../../utils/aiResponse';
 import { uploadBuffer, getPresignedUrl } from '../../lib/minio';
@@ -153,19 +153,18 @@ export const generateResume = async (userId: string, input: GenerateResumeInput)
     throw new AppError(status.INTERNAL_SERVER_ERROR, 'AI generation failed. Please try again.');
   }
 
-  const resume = await prisma.resume.create({
-    data: {
-      userId,
-      templateId: input.templateId,
-      title: input.title,
-      type: input.type as any,
-      status: 'GENERATED',
-      targetJobTitle: input.targetJobTitle,
-      jobDescription: input.jobDescription,
-      contentData: aiResult.data as Prisma.InputJsonValue,
-      version: 1,
-    },
-  });
+  const createData: Prisma.ResumeUncheckedCreateInput = {
+    userId,
+    templateId: input.templateId,
+    title: input.title,
+    type: input.type as any,
+    status: 'GENERATED',
+    targetJobTitle: input.targetJobTitle,
+    contentData: aiResult.data as Prisma.InputJsonValue,
+    version: 1,
+  };
+  if (input.jobDescription !== undefined) createData.jobDescription = input.jobDescription;
+  const resume = await prisma.resume.create({ data: createData });
 
   // Increment usage counters
   await prisma.userLimit.update({
@@ -196,13 +195,16 @@ export const updateResume = async (userId: string, resumeId: string, data: Updat
     },
   });
 
+  const updateData: Prisma.ResumeUpdateInput = {
+    contentData: data.contentData ? (data.contentData as unknown as Prisma.InputJsonValue) : (existing.contentData as Prisma.InputJsonValue),
+    version: existing.version + 1,
+  };
+  if (data.title !== undefined) updateData.title = data.title;
+  if (data.targetJobTitle !== undefined) updateData.targetJobTitle = data.targetJobTitle;
+  if (data.jobDescription !== undefined) updateData.jobDescription = data.jobDescription;
   return prisma.resume.update({
     where: { id: resumeId },
-    data: {
-      ...data,
-      contentData: data.contentData ? (data.contentData as unknown as Prisma.InputJsonValue) : (existing.contentData as Prisma.InputJsonValue),
-      version: existing.version + 1,
-    },
+    data: updateData,
   });
 };
 

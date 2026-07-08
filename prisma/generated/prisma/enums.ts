@@ -9,6 +9,17 @@
 * 🟢 You can import this file directly.
 */
 
+export const ApplicationStatus = {
+  APPLIED: 'APPLIED',
+  INTERVIEW: 'INTERVIEW',
+  OFFER: 'OFFER',
+  REJECTED: 'REJECTED',
+  WITHDRAWN: 'WITHDRAWN'
+} as const
+
+export type ApplicationStatus = (typeof ApplicationStatus)[keyof typeof ApplicationStatus]
+
+
 export const Role = {
   ADMIN: 'ADMIN',
   USER: 'USER'
@@ -52,3 +63,32 @@ export const TemplateCategory = {
 } as const
 
 export type TemplateCategory = (typeof TemplateCategory)[keyof typeof TemplateCategory]
+
+
+export const ExportKind = {
+  USER_DATA: 'USER_DATA',
+  RESUME_PDF: 'RESUME_PDF'
+} as const
+
+export type ExportKind = (typeof ExportKind)[keyof typeof ExportKind]
+
+
+export const JobStatus = {
+  PENDING: 'PENDING',
+  RUNNING: 'RUNNING',
+  DONE: 'DONE',
+  FAILED: 'FAILED'
+} as const
+
+export type JobStatus = (typeof JobStatus)[keyof typeof JobStatus]
+
+
+export const NotificationType = {
+  SYSTEM: 'SYSTEM',
+  RESUME: 'RESUME',
+  APPLICATION: 'APPLICATION',
+  BILLING: 'BILLING',
+  SECURITY: 'SECURITY'
+} as const
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]

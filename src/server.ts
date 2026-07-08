@@ -3,6 +3,7 @@ import { prisma } from './lib/prisma';
 import { redis } from './lib/redis';
 import { ensureBucketExists } from './lib/minio';
 import { scheduleMonthlyReset } from './utils/scheduler';
+import { exportWorker } from './utils/exportQueue';
 
 const PORT = process.env.PORT || 5000;
 
@@ -43,6 +44,11 @@ async function main() {
 
     // ── BullMQ Scheduler ──────────────────────────────
     await scheduleMonthlyReset();
+
+    // Touch the worker so its connection is eagerly opened and
+    // the queue is ready before traffic arrives. BullMQ auto-starts
+    // workers on construction; we just need to keep the import alive.
+    void exportWorker;
 
     // ── Start Server ──────────────────────────────────
     app.listen(PORT, () => {

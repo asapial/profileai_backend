@@ -18,5 +18,8 @@ router.put('/change-password', validateRequest(changePasswordSchema), userContro
 router.get('/devices', userController.getDevices);
 router.delete('/devices/:id', userController.revokeDevice);
 router.get('/limits', userController.getLimits);
+router.get('/notification-preferences', userController.getNotificationPreferences);
+router.patch('/notification-preferences', userController.updateNotificationPreferences);
+router.delete('/account', userController.deleteAccount);
 
 export const userRouter = router;

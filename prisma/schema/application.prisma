@@ -1,0 +1,32 @@
+// ─────────────────────────────────────────────────────
+// Job Applications — tracked application status per user
+// ─────────────────────────────────────────────────────
+
+model JobApplication {
+  id        String            @id @default(cuid())
+  userId    String
+  company   String
+  role      String
+  status    ApplicationStatus @default(APPLIED)
+  jobUrl    String?
+  location  String?
+  appliedAt DateTime          @default(now())
+  notes     String?
+  resumeId  String?
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resume Resume? @relation(fields: [resumeId], references: [id])
+
+  @@index([userId, appliedAt])
+  @@map("job_application")
+}
+
+enum ApplicationStatus {
+  APPLIED
+  INTERVIEW
+  OFFER
+  REJECTED
+  WITHDRAWN
+}

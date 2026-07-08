@@ -1,0 +1,33 @@
+// ─────────────────────────────────────────────────────
+// ExportJob — async export pipeline (BullMQ-driven)
+// ─────────────────────────────────────────────────────
+
+model ExportJob {
+  id          String     @id @default(cuid())
+  userId      String
+  kind        ExportKind
+  status      JobStatus  @default(PENDING)
+  payload     Json?
+  resultUrl   String?
+  errorMsg    String?
+  createdAt   DateTime   @default(now())
+  startedAt   DateTime?
+  completedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status, createdAt])
+  @@map("export_job")
+}
+
+enum ExportKind {
+  USER_DATA
+  RESUME_PDF
+}
+
+enum JobStatus {
+  PENDING
+  RUNNING
+  DONE
+  FAILED
+}

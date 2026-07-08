@@ -25,6 +25,11 @@ model User {
   otps                   OtpCode[]
   limits                 UserLimit?
   notificationPreference NotificationPreference?
+  notifications          Notification[]
+  jobApplications        JobApplication[]
+  projects               Project[]
+  references             Reference[]
+  exportJobs             ExportJob[]
 
   @@unique([email])
   @@map("user")

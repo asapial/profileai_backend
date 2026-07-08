@@ -1,0 +1,40 @@
+// ─────────────────────────────────────────────────────
+// Projects & References — profile sub-resources
+// ─────────────────────────────────────────────────────
+
+model Project {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  description String?
+  techStack   String[]
+  url         String?
+  repoUrl     String?
+  startDate   String?
+  endDate     String?
+  current     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("project")
+}
+
+model Reference {
+  id           String   @id @default(cuid())
+  userId       String
+  name         String
+  relationship String
+  company      String?
+  email        String?
+  phone        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("reference")
+}

@@ -36,7 +36,7 @@ const stubMinioClient = {
     minioDisabledError('putObject');
   },
   presignedGetObject: async (_bucket: string, _name: string, _ttl?: number): Promise<string> => {
-    minioDisabledError('presignedGetObject');
+    return minioDisabledError('presignedGetObject') as never;
   },
   removeObject: async (_bucket: string, _name: string): Promise<void> => {
     minioDisabledError('removeObject');

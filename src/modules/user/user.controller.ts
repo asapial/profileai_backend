@@ -44,11 +44,28 @@ export const getDevices = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const revokeDevice = catchAsync(async (req: Request, res: Response) => {
-  const result = await userService.revokeDevice(req.user.userId, req.params.id);
+  const id = typeof req.params.id === 'string' ? req.params.id : '';
+  const result = await userService.revokeDevice(req.user.userId, id);
   sendResponse(res, { status: status.OK, success: true, message: result.message, data: null });
 });
 
 export const getLimits = catchAsync(async (req: Request, res: Response) => {
   const data = await userService.getUserLimits(req.user.userId);
   sendResponse(res, { status: status.OK, success: true, message: 'Limits retrieved.', data });
+});
+
+export const getNotificationPreferences = catchAsync(async (req: Request, res: Response) => {
+  const data = await userService.getNotificationPreferences(req.user.userId);
+  sendResponse(res, { status: status.OK, success: true, message: 'Notification preferences retrieved.', data });
+});
+
+export const updateNotificationPreferences = catchAsync(async (req: Request, res: Response) => {
+  const data = await userService.updateNotificationPreferences(req.user.userId, req.body);
+  sendResponse(res, { status: status.OK, success: true, message: 'Notification preferences updated.', data });
+});
+
+export const deleteAccount = catchAsync(async (req: Request, res: Response) => {
+  const password = typeof req.body?.password === 'string' ? req.body.password : '';
+  const result = await userService.deleteAccount(req.user.userId, password);
+  sendResponse(res, { status: status.OK, success: true, message: result.message, data: null });
 });
