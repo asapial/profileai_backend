@@ -26,6 +26,13 @@ const OTP_RATE_LIMIT_KEY = (email: string, type: string) =>
 const OTP_RATE_LIMIT_MAX = 3;
 const OTP_RATE_LIMIT_WINDOW = 60 * 60; // 1 hour in seconds
 
+// Login attempt rate limit (per email+IP). Generous to prevent lockouts but
+// tight enough to deter credential-stuffing and brute-force attacks.
+const LOGIN_RATE_LIMIT_KEY = (email: string, ip: string) =>
+  `login:rate:${email}:${ip}`;
+const LOGIN_RATE_LIMIT_MAX = 10;
+const LOGIN_RATE_LIMIT_WINDOW = 15 * 60; // 15 minutes in seconds
+
 // ─── OTP Helpers ─────────────────────────────────────
 
 const generateOtp = (): string => {
@@ -52,6 +59,41 @@ const checkOtpRateLimit = async (email: string, type: string): Promise<void> => 
       `Too many OTP requests. Please wait before requesting another OTP.`
     );
   }
+};
+
+// Increments the login-attempt counter for an (email, ip) pair. The first
+// call also sets the TTL, and every subsequent call rolls the window. We
+// always return the new count so callers can log / emit SecurityAlerts.
+const bumpLoginRateLimit = async (
+  email: string,
+  ip: string
+): Promise<number> => {
+  const key = LOGIN_RATE_LIMIT_KEY(email, ip);
+  const count = await redis.incr(key);
+  if (count === 1) {
+    await redis.expire(key, LOGIN_RATE_LIMIT_WINDOW);
+  }
+  return count;
+};
+
+const assertLoginRateLimit = async (
+  email: string,
+  ip: string
+): Promise<void> => {
+  const count = await bumpLoginRateLimit(email, ip);
+  if (count > LOGIN_RATE_LIMIT_MAX) {
+    throw new AppError(
+      status.TOO_MANY_REQUESTS,
+      'Too many login attempts. Please try again in a few minutes.'
+    );
+  }
+};
+
+const clearLoginRateLimit = async (
+  email: string,
+  ip: string
+): Promise<void> => {
+  await redis.del(LOGIN_RATE_LIMIT_KEY(email, ip));
 };
 
 const saveOtp = async (
@@ -257,13 +299,24 @@ export const verifyEmail = async (data: VerifyEmailInput) => {
 export const loginUser = async (data: LoginInput, req: Request) => {
   const { email, password } = data;
 
+  // Per-(email, ip) login rate limit. We always count the attempt up front,
+  // before doing any DB or bcrypt work, so brute-forcers don't burn DB CPU.
+  const ipAddress =
+    (req.headers['x-forwarded-for'] as string)?.split(',')[0] || req.ip || 'unknown';
+  await assertLoginRateLimit(email, ipAddress);
+
   const user = await prisma.user.findUnique({
     where: { email },
     include: { accounts: true },
   });
 
-  if (!user) throw new AppError(status.UNAUTHORIZED, 'Invalid email or password.');
-  if (!user.isActive) throw new AppError(status.FORBIDDEN, 'Your account has been deactivated.');
+  if (!user) {
+    // Generic message: do not reveal whether the email exists.
+    throw new AppError(status.UNAUTHORIZED, 'Invalid email or password.');
+  }
+  if (!user.isActive) {
+    throw new AppError(status.FORBIDDEN, 'Your account has been deactivated.');
+  }
   if (!user.emailVerified) {
     throw new AppError(
       status.UNAUTHORIZED,
@@ -278,7 +331,13 @@ export const loginUser = async (data: LoginInput, req: Request) => {
   }
 
   const isPasswordValid = await bcrypt.compare(password, credentialAccount.password);
-  if (!isPasswordValid) throw new AppError(status.UNAUTHORIZED, 'Invalid email or password.');
+  if (!isPasswordValid) {
+    throw new AppError(status.UNAUTHORIZED, 'Invalid email or password.');
+  }
+
+  // Successful password verification clears the rate-limit counter so a
+  // legitimate user who mistyped a few times is not locked out forever.
+  await clearLoginRateLimit(email, ipAddress);
 
   // If 2FA enabled, send OTP and require verification
   if (user.twoFactorEnabled) {
@@ -290,9 +349,8 @@ export const loginUser = async (data: LoginInput, req: Request) => {
     return { twoFactorRequired: true, email };
   }
 
-  // Register device
+  // Register device (ipAddress was extracted above for the rate limit).
   const userAgent = req.headers['user-agent'] || 'Unknown';
-  const ipAddress = (req.headers['x-forwarded-for'] as string)?.split(',')[0] || req.ip || '';
 
   const deviceId = await registerDevice(user.id, userAgent, ipAddress);
 
