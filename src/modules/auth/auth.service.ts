@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import { UAParser } from 'ua-parser-js';
 import status from 'http-status';
 import { Request } from 'express';
+import { Prisma } from '../../prisma/generated/prisma/client';
 import { prisma } from '../../lib/prisma';
 import { redis } from '../../lib/redis';
 import { sendOtpEmail, sendWelcomeEmail } from '../../lib/mailer';
@@ -209,10 +210,10 @@ export const registerUser = async (data: RegisterInput) => {
         create: {
           firstName,
           lastName,
-          education: [],
-          experience: [],
-          skills: [],
-          languages: [],
+          education: [] as unknown as Prisma.InputJsonValue,
+          experience: [] as unknown as Prisma.InputJsonValue,
+          skills: [] as unknown as Prisma.InputJsonValue,
+          languages: [] as unknown as Prisma.InputJsonValue,
         },
       },
       limits: {
@@ -228,7 +229,8 @@ export const registerUser = async (data: RegisterInput) => {
   // Send email verification OTP
   const otp = generateOtp();
   await saveOtp(user.id, otp, 'EMAIL_VERIFY');
-  await sendOtpEmail({ to: email, otp, type: 'EMAIL_VERIFY', firstName });
+  const firstNameSafe = firstName ?? '';
+  await sendOtpEmail({ to: email, otp, type: 'EMAIL_VERIFY', firstName: firstNameSafe });
 
   return { userId: user.id, email: user.email };
 };
@@ -247,7 +249,7 @@ export const verifyEmail = async (data: VerifyEmailInput) => {
     data: { emailVerified: true },
   });
 
-  await sendWelcomeEmail(email, user.name.split(' ')[0]);
+  await sendWelcomeEmail(email, user.name.split(' ')[0] ?? '');
 
   return { message: 'Email verified successfully.' };
 };
@@ -283,7 +285,7 @@ export const loginUser = async (data: LoginInput, req: Request) => {
     const otp = generateOtp();
     await checkOtpRateLimit(email, 'TWO_FACTOR');
     await saveOtp(user.id, otp, 'TWO_FACTOR');
-    await sendOtpEmail({ to: email, otp, type: 'TWO_FACTOR', firstName: user.name.split(' ')[0] });
+    await sendOtpEmail({ to: email, otp, type: 'TWO_FACTOR', ...(user.name.split(' ')[0] !== undefined ? { firstName: user.name.split(' ')[0]! } : {}) });
 
     return { twoFactorRequired: true, email };
   }
@@ -386,7 +388,7 @@ export const forgotPassword = async (email: string) => {
     to: email,
     otp,
     type: 'FORGET_PASSWORD',
-    firstName: user.name.split(' ')[0],
+    ...(user.name.split(' ')[0] !== undefined ? { firstName: user.name.split(' ')[0]! } : {}),
   });
 
   return { message: 'If an account with this email exists, an OTP has been sent.' };
@@ -418,6 +420,58 @@ export const logoutUser = async (token: string, userId: string) => {
   return { message: 'Logged out successfully.' };
 };
 
+// ─── Get Current User ────────────────────────────────
+
+export const getMe = async (userId: string) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      emailVerified: true,
+      twoFactorEnabled: true,
+      isActive: true,
+      createdAt: true,
+      profile: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          avatarUrl: true,
+          headline: true,
+        },
+      },
+      limits: {
+        select: {
+          resumeLimit: true,
+          apiLimit: true,
+          resumeUsed: true,
+          apiUsed: true,
+          resetAt: true,
+        },
+      },
+    },
+  });
+  if (!user) throw new AppError(status.UNAUTHORIZED, 'User not found.');
+
+  // Compute profile completion percentage (same heuristic used by the user module).
+  let completionPercentage = 0;
+  if (user.profile) {
+    const fields = [
+      user.profile.firstName,
+      user.profile.lastName,
+      user.profile.avatarUrl,
+      user.profile.headline,
+    ];
+    const filled = fields.filter((value) => Boolean(value && String(value).trim())).length;
+    completionPercentage = Math.round((filled / fields.length) * 100);
+  }
+
+  return { ...user, completionPercentage };
+};
+
 export const resendOtp = async (email: string, type: 'EMAIL_VERIFY' | 'FORGET_PASSWORD' | 'TWO_FACTOR') => {
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
@@ -427,7 +481,7 @@ export const resendOtp = async (email: string, type: 'EMAIL_VERIFY' | 'FORGET_PA
   await checkOtpRateLimit(email, type);
   const otp = generateOtp();
   await saveOtp(user.id, otp, type);
-  await sendOtpEmail({ to: email, otp, type, firstName: user.name.split(' ')[0] });
+  await sendOtpEmail({ to: email, otp, type, ...(user.name.split(' ')[0] !== undefined ? { firstName: user.name.split(' ')[0]! } : {}) });
 
   return { message: 'OTP sent successfully.' };
 };
@@ -440,7 +494,7 @@ export const enable2FA = async (userId: string) => {
   // Generate OTP to verify the user actually wants to enable 2FA
   const otp = generateOtp();
   await saveOtp(userId, otp, 'TWO_FACTOR');
-  await sendOtpEmail({ to: user.email, otp, type: 'TWO_FACTOR', firstName: user.name.split(' ')[0] });
+  await sendOtpEmail({ to: user.email, otp, type: 'TWO_FACTOR', ...(user.name.split(' ')[0] !== undefined ? { firstName: user.name.split(' ')[0]! } : {}) });
 
   return { message: 'An OTP has been sent to your email to confirm 2FA activation.' };
 };

@@ -100,6 +100,16 @@ export const logout = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+export const getMe = catchAsync(async (req: Request, res: Response) => {
+  const user = await authService.getMe(req.user.userId);
+  sendResponse(res, {
+    status: status.OK,
+    success: true,
+    message: 'Current user retrieved.',
+    data: { user },
+  });
+});
+
 export const resendOtp = catchAsync(async (req: Request, res: Response) => {
   const { email, type } = req.body;
   const result = await authService.resendOtp(email, type);

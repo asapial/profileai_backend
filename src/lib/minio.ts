@@ -1,4 +1,5 @@
 import * as Minio from 'minio';
+import { Readable } from 'stream';
 import { envVars } from '../config/env';
 
 const { MINIO_ENDPOINT, MINIO_PORT, MINIO_ACCESS_KEY, MINIO_SECRET_KEY, MINIO_USE_SSL } = envVars.MINIO;
@@ -49,9 +50,15 @@ export const uploadStream = async (
   size: number,
   contentType: string
 ): Promise<string> => {
-  await minioClient.putObject(BUCKET_NAME, objectName, stream, size, {
-    'Content-Type': contentType,
-  });
+  await minioClient.putObject(
+    BUCKET_NAME,
+    objectName,
+    stream as Readable,
+    size,
+    {
+      'Content-Type': contentType,
+    }
+  );
   return objectName;
 };
 

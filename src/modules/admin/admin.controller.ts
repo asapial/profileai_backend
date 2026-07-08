@@ -28,24 +28,24 @@ export const listUsers = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const getUserById = catchAsync(async (req: Request, res: Response) => {
-  const data = await adminService.getUserById(req.params.id);
+  const data = await adminService.getUserById(String(req.params.id));
   sendResponse(res, { status: status.OK, success: true, message: 'User retrieved.', data });
 });
 
 export const updateUserLimits = catchAsync(async (req: Request, res: Response) => {
   const { resumeLimit, apiLimit } = req.body;
-  const data = await adminService.updateUserLimits(req.params.id, resumeLimit, apiLimit);
+  const data = await adminService.updateUserLimits(String(req.params.id), resumeLimit, apiLimit);
   sendResponse(res, { status: status.OK, success: true, message: 'User limits updated.', data });
 });
 
 export const toggleUserStatus = catchAsync(async (req: Request, res: Response) => {
   const { isActive } = req.body;
-  const data = await adminService.toggleUserStatus(req.params.id, isActive);
+  const data = await adminService.toggleUserStatus(String(req.params.id), isActive);
   sendResponse(res, { status: status.OK, success: true, message: `User ${isActive ? 'activated' : 'banned'}.`, data });
 });
 
 export const deleteUser = catchAsync(async (req: Request, res: Response) => {
-  const result = await adminService.deleteUser(req.params.id);
+  const result = await adminService.deleteUser(String(req.params.id));
   sendResponse(res, { status: status.OK, success: true, message: result.message, data: null });
 });
 

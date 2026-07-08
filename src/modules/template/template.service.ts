@@ -1,9 +1,8 @@
 import status from 'http-status';
 import { prisma } from '../../lib/prisma';
-import { uploadStream, getPresignedUrl } from '../../lib/minio';
+import { uploadBuffer, getPresignedUrl } from '../../lib/minio';
 import AppError from '../../errorHelpers/AppError';
 import { CreateTemplateInput, UpdateTemplateInput } from './template.schema';
-import { Readable } from 'stream';
 
 // Sample data for template preview rendering
 export const SAMPLE_RESUME_DATA = {
@@ -53,13 +52,22 @@ export const SAMPLE_RESUME_DATA = {
 
 // ─── List Templates ───────────────────────────────────
 
-export const listTemplates = async (category?: string) => {
+export interface ListTemplatesOptions {
+  category?: string;
+  featured?: boolean;
+}
+
+export const listTemplates = async (options: ListTemplatesOptions = {}) => {
+  const { category, featured } = options;
   return prisma.resumeTemplate.findMany({
     where: {
       isActive: true,
       ...(category && category !== 'ALL' ? { category: category as any } : {}),
+      ...(featured ? { isFeatured: true } : {}),
     },
-    orderBy: [{ isDefault: 'desc' }, { createdAt: 'asc' }],
+    orderBy: featured
+      ? [{ displayOrder: 'asc' }, { createdAt: 'asc' }]
+      : [{ isDefault: 'desc' }, { createdAt: 'asc' }],
     select: {
       id: true,
       name: true,
@@ -68,6 +76,8 @@ export const listTemplates = async (category?: string) => {
       category: true,
       isDefault: true,
       isActive: true,
+      isFeatured: true,
+      displayOrder: true,
       _count: { select: { resumes: true } },
     },
   });
@@ -93,8 +103,7 @@ export const createTemplate = async (
   if (thumbnailFile) {
     const ext = thumbnailFile.originalname.split('.').pop() || 'png';
     const objectName = `templates/${Date.now()}.${ext}`;
-    const readable = Readable.from(thumbnailFile.buffer);
-    await uploadStream(objectName, readable, thumbnailFile.size, thumbnailFile.mimetype);
+    await uploadBuffer(objectName, thumbnailFile.buffer, thumbnailFile.mimetype);
     thumbnailUrl = await getPresignedUrl(objectName, 365 * 24 * 3600);
   }
 
@@ -105,7 +114,7 @@ export const createTemplate = async (
   return prisma.resumeTemplate.create({
     data: {
       name: data.name,
-      description: data.description,
+      ...(data.description !== undefined ? { description: data.description } : {}),
       thumbnailUrl,
       htmlLayout: data.htmlLayout,
       cssStyles: data.cssStyles,
@@ -131,8 +140,7 @@ export const updateTemplate = async (
   if (thumbnailFile) {
     const ext = thumbnailFile.originalname.split('.').pop() || 'png';
     const objectName = `templates/${id}.${ext}`;
-    const readable = Readable.from(thumbnailFile.buffer);
-    await uploadStream(objectName, readable, thumbnailFile.size, thumbnailFile.mimetype);
+    await uploadBuffer(objectName, thumbnailFile.buffer, thumbnailFile.mimetype);
     thumbnailUrl = await getPresignedUrl(objectName, 365 * 24 * 3600);
   }
 

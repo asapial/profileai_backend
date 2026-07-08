@@ -19,10 +19,10 @@ export const validateRequest =
         query: req.query,
       }) as ParsedRequest;
 
-      req.body = parsed.body ?? req.body;
-      req.cookies = parsed.cookies ?? req.cookies;
-      req.params = parsed.params ?? req.params;
-      req.query = parsed.query ?? req.query;
+      req.body = (parsed.body ?? req.body) as Record<string, unknown>;
+      req.cookies = (parsed.cookies ?? req.cookies) as Record<string, unknown>;
+      req.params = (parsed.params ?? req.params) as Record<string, string>;
+      req.query = (parsed.query ?? req.query) as Record<string, unknown>;
 
       next();
     } catch (error) {

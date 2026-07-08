@@ -12,12 +12,15 @@ model ResumeTemplate {
   category     TemplateCategory
   isActive     Boolean          @default(true)
   isDefault    Boolean          @default(false)
+  isFeatured   Boolean          @default(false) // Show on landing carousel
+  displayOrder Int              @default(0)     // Featured carousel order
   createdBy    String           // Admin userId
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
 
   resumes Resume[]
 
+  @@index([isFeatured, isActive, displayOrder])
   @@map("resume_template")
 }
 

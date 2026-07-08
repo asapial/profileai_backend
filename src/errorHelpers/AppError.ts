@@ -5,8 +5,12 @@ class AppError extends Error {
     constructor(statusCode: number, message: string, code?: string) {
         super(message);
         this.statusCode = statusCode;
-        this.code = code;
-        Error.captureStackTrace(this, this.constructor);
+        if (code !== undefined) {
+            this.code = code;
+        }
+        if (typeof (Error as { captureStackTrace?: unknown }).captureStackTrace === 'function') {
+            (Error as unknown as { captureStackTrace: (target: object, ctor: Function) => void }).captureStackTrace(this, this.constructor);
+        }
     }
 }
 

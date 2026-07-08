@@ -51,6 +51,7 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  AnalyticsEvent: 'AnalyticsEvent',
   User: 'User',
   Session: 'Session',
   Account: 'Account',
@@ -80,6 +81,19 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 } as const)
 
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
+
+export const AnalyticsEventScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  path: 'path',
+  label: 'label',
+  destination: 'destination',
+  sessionId: 'sessionId',
+  createdAt: 'createdAt'
+} as const
+
+export type AnalyticsEventScalarFieldEnum = (typeof AnalyticsEventScalarFieldEnum)[keyof typeof AnalyticsEventScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {
@@ -256,6 +270,8 @@ export const ResumeTemplateScalarFieldEnum = {
   category: 'category',
   isActive: 'isActive',
   isDefault: 'isDefault',
+  isFeatured: 'isFeatured',
+  displayOrder: 'displayOrder',
   createdBy: 'createdBy',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

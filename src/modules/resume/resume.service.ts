@@ -1,5 +1,6 @@
 import status from 'http-status';
 import Handlebars from 'handlebars';
+import { Prisma } from '../../prisma/generated/prisma/client';
 import { prisma } from '../../lib/prisma';
 import { getAiResponse } from '../../utils/aiResponse';
 import { uploadBuffer, getPresignedUrl } from '../../lib/minio';
@@ -161,7 +162,7 @@ export const generateResume = async (userId: string, input: GenerateResumeInput)
       status: 'GENERATED',
       targetJobTitle: input.targetJobTitle,
       jobDescription: input.jobDescription,
-      contentData: aiResult.data,
+      contentData: aiResult.data as Prisma.InputJsonValue,
       version: 1,
     },
   });
@@ -199,7 +200,7 @@ export const updateResume = async (userId: string, resumeId: string, data: Updat
     where: { id: resumeId },
     data: {
       ...data,
-      contentData: data.contentData ? data.contentData as object : existing.contentData,
+      contentData: data.contentData ? (data.contentData as unknown as Prisma.InputJsonValue) : (existing.contentData as Prisma.InputJsonValue),
       version: existing.version + 1,
     },
   });
@@ -389,7 +390,7 @@ export const aiModifySection = async (userId: string, resumeId: string, data: Ai
     throw new AppError(status.INTERNAL_SERVER_ERROR, 'AI modification failed.');
   }
 
-  const newContentData = { ...contentData, [data.section]: aiResult.data.updatedSection };
+  const newContentData: Prisma.InputJsonValue = { ...contentData, [data.section]: aiResult.data.updatedSection } as unknown as Prisma.InputJsonValue;
 
   const updated = await prisma.resume.update({
     where: { id: resumeId },

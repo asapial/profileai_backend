@@ -15,7 +15,7 @@ export const generateResumeSchema = z.object({
 export const updateResumeSchema = z.object({
   body: z.object({
     title: z.string().min(1).max(100).optional(),
-    contentData: z.record(z.unknown()).optional(),
+    contentData: z.record(z.string(), z.unknown()).optional(),
     targetJobTitle: z.string().max(100).optional(),
     jobDescription: z.string().max(5000).optional(),
   }),

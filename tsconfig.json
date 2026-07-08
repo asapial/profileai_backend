@@ -17,6 +17,6 @@
     "skipLibCheck": true,
     "esModuleInterop": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "generated/prisma"]
+  "include": ["src/**/*", "prisma/generated/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

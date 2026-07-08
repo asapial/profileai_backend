@@ -1,10 +1,10 @@
 import bcrypt from 'bcryptjs';
 import status from 'http-status';
+import { Prisma } from '../../prisma/generated/prisma/client';
 import { prisma } from '../../lib/prisma';
-import { uploadStream, getPresignedUrl, deleteObject } from '../../lib/minio';
+import { uploadBuffer, getPresignedUrl, deleteObject } from '../../lib/minio';
 import AppError from '../../errorHelpers/AppError';
 import { ChangePasswordInput, UpdateProfileInput } from './user.schema';
-import { Readable } from 'stream';
 
 // ─── Get Profile ──────────────────────────────────────
 
@@ -67,10 +67,10 @@ export const updateProfile = async (userId: string, data: UpdateProfileInput) =>
       userId,
       firstName: firstName || '',
       lastName: lastName || '',
-      education: [],
-      experience: [],
-      skills: [],
-      languages: [],
+      education: [] as unknown as Prisma.InputJsonValue,
+      experience: [] as unknown as Prisma.InputJsonValue,
+      skills: [] as unknown as Prisma.InputJsonValue,
+      languages: [] as unknown as Prisma.InputJsonValue,
       ...rest,
     },
   });
@@ -97,8 +97,8 @@ export const uploadAvatar = async (
   const ext = originalname.split('.').pop() || 'jpg';
   const objectName = `avatars/${userId}/avatar.${ext}`;
 
-  const readable = Readable.from(buffer);
-  await uploadStream(objectName, readable, buffer.length, mimetype);
+  const readable: Buffer = buffer;
+  await uploadBuffer(objectName, readable, mimetype);
 
   const presignedUrl = await getPresignedUrl(objectName, 7 * 24 * 3600); // 7 days
 
@@ -109,10 +109,10 @@ export const uploadAvatar = async (
       userId,
       firstName: '',
       lastName: '',
-      education: [],
-      experience: [],
-      skills: [],
-      languages: [],
+      education: [] as unknown as Prisma.InputJsonValue,
+      experience: [] as unknown as Prisma.InputJsonValue,
+      skills: [] as unknown as Prisma.InputJsonValue,
+      languages: [] as unknown as Prisma.InputJsonValue,
       avatarUrl: presignedUrl,
     },
   });

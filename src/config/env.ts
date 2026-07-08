@@ -41,6 +41,12 @@ interface EnvConfig {
     MINIO_USE_SSL: string;
   };
 
+  CLOUDINARY: {
+    CLOUDINARY_CLOUD_NAME: string;
+    CLOUDINARY_API_KEY: string;
+    CLOUDINARY_API_SECRET: string;
+  };
+
   PUPPETEER_SERVICE_URL: string;
 }
 
@@ -72,6 +78,9 @@ const loadEnvVariables = (): EnvConfig => {
     'MINIO_SECRET_KEY',
     'MINIO_BUCKET',
     'MINIO_USE_SSL',
+    'CLOUDINARY_CLOUD_NAME',
+    'CLOUDINARY_API_KEY',
+    'CLOUDINARY_API_SECRET',
     'PUPPETEER_SERVICE_URL',
   ];
 
@@ -116,6 +125,11 @@ const loadEnvVariables = (): EnvConfig => {
       MINIO_SECRET_KEY: process.env.MINIO_SECRET_KEY as string,
       MINIO_BUCKET: process.env.MINIO_BUCKET as string,
       MINIO_USE_SSL: process.env.MINIO_USE_SSL as string,
+    },
+    CLOUDINARY: {
+      CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME as string,
+      CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY as string,
+      CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET as string,
     },
     PUPPETEER_SERVICE_URL: process.env.PUPPETEER_SERVICE_URL as string,
   };

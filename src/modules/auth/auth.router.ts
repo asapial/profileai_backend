@@ -31,4 +31,7 @@ router.post('/2fa/enable', checkAuth(), authController.enable2FA);
 router.post('/2fa/confirm', checkAuth(), validateRequest(confirm2FASchema), authController.confirm2FA);
 router.post('/2fa/disable', checkAuth(), validateRequest(disable2FASchema), authController.disable2FA);
 
+// Current authenticated user — used by public pages to render the right CTA.
+router.get('/me', checkAuth(), authController.getMe);
+
 export const authRouter = router;

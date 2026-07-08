@@ -20,8 +20,18 @@ export type ResumeTemplateModel = runtime.Types.Result.DefaultSelection<Prisma.$
 
 export type AggregateResumeTemplate = {
   _count: ResumeTemplateCountAggregateOutputType | null
+  _avg: ResumeTemplateAvgAggregateOutputType | null
+  _sum: ResumeTemplateSumAggregateOutputType | null
   _min: ResumeTemplateMinAggregateOutputType | null
   _max: ResumeTemplateMaxAggregateOutputType | null
+}
+
+export type ResumeTemplateAvgAggregateOutputType = {
+  displayOrder: number | null
+}
+
+export type ResumeTemplateSumAggregateOutputType = {
+  displayOrder: number | null
 }
 
 export type ResumeTemplateMinAggregateOutputType = {
@@ -34,6 +44,8 @@ export type ResumeTemplateMinAggregateOutputType = {
   category: $Enums.TemplateCategory | null
   isActive: boolean | null
   isDefault: boolean | null
+  isFeatured: boolean | null
+  displayOrder: number | null
   createdBy: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -49,6 +61,8 @@ export type ResumeTemplateMaxAggregateOutputType = {
   category: $Enums.TemplateCategory | null
   isActive: boolean | null
   isDefault: boolean | null
+  isFeatured: boolean | null
+  displayOrder: number | null
   createdBy: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -64,12 +78,22 @@ export type ResumeTemplateCountAggregateOutputType = {
   category: number
   isActive: number
   isDefault: number
+  isFeatured: number
+  displayOrder: number
   createdBy: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
+
+export type ResumeTemplateAvgAggregateInputType = {
+  displayOrder?: true
+}
+
+export type ResumeTemplateSumAggregateInputType = {
+  displayOrder?: true
+}
 
 export type ResumeTemplateMinAggregateInputType = {
   id?: true
@@ -81,6 +105,8 @@ export type ResumeTemplateMinAggregateInputType = {
   category?: true
   isActive?: true
   isDefault?: true
+  isFeatured?: true
+  displayOrder?: true
   createdBy?: true
   createdAt?: true
   updatedAt?: true
@@ -96,6 +122,8 @@ export type ResumeTemplateMaxAggregateInputType = {
   category?: true
   isActive?: true
   isDefault?: true
+  isFeatured?: true
+  displayOrder?: true
   createdBy?: true
   createdAt?: true
   updatedAt?: true
@@ -111,6 +139,8 @@ export type ResumeTemplateCountAggregateInputType = {
   category?: true
   isActive?: true
   isDefault?: true
+  isFeatured?: true
+  displayOrder?: true
   createdBy?: true
   createdAt?: true
   updatedAt?: true
@@ -155,6 +185,18 @@ export type ResumeTemplateAggregateArgs<ExtArgs extends runtime.Types.Extensions
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: ResumeTemplateAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: ResumeTemplateSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: ResumeTemplateMinAggregateInputType
@@ -185,6 +227,8 @@ export type ResumeTemplateGroupByArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   _count?: ResumeTemplateCountAggregateInputType | true
+  _avg?: ResumeTemplateAvgAggregateInputType
+  _sum?: ResumeTemplateSumAggregateInputType
   _min?: ResumeTemplateMinAggregateInputType
   _max?: ResumeTemplateMaxAggregateInputType
 }
@@ -199,10 +243,14 @@ export type ResumeTemplateGroupByOutputType = {
   category: $Enums.TemplateCategory
   isActive: boolean
   isDefault: boolean
+  isFeatured: boolean
+  displayOrder: number
   createdBy: string
   createdAt: Date
   updatedAt: Date
   _count: ResumeTemplateCountAggregateOutputType | null
+  _avg: ResumeTemplateAvgAggregateOutputType | null
+  _sum: ResumeTemplateSumAggregateOutputType | null
   _min: ResumeTemplateMinAggregateOutputType | null
   _max: ResumeTemplateMaxAggregateOutputType | null
 }
@@ -235,6 +283,8 @@ export type ResumeTemplateWhereInput = {
   category?: Prisma.EnumTemplateCategoryFilter<"ResumeTemplate"> | $Enums.TemplateCategory
   isActive?: Prisma.BoolFilter<"ResumeTemplate"> | boolean
   isDefault?: Prisma.BoolFilter<"ResumeTemplate"> | boolean
+  isFeatured?: Prisma.BoolFilter<"ResumeTemplate"> | boolean
+  displayOrder?: Prisma.IntFilter<"ResumeTemplate"> | number
   createdBy?: Prisma.StringFilter<"ResumeTemplate"> | string
   createdAt?: Prisma.DateTimeFilter<"ResumeTemplate"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ResumeTemplate"> | Date | string
@@ -251,6 +301,8 @@ export type ResumeTemplateOrderByWithRelationInput = {
   category?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isDefault?: Prisma.SortOrder
+  isFeatured?: Prisma.SortOrder
+  displayOrder?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -270,6 +322,8 @@ export type ResumeTemplateWhereUniqueInput = Prisma.AtLeast<{
   category?: Prisma.EnumTemplateCategoryFilter<"ResumeTemplate"> | $Enums.TemplateCategory
   isActive?: Prisma.BoolFilter<"ResumeTemplate"> | boolean
   isDefault?: Prisma.BoolFilter<"ResumeTemplate"> | boolean
+  isFeatured?: Prisma.BoolFilter<"ResumeTemplate"> | boolean
+  displayOrder?: Prisma.IntFilter<"ResumeTemplate"> | number
   createdBy?: Prisma.StringFilter<"ResumeTemplate"> | string
   createdAt?: Prisma.DateTimeFilter<"ResumeTemplate"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ResumeTemplate"> | Date | string
@@ -286,12 +340,16 @@ export type ResumeTemplateOrderByWithAggregationInput = {
   category?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isDefault?: Prisma.SortOrder
+  isFeatured?: Prisma.SortOrder
+  displayOrder?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ResumeTemplateCountOrderByAggregateInput
+  _avg?: Prisma.ResumeTemplateAvgOrderByAggregateInput
   _max?: Prisma.ResumeTemplateMaxOrderByAggregateInput
   _min?: Prisma.ResumeTemplateMinOrderByAggregateInput
+  _sum?: Prisma.ResumeTemplateSumOrderByAggregateInput
 }
 
 export type ResumeTemplateScalarWhereWithAggregatesInput = {
@@ -307,6 +365,8 @@ export type ResumeTemplateScalarWhereWithAggregatesInput = {
   category?: Prisma.EnumTemplateCategoryWithAggregatesFilter<"ResumeTemplate"> | $Enums.TemplateCategory
   isActive?: Prisma.BoolWithAggregatesFilter<"ResumeTemplate"> | boolean
   isDefault?: Prisma.BoolWithAggregatesFilter<"ResumeTemplate"> | boolean
+  isFeatured?: Prisma.BoolWithAggregatesFilter<"ResumeTemplate"> | boolean
+  displayOrder?: Prisma.IntWithAggregatesFilter<"ResumeTemplate"> | number
   createdBy?: Prisma.StringWithAggregatesFilter<"ResumeTemplate"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ResumeTemplate"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ResumeTemplate"> | Date | string
@@ -322,6 +382,8 @@ export type ResumeTemplateCreateInput = {
   category: $Enums.TemplateCategory
   isActive?: boolean
   isDefault?: boolean
+  isFeatured?: boolean
+  displayOrder?: number
   createdBy: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -338,6 +400,8 @@ export type ResumeTemplateUncheckedCreateInput = {
   category: $Enums.TemplateCategory
   isActive?: boolean
   isDefault?: boolean
+  isFeatured?: boolean
+  displayOrder?: number
   createdBy: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -354,6 +418,8 @@ export type ResumeTemplateUpdateInput = {
   category?: Prisma.EnumTemplateCategoryFieldUpdateOperationsInput | $Enums.TemplateCategory
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -370,6 +436,8 @@ export type ResumeTemplateUncheckedUpdateInput = {
   category?: Prisma.EnumTemplateCategoryFieldUpdateOperationsInput | $Enums.TemplateCategory
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -386,6 +454,8 @@ export type ResumeTemplateCreateManyInput = {
   category: $Enums.TemplateCategory
   isActive?: boolean
   isDefault?: boolean
+  isFeatured?: boolean
+  displayOrder?: number
   createdBy: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -401,6 +471,8 @@ export type ResumeTemplateUpdateManyMutationInput = {
   category?: Prisma.EnumTemplateCategoryFieldUpdateOperationsInput | $Enums.TemplateCategory
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -416,6 +488,8 @@ export type ResumeTemplateUncheckedUpdateManyInput = {
   category?: Prisma.EnumTemplateCategoryFieldUpdateOperationsInput | $Enums.TemplateCategory
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -431,9 +505,15 @@ export type ResumeTemplateCountOrderByAggregateInput = {
   category?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isDefault?: Prisma.SortOrder
+  isFeatured?: Prisma.SortOrder
+  displayOrder?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type ResumeTemplateAvgOrderByAggregateInput = {
+  displayOrder?: Prisma.SortOrder
 }
 
 export type ResumeTemplateMaxOrderByAggregateInput = {
@@ -446,6 +526,8 @@ export type ResumeTemplateMaxOrderByAggregateInput = {
   category?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isDefault?: Prisma.SortOrder
+  isFeatured?: Prisma.SortOrder
+  displayOrder?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -461,9 +543,15 @@ export type ResumeTemplateMinOrderByAggregateInput = {
   category?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isDefault?: Prisma.SortOrder
+  isFeatured?: Prisma.SortOrder
+  displayOrder?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type ResumeTemplateSumOrderByAggregateInput = {
+  displayOrder?: Prisma.SortOrder
 }
 
 export type ResumeTemplateScalarRelationFilter = {
@@ -499,6 +587,8 @@ export type ResumeTemplateCreateWithoutResumesInput = {
   category: $Enums.TemplateCategory
   isActive?: boolean
   isDefault?: boolean
+  isFeatured?: boolean
+  displayOrder?: number
   createdBy: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -514,6 +604,8 @@ export type ResumeTemplateUncheckedCreateWithoutResumesInput = {
   category: $Enums.TemplateCategory
   isActive?: boolean
   isDefault?: boolean
+  isFeatured?: boolean
+  displayOrder?: number
   createdBy: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -545,6 +637,8 @@ export type ResumeTemplateUpdateWithoutResumesInput = {
   category?: Prisma.EnumTemplateCategoryFieldUpdateOperationsInput | $Enums.TemplateCategory
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -560,6 +654,8 @@ export type ResumeTemplateUncheckedUpdateWithoutResumesInput = {
   category?: Prisma.EnumTemplateCategoryFieldUpdateOperationsInput | $Enums.TemplateCategory
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -606,6 +702,8 @@ export type ResumeTemplateSelect<ExtArgs extends runtime.Types.Extensions.Intern
   category?: boolean
   isActive?: boolean
   isDefault?: boolean
+  isFeatured?: boolean
+  displayOrder?: boolean
   createdBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -623,6 +721,8 @@ export type ResumeTemplateSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   category?: boolean
   isActive?: boolean
   isDefault?: boolean
+  isFeatured?: boolean
+  displayOrder?: boolean
   createdBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -638,6 +738,8 @@ export type ResumeTemplateSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   category?: boolean
   isActive?: boolean
   isDefault?: boolean
+  isFeatured?: boolean
+  displayOrder?: boolean
   createdBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -653,12 +755,14 @@ export type ResumeTemplateSelectScalar = {
   category?: boolean
   isActive?: boolean
   isDefault?: boolean
+  isFeatured?: boolean
+  displayOrder?: boolean
   createdBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ResumeTemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "thumbnailUrl" | "htmlLayout" | "cssStyles" | "category" | "isActive" | "isDefault" | "createdBy" | "createdAt" | "updatedAt", ExtArgs["result"]["resumeTemplate"]>
+export type ResumeTemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "thumbnailUrl" | "htmlLayout" | "cssStyles" | "category" | "isActive" | "isDefault" | "isFeatured" | "displayOrder" | "createdBy" | "createdAt" | "updatedAt", ExtArgs["result"]["resumeTemplate"]>
 export type ResumeTemplateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   resumes?: boolean | Prisma.ResumeTemplate$resumesArgs<ExtArgs>
   _count?: boolean | Prisma.ResumeTemplateCountOutputTypeDefaultArgs<ExtArgs>
@@ -681,6 +785,8 @@ export type $ResumeTemplatePayload<ExtArgs extends runtime.Types.Extensions.Inte
     category: $Enums.TemplateCategory
     isActive: boolean
     isDefault: boolean
+    isFeatured: boolean
+    displayOrder: number
     createdBy: string
     createdAt: Date
     updatedAt: Date
@@ -1117,6 +1223,8 @@ export interface ResumeTemplateFieldRefs {
   readonly category: Prisma.FieldRef<"ResumeTemplate", 'TemplateCategory'>
   readonly isActive: Prisma.FieldRef<"ResumeTemplate", 'Boolean'>
   readonly isDefault: Prisma.FieldRef<"ResumeTemplate", 'Boolean'>
+  readonly isFeatured: Prisma.FieldRef<"ResumeTemplate", 'Boolean'>
+  readonly displayOrder: Prisma.FieldRef<"ResumeTemplate", 'Int'>
   readonly createdBy: Prisma.FieldRef<"ResumeTemplate", 'String'>
   readonly createdAt: Prisma.FieldRef<"ResumeTemplate", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ResumeTemplate", 'DateTime'>

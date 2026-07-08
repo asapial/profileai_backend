@@ -115,7 +115,12 @@ export const updateSettings = async (
     prisma.platformConfig.upsert({
       where: { key: s.key },
       update: { value: s.value, updatedBy: adminUserId },
-      create: { key: s.key, value: s.value, description: s.description, updatedBy: adminUserId },
+      create: {
+        key: s.key,
+        value: s.value,
+        ...(s.description !== undefined ? { description: s.description } : { description: null }),
+        updatedBy: adminUserId,
+      },
     })
   );
   return Promise.all(updates);
