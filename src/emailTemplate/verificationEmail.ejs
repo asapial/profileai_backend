@@ -1,0 +1,19 @@
+<h2>Verify Your Email Address</h2>
+
+<p>Hi <%= firstName %>,</p>
+
+<p>
+  Welcome to <strong>ProFile AI</strong>. Please use the code below to verify
+  your email address and activate your account so you can start building
+  AI-powered, ATS-optimized resumes.
+</p>
+
+<div class="otp-box">
+  <div class="otp-code"><%= otp %></div>
+  <div class="otp-timer">⏱ This code expires in <%= expiryMinutes %> minutes</div>
+</div>
+
+<p class="muted">
+  If you did not create a ProFile AI account, you can safely ignore this
+  email — no further action is required.
+</p>

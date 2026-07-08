@@ -1,0 +1,20 @@
+﻿Γùç injected env (0) from .env // tip: Γîÿ suppress logs { quiet: true }
+[DB] Connected to PostgreSQL successfully.
+[Redis] Connection owned by BullMQ; readiness verified via scheduler init.
+node.exe : [MinIO] ensureBucketExists failed: . Continuing without MinIO. Set 
+SKIP_MINIO=true in .env to silence this.
+At line:1 char:1
++ & "C:\nvm4w\nodejs/node.exe" "C:\nvm4w\nodejs/node_modules/npm/bin/np ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([MinIO] ensureB...o silence this. 
+   :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[Redis] Connected successfully
+IMPORTANT! Eviction policy is volatile-lru. It should be "noeviction"
+IMPORTANT! Eviction policy is volatile-lru. It should be "noeviction"
+IMPORTANT! Eviction policy is volatile-lru. It should be "noeviction"
+IMPORTANT! Eviction policy is volatile-lru. It should be "noeviction"
+[Scheduler] Monthly limit reset job scheduled.
+[Server] ProFile AI API running on http://localhost:5000
+[Server] Environment: development

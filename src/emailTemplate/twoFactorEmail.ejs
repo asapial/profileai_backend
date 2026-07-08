@@ -1,0 +1,18 @@
+<h2>Two-Factor Authentication</h2>
+
+<p>Hi <%= firstName %>,</p>
+
+<p>
+  Your two-factor authentication code for ProFile AI is below. Enter this
+  code on the sign-in screen to continue.
+</p>
+
+<div class="otp-box">
+  <div class="otp-code"><%= otp %></div>
+  <div class="otp-timer">⏱ This code expires in <%= expiryMinutes %> minutes</div>
+</div>
+
+<p class="muted">
+  If you did not attempt to sign in, please change your password immediately
+  and review your active sessions from <strong>Profile → Devices</strong>.
+</p>

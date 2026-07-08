@@ -6,7 +6,7 @@ import { Request } from 'express';
 import { Prisma } from '../../prisma/generated/prisma/client';
 import { prisma } from '../../lib/prisma';
 import { redis } from '../../lib/redis';
-import { sendOtpEmail, sendWelcomeEmail } from '../../lib/mailer';
+import { sendOtpEmail, sendPasswordChangedEmail, sendWelcomeEmail } from '../../lib/mailer';
 import { tokenUtils } from '../../utils/token';
 import AppError from '../../errorHelpers/AppError';
 import { envVars } from '../../config/env';
@@ -515,6 +515,14 @@ export const resetPassword = async (data: ResetPasswordInput) => {
 
   // Invalidate all sessions
   await prisma.session.deleteMany({ where: { userId: user.id } });
+
+  // Security notification — fire-and-forget so the response stays snappy.
+  // If SMTP is down the reset still succeeds; the user can already log in.
+  const firstName = user.name.split(' ')[0];
+  void sendPasswordChangedEmail(email, firstName).catch((err) => {
+    // eslint-disable-next-line no-console
+    console.error('[auth] failed to send password-changed notification', err);
+  });
 
   return { message: 'Password reset successfully. Please log in with your new password.' };
 };

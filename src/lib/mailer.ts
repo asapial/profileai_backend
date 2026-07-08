@@ -1,128 +1,258 @@
 import nodemailer, { Transporter } from 'nodemailer';
+import ejs from 'ejs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { envVars } from '../config/env';
 
 const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM } = envVars.EMAIL_SENDER;
+
+// ──────────────────────────────────────────────────────────
+// Transporter
+// ──────────────────────────────────────────────────────────
 
 const createTransporter = (): Transporter => {
   return nodemailer.createTransport({
     host: SMTP_HOST,
     port: parseInt(SMTP_PORT, 10),
-    secure: false, // true for 465, false for 587/1025
+    secure: parseInt(SMTP_PORT, 10) === 465, // 465 = SMTPS, 587/1025 = STARTTLS / plaintext
     auth:
       SMTP_USER && SMTP_PASS
         ? { user: SMTP_USER, pass: SMTP_PASS }
         : undefined,
+    // Give SMTP servers a fair chance to respond before we error out.
+    connectionTimeout: 10_000,
+    greetingTimeout: 10_000,
+    socketTimeout: 20_000,
   });
 };
 
 export const mailer = createTransporter();
 
-// ─────────────────────────────────────────────────────
-// Email Templates
-// ─────────────────────────────────────────────────────
+// ──────────────────────────────────────────────────────────
+// Template resolution
+// ──────────────────────────────────────────────────────────
 
-const baseTemplate = (content: string): string => `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ProFile AI</title>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f0f0f; margin: 0; padding: 20px; }
-    .container { max-width: 520px; margin: 40px auto; background: #1a1a2e; border-radius: 16px; overflow: hidden; border: 1px solid #16213e; }
-    .header { background: linear-gradient(135deg, #6C63FF 0%, #4ECDC4 100%); padding: 32px; text-align: center; }
-    .header h1 { color: white; margin: 0; font-size: 24px; letter-spacing: -0.5px; }
-    .body { padding: 32px; color: #e0e0e0; }
-    .otp-box { background: #0f3460; border-radius: 12px; padding: 24px; text-align: center; margin: 24px 0; }
-    .otp-code { font-size: 40px; font-weight: 700; letter-spacing: 12px; color: #6C63FF; font-family: monospace; }
-    .otp-timer { font-size: 13px; color: #9e9e9e; margin-top: 8px; }
-    .footer { padding: 20px 32px; text-align: center; font-size: 12px; color: #555; border-top: 1px solid #16213e; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="header"><h1>ProFile AI</h1></div>
-    <div class="body">${content}</div>
-    <div class="footer">© ${new Date().getFullYear()} ProFile AI. All rights reserved.<br/>This email was sent automatically. Please do not reply.</div>
-  </div>
-</body>
-</html>
-`;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const TEMPLATE_DIR = path.resolve(__dirname, '../emailTemplate');
 
-// ─────────────────────────────────────────────────────
-// Email Sending Functions
-// ─────────────────────────────────────────────────────
+export type EmailTemplateName =
+  | 'verificationEmail'
+  | 'forgotPasswordEmail'
+  | 'resetPasswordEmail'
+  | 'twoFactorEmail'
+  | 'welcomeEmail'
+  | 'passwordChangedEmail';
 
-export interface SendOtpOptions {
+export interface BaseTemplateData {
+  /** First name (or empty string) for the greeting. */
+  firstName: string;
+  /** Frontend origin, used for the footer link + CTA targets. */
+  frontendUrl: string;
+  /** Current year (auto-filled if not provided). */
+  year?: number;
+  /** Optional pre-computed full action URL (e.g. dashboard link). */
+  actionUrl?: string;
+}
+
+export interface OtpTemplateData extends BaseTemplateData {
+  /** The 6-digit OTP code. */
+  otp: string;
+  /** How many minutes the OTP remains valid. */
+  expiryMinutes: number;
+}
+
+export interface SendEmailOptions {
+  to: string;
+  subject: string;
+  template: EmailTemplateName;
+  data: Record<string, unknown>;
+}
+
+/**
+ * Render a leaf EJS template inside `baseEmailLayout.ejs`. The leaf template's
+ * compiled HTML is assigned to `body` and the layout's footer / header wrap
+ * around it. Layout-level fields (`year`, `frontendUrl`, `title`) are
+ * auto-populated if missing from the caller payload.
+ */
+const renderTemplate = async (
+  template: EmailTemplateName,
+  data: Record<string, unknown>,
+): Promise<{ html: string; subject: string }> => {
+  const templatePath = path.join(TEMPLATE_DIR, `${template}.ejs`);
+  const layoutPath = path.join(TEMPLATE_DIR, 'baseEmailLayout.ejs');
+
+  const enriched = {
+    ...data,
+    year: (data.year as number | undefined) ?? new Date().getFullYear(),
+    frontendUrl: (data.frontendUrl as string | undefined) ?? envVars.FRONTEND_URL,
+    title: (data.title as string | undefined) ?? 'ProFile AI',
+  };
+
+  // Render the leaf template first so its HTML is available to the layout via
+  // the `body` local. We use ejs.renderFile with `{ filename, root }` and the
+  // include() helper will resolve relative paths off `root`.
+  const leafHtml = await ejs.renderFile(templatePath, enriched, {
+    async: true,
+    root: TEMPLATE_DIR,
+    filename: templatePath,
+  });
+
+  const layoutData = { ...enriched, body: leafHtml };
+  const html = await ejs.renderFile(layoutPath, layoutData, {
+    async: true,
+    root: TEMPLATE_DIR,
+    filename: layoutPath,
+  });
+
+  // Subject lines per template (kept here so senders can't drift them).
+  const SUBJECTS: Record<EmailTemplateName, string> = {
+    verificationEmail: 'Verify Your Email — ProFile AI',
+    forgotPasswordEmail: 'Password Reset Code — ProFile AI',
+    resetPasswordEmail: 'Password Reset Code — ProFile AI',
+    twoFactorEmail: 'Two-Factor Authentication Code — ProFile AI',
+    welcomeEmail: 'Welcome to ProFile AI!',
+    passwordChangedEmail: 'Your ProFile AI password was changed',
+  };
+
+  return { html, subject: SUBJECTS[template] };
+};
+
+/**
+ * Low-level send: render `template` with `data`, wrap in the shared layout,
+ * then hand the result to nodemailer. Logs but does not throw on failure
+ * (callers can opt back into strict mode with `throwOnError: true`).
+ */
+export const sendTemplatedEmail = async (
+  options: SendEmailOptions & { throwOnError?: boolean | undefined },
+): Promise<void> => {
+  try {
+    const { html, subject } = await renderTemplate(options.template, options.data);
+
+    await mailer.sendMail({
+      from: SMTP_FROM,
+      to: options.to,
+      subject,
+      html,
+    });
+
+    // eslint-disable-next-line no-console
+    console.log(`[mailer] sent "${options.template}" → ${options.to} (subject: "${subject}")`);
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error(`[mailer] failed to send "${options.template}" → ${options.to}:`, err);
+    if (options.throwOnError) throw err;
+  }
+};
+
+// ──────────────────────────────────────────────────────────
+// Typed helpers used by the auth + user flows
+// ──────────────────────────────────────────────────────────
+
+/** Send a 6-digit OTP code for any of the auth flows. */
+export const sendOtpEmail = async (args: {
   to: string;
   otp: string;
   type: 'EMAIL_VERIFY' | 'FORGET_PASSWORD' | 'RESET_PASSWORD' | 'TWO_FACTOR';
   firstName?: string;
-}
+  /** Override expiry display (default 10 minutes). */
+  expiryMinutes?: number;
+  throwOnError?: boolean | undefined;
+}): Promise<void> => {
+  const templateByType: Record<typeof args.type, EmailTemplateName> = {
+    EMAIL_VERIFY: 'verificationEmail',
+    FORGET_PASSWORD: 'forgotPasswordEmail',
+    RESET_PASSWORD: 'forgotPasswordEmail',
+    TWO_FACTOR: 'twoFactorEmail',
+  };
 
-const OTP_SUBJECT_MAP: Record<SendOtpOptions['type'], string> = {
-  EMAIL_VERIFY: 'Verify Your Email — ProFile AI',
-  FORGET_PASSWORD: 'Password Reset Code — ProFile AI',
-  RESET_PASSWORD: 'Password Reset Code — ProFile AI',
-  TWO_FACTOR: 'Two-Factor Authentication Code — ProFile AI',
-};
-
-const OTP_TITLE_MAP: Record<SendOtpOptions['type'], string> = {
-  EMAIL_VERIFY: 'Verify Your Email Address',
-  FORGET_PASSWORD: 'Reset Your Password',
-  RESET_PASSWORD: 'Reset Your Password',
-  TWO_FACTOR: 'Two-Factor Authentication',
-};
-
-const OTP_DESC_MAP: Record<SendOtpOptions['type'], string> = {
-  EMAIL_VERIFY: "Please use the code below to verify your email address and activate your ProFile AI account.",
-  FORGET_PASSWORD: "We received a request to reset your password. Use the code below to proceed.",
-  RESET_PASSWORD: "Use the code below to complete your password reset.",
-  TWO_FACTOR: "Your two-factor authentication code for ProFile AI login:",
-};
-
-export const sendOtpEmail = async ({
-  to,
-  otp,
-  type,
-  firstName,
-}: SendOtpOptions): Promise<void> => {
-  const greeting = firstName ? `Hi ${firstName},` : 'Hi there,';
-  const content = `
-    <p>${greeting}</p>
-    <p>${OTP_DESC_MAP[type]}</p>
-    <div class="otp-box">
-      <div class="otp-code">${otp}</div>
-      <div class="otp-timer">⏱ This code expires in 10 minutes</div>
-    </div>
-    <p style="font-size:13px; color:#9e9e9e;">If you did not request this, you can safely ignore this email. Your account remains secure.</p>
-  `;
-
-  await mailer.sendMail({
-    from: SMTP_FROM,
-    to,
-    subject: OTP_SUBJECT_MAP[type],
-    html: baseTemplate(`<h2 style="color:#fff;margin-bottom:8px;">${OTP_TITLE_MAP[type]}</h2>${content}`),
+  await sendTemplatedEmail({
+    to: args.to,
+    subject: '', // subject is derived from the template name
+    template: templateByType[args.type],
+    data: {
+      firstName: args.firstName ?? '',
+      otp: args.otp,
+      expiryMinutes: args.expiryMinutes ?? 10,
+    },
+    throwOnError: args.throwOnError,
   });
 };
 
-export const sendWelcomeEmail = async (to: string, firstName: string): Promise<void> => {
-  const content = `
-    <h2 style="color:#fff;">Welcome to ProFile AI, ${firstName}! 🎉</h2>
-    <p>Your account is now active. You can start building AI-powered, ATS-optimized resumes that stand out.</p>
-    <p style="margin-top:24px;">
-      <a href="${envVars.FRONTEND_URL}/dashboard"
-         style="background:linear-gradient(135deg,#6C63FF,#4ECDC4);color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;">
-        Go to Dashboard →
-      </a>
-    </p>
-  `;
-
-  await mailer.sendMail({
-    from: SMTP_FROM,
+/** Welcome email — sent immediately after `emailVerified` flips to true. */
+export const sendWelcomeEmail = async (
+  to: string,
+  firstName: string,
+  options: { throwOnError?: boolean | undefined } = {},
+): Promise<void> => {
+  await sendTemplatedEmail({
     to,
-    subject: 'Welcome to ProFile AI!',
-    html: baseTemplate(content),
+    subject: '',
+    template: 'welcomeEmail',
+    data: {
+      firstName,
+      actionUrl: `${envVars.FRONTEND_URL}/dashboard`,
+    },
+    throwOnError: options.throwOnError,
+  });
+};
+
+/** Password-changed security notification. */
+export const sendPasswordChangedEmail = async (
+  to: string,
+  firstName?: string,
+  options: { throwOnError?: boolean | undefined } = {},
+): Promise<void> => {
+  await sendTemplatedEmail({
+    to,
+    subject: '',
+    template: 'passwordChangedEmail',
+    data: { firstName: firstName ?? '' },
+    throwOnError: options.throwOnError,
+  });
+};
+
+// ──────────────────────────────────────────────────────────
+// Better Auth hook adapters
+//
+// Better Auth calls these when it triggers an OTP email. The shape of the
+// payload is whatever Better Auth decides to pass — we just normalize it to
+// our `sendOtpEmail` signature and let the template engine do the rest.
+// ──────────────────────────────────────────────────────────
+
+/**
+ * Better Auth `emailVerification.sendVerificationEmail` adapter. Better Auth
+ * passes `{ user: { email, name }, url, token }` where `url` is the
+ * verification link and `token` is the OTP. We extract the OTP and forward.
+ */
+export const sendVerificationEmailHandler = async (
+  payload: { user: { email: string; name?: string }; url?: string; token?: string },
+): Promise<void> => {
+  const otp = payload.token ?? '';
+  const firstName = (payload.user.name ?? '').split(' ')[0] ?? '';
+  await sendOtpEmail({
+    to: payload.user.email,
+    otp,
+    type: 'EMAIL_VERIFY',
+    firstName,
+    throwOnError: false, // Never block sign-up on SMTP hiccups.
+  });
+};
+
+/**
+ * Better Auth `emailAndPassword.sendResetPassword` adapter. Better Auth passes
+ * `{ user: { email, name }, url, token }`.
+ */
+export const sendResetPasswordHandler = async (
+  payload: { user: { email: string; name?: string }; url?: string; token?: string },
+): Promise<void> => {
+  const otp = payload.token ?? '';
+  const firstName = (payload.user.name ?? '').split(' ')[0] ?? '';
+  await sendOtpEmail({
+    to: payload.user.email,
+    otp,
+    type: 'FORGET_PASSWORD',
+    firstName,
+    throwOnError: false,
   });
 };

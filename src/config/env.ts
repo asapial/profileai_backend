@@ -84,8 +84,17 @@ const loadEnvVariables = (): EnvConfig => {
     'PUPPETEER_SERVICE_URL',
   ];
 
+  // Empty strings are allowed only for these variables.
+  // All other vars must be defined AND non-empty.
+  const allowEmpty = new Set<string>([
+    'EMAIL_SENDER_SMTP_PASS', // local MailHog/Mailpit has no password
+    'EMAIL_SENDER_SMTP_USER', // some auth-less SMTP servers don't require a user
+  ]);
+
   requiredEnvVariables.forEach((variable) => {
-    if (!process.env[variable]) {
+    const value = process.env[variable];
+    if (value === undefined || value === '') {
+      if (allowEmpty.has(variable)) return;
       throw new AppError(
         status.INTERNAL_SERVER_ERROR,
         `Environment variable ${variable} is required but not set in .env file.`

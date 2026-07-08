@@ -9,6 +9,22 @@ type ParsedRequest = {
   query?: unknown;
 };
 
+/**
+ * Replace the keys of `target` with the keys of `source`, preserving the
+ * same object reference. This is the Express-5 safe way to "rewrite" a
+ * request slot like `req.query` or `req.params` — those are getter-only
+ * properties on the underlying `IncomingMessage` and cannot be reassigned
+ * (`TypeError: Cannot set property query of #<IncomingMessage> ...`).
+ */
+const replaceKeysInPlace = (target: Record<string, unknown>, source: unknown): void => {
+  for (const key of Object.keys(target)) {
+    delete target[key];
+  }
+  if (source && typeof source === 'object') {
+    Object.assign(target, source as Record<string, unknown>);
+  }
+};
+
 export const validateRequest =
   (schema: ZodSchema) => async (req: Request, _res: Response, next: NextFunction) => {
     try {
@@ -19,10 +35,14 @@ export const validateRequest =
         query: req.query,
       }) as ParsedRequest;
 
-      req.body = (parsed.body ?? req.body) as Record<string, unknown>;
-      req.cookies = (parsed.cookies ?? req.cookies) as Record<string, unknown>;
-      req.params = (parsed.params ?? req.params) as Record<string, string>;
-      req.query = (parsed.query ?? req.query) as Record<string, unknown>;
+      // Mutate in place: `req.query` is a getter on IncomingMessage in Express 5,
+      // and `req.params` / `req.body` / `req.cookies` may also lose their setters
+      // in future minors. Keeping the same object reference avoids the setter
+      // entirely while still presenting the validated payload to downstream code.
+      if (parsed.body !== undefined) replaceKeysInPlace(req.body as Record<string, unknown>, parsed.body);
+      if (parsed.cookies !== undefined) replaceKeysInPlace(req.cookies as Record<string, unknown>, parsed.cookies);
+      if (parsed.params !== undefined) replaceKeysInPlace(req.params as Record<string, string>, parsed.params);
+      if (parsed.query !== undefined) replaceKeysInPlace(req.query as Record<string, unknown>, parsed.query);
 
       next();
     } catch (error) {
