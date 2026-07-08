@@ -116,3 +116,8 @@ export type Resume = Prisma.ResumeModel
  * 
  */
 export type ResumeHistory = Prisma.ResumeHistoryModel
+/**
+ * Model ResumeView
+ * 
+ */
+export type ResumeView = Prisma.ResumeViewModel

@@ -3,13 +3,13 @@
 // ─────────────────────────────────────────────────────
 
 model AnalyticsEvent {
-  id        String   @id @default(cuid())
-  name      String   // cta_click, template_preview, etc.
-  path      String   // page URL that emitted the event
-  label     String?  // optional button label
+  id          String   @id @default(cuid())
+  name        String // cta_click, template_preview, etc.
+  path        String // page URL that emitted the event
+  label       String? // optional button label
   destination String? // where the CTA routes
-  sessionId String   // ephemeral session id from client
-  createdAt DateTime @default(now())
+  sessionId   String // ephemeral session id from client
+  createdAt   DateTime @default(now())
 
   @@index([name, createdAt])
   @@index([sessionId])

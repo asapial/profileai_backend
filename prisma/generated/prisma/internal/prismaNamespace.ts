@@ -398,7 +398,8 @@ export const ModelName = {
   AdminProfile: 'AdminProfile',
   ResumeTemplate: 'ResumeTemplate',
   Resume: 'Resume',
-  ResumeHistory: 'ResumeHistory'
+  ResumeHistory: 'ResumeHistory',
+  ResumeView: 'ResumeView'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -414,7 +415,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "analyticsEvent" | "user" | "session" | "account" | "verification" | "notificationPreference" | "platformConfig" | "userLimit" | "otpCode" | "loginDevice" | "userProfile" | "adminProfile" | "resumeTemplate" | "resume" | "resumeHistory"
+    modelProps: "analyticsEvent" | "user" | "session" | "account" | "verification" | "notificationPreference" | "platformConfig" | "userLimit" | "otpCode" | "loginDevice" | "userProfile" | "adminProfile" | "resumeTemplate" | "resume" | "resumeHistory" | "resumeView"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1528,6 +1529,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ResumeView: {
+      payload: Prisma.$ResumeViewPayload<ExtArgs>
+      fields: Prisma.ResumeViewFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ResumeViewFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeViewPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ResumeViewFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeViewPayload>
+        }
+        findFirst: {
+          args: Prisma.ResumeViewFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeViewPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ResumeViewFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeViewPayload>
+        }
+        findMany: {
+          args: Prisma.ResumeViewFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeViewPayload>[]
+        }
+        create: {
+          args: Prisma.ResumeViewCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeViewPayload>
+        }
+        createMany: {
+          args: Prisma.ResumeViewCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ResumeViewCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeViewPayload>[]
+        }
+        delete: {
+          args: Prisma.ResumeViewDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeViewPayload>
+        }
+        update: {
+          args: Prisma.ResumeViewUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeViewPayload>
+        }
+        deleteMany: {
+          args: Prisma.ResumeViewDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ResumeViewUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ResumeViewUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeViewPayload>[]
+        }
+        upsert: {
+          args: Prisma.ResumeViewUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumeViewPayload>
+        }
+        aggregate: {
+          args: Prisma.ResumeViewAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateResumeView>
+        }
+        groupBy: {
+          args: Prisma.ResumeViewGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ResumeViewGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ResumeViewCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ResumeViewCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1797,6 +1872,9 @@ export const ResumeScalarFieldEnum = {
   pdfUrl: 'pdfUrl',
   version: 'version',
   isPublic: 'isPublic',
+  slug: 'slug',
+  disabledByAdmin: 'disabledByAdmin',
+  noindex: 'noindex',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1814,6 +1892,22 @@ export const ResumeHistoryScalarFieldEnum = {
 } as const
 
 export type ResumeHistoryScalarFieldEnum = (typeof ResumeHistoryScalarFieldEnum)[keyof typeof ResumeHistoryScalarFieldEnum]
+
+
+export const ResumeViewScalarFieldEnum = {
+  id: 'id',
+  resumeId: 'resumeId',
+  eventType: 'eventType',
+  viewerHash: 'viewerHash',
+  referrer: 'referrer',
+  userAgent: 'userAgent',
+  ipAddress: 'ipAddress',
+  country: 'country',
+  isBot: 'isBot',
+  createdAt: 'createdAt'
+} as const
+
+export type ResumeViewScalarFieldEnum = (typeof ResumeViewScalarFieldEnum)[keyof typeof ResumeViewScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2141,6 +2235,7 @@ export type GlobalOmitConfig = {
   resumeTemplate?: Prisma.ResumeTemplateOmit
   resume?: Prisma.ResumeOmit
   resumeHistory?: Prisma.ResumeHistoryOmit
+  resumeView?: Prisma.ResumeViewOmit
 }
 
 /* Types for Logging */

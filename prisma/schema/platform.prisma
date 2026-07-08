@@ -7,7 +7,7 @@ model PlatformConfig {
   key         String   @unique
   value       String
   description String?
-  updatedBy   String   // Admin userId
+  updatedBy   String // Admin userId
   updatedAt   DateTime @updatedAt
 
   // Keys:
@@ -19,14 +19,14 @@ model PlatformConfig {
 }
 
 model UserLimit {
-  id             String   @id @default(cuid())
-  userId         String   @unique
-  resumeLimit    Int      @default(5)  // Max resumes/CVs per cycle
-  apiLimit       Int      @default(50) // Max AI API calls per month
-  resumeUsed     Int      @default(0)
-  apiUsed        Int      @default(0)
-  resetAt        DateTime // Next monthly reset timestamp
-  overrideByAdmin Boolean @default(false)
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  resumeLimit     Int      @default(5) // Max resumes/CVs per cycle
+  apiLimit        Int      @default(50) // Max AI API calls per month
+  resumeUsed      Int      @default(0)
+  apiUsed         Int      @default(0)
+  resetAt         DateTime // Next monthly reset timestamp
+  overrideByAdmin Boolean  @default(false)
 
   user User @relation(fields: [userId], references: [id])
 
@@ -36,7 +36,7 @@ model UserLimit {
 model OtpCode {
   id        String   @id @default(cuid())
   userId    String
-  codeHash  String   // bcrypt hash of 6-digit OTP
+  codeHash  String // bcrypt hash of 6-digit OTP
   type      OtpType
   expiresAt DateTime // TTL: 10 minutes from creation
   used      Boolean  @default(false)
@@ -50,13 +50,13 @@ model OtpCode {
 model LoginDevice {
   id          String   @id @default(cuid())
   userId      String
-  deviceName  String   // e.g. 'Chrome on Windows 11'
-  deviceType  String   // desktop | mobile | tablet
+  deviceName  String // e.g. 'Chrome on Windows 11'
+  deviceType  String // desktop | mobile | tablet
   browser     String?
   os          String?
   ipAddress   String?
   userAgent   String
-  fingerprint String   // SHA-256 hash(browser+os+ua)
+  fingerprint String // SHA-256 hash(browser+os+ua)
   isTrusted   Boolean  @default(false)
   lastSeenAt  DateTime @default(now())
   createdAt   DateTime @default(now())

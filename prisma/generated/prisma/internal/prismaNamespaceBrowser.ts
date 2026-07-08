@@ -65,7 +65,8 @@ export const ModelName = {
   AdminProfile: 'AdminProfile',
   ResumeTemplate: 'ResumeTemplate',
   Resume: 'Resume',
-  ResumeHistory: 'ResumeHistory'
+  ResumeHistory: 'ResumeHistory',
+  ResumeView: 'ResumeView'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -314,6 +315,9 @@ export const ResumeScalarFieldEnum = {
   pdfUrl: 'pdfUrl',
   version: 'version',
   isPublic: 'isPublic',
+  slug: 'slug',
+  disabledByAdmin: 'disabledByAdmin',
+  noindex: 'noindex',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -331,6 +335,22 @@ export const ResumeHistoryScalarFieldEnum = {
 } as const
 
 export type ResumeHistoryScalarFieldEnum = (typeof ResumeHistoryScalarFieldEnum)[keyof typeof ResumeHistoryScalarFieldEnum]
+
+
+export const ResumeViewScalarFieldEnum = {
+  id: 'id',
+  resumeId: 'resumeId',
+  eventType: 'eventType',
+  viewerHash: 'viewerHash',
+  referrer: 'referrer',
+  userAgent: 'userAgent',
+  ipAddress: 'ipAddress',
+  country: 'country',
+  isBot: 'isBot',
+  createdAt: 'createdAt'
+} as const
+
+export type ResumeViewScalarFieldEnum = (typeof ResumeViewScalarFieldEnum)[keyof typeof ResumeViewScalarFieldEnum]
 
 
 export const SortOrder = {

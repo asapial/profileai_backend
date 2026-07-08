@@ -5,14 +5,16 @@ import { templateRouter } from './modules/template/template.router';
 import { resumeRouter } from './modules/resume/resume.router';
 import { adminRouter } from './modules/admin/admin.router';
 import { analyticsRouter } from './modules/analytics/analytics.router';
+import { publicResumeRouter } from './modules/publicResume/publicResume.router';
 
 const router = Router();
 
-// ─── Module Routers ───────────────────────────────────
+// ─── Module Routers ────────────────────────────────────
 router.use('/auth', authRouter);
 router.use('/user', userRouter);
 router.use('/templates', templateRouter);
 router.use('/resumes', resumeRouter);
+router.use('/public/resumes', publicResumeRouter);
 router.use('/admin', adminRouter);
 router.use('/analytics', analyticsRouter);
 

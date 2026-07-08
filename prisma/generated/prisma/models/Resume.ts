@@ -49,6 +49,9 @@ export type ResumeMinAggregateOutputType = {
   pdfUrl: string | null
   version: number | null
   isPublic: boolean | null
+  slug: string | null
+  disabledByAdmin: boolean | null
+  noindex: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -66,6 +69,9 @@ export type ResumeMaxAggregateOutputType = {
   pdfUrl: string | null
   version: number | null
   isPublic: boolean | null
+  slug: string | null
+  disabledByAdmin: boolean | null
+  noindex: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -85,6 +91,9 @@ export type ResumeCountAggregateOutputType = {
   pdfUrl: number
   version: number
   isPublic: number
+  slug: number
+  disabledByAdmin: number
+  noindex: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -114,6 +123,9 @@ export type ResumeMinAggregateInputType = {
   pdfUrl?: true
   version?: true
   isPublic?: true
+  slug?: true
+  disabledByAdmin?: true
+  noindex?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -131,6 +143,9 @@ export type ResumeMaxAggregateInputType = {
   pdfUrl?: true
   version?: true
   isPublic?: true
+  slug?: true
+  disabledByAdmin?: true
+  noindex?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -150,6 +165,9 @@ export type ResumeCountAggregateInputType = {
   pdfUrl?: true
   version?: true
   isPublic?: true
+  slug?: true
+  disabledByAdmin?: true
+  noindex?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -256,6 +274,9 @@ export type ResumeGroupByOutputType = {
   pdfUrl: string | null
   version: number
   isPublic: boolean
+  slug: string | null
+  disabledByAdmin: boolean
+  noindex: boolean
   createdAt: Date
   updatedAt: Date
   _count: ResumeCountAggregateOutputType | null
@@ -298,8 +319,12 @@ export type ResumeWhereInput = {
   pdfUrl?: Prisma.StringNullableFilter<"Resume"> | string | null
   version?: Prisma.IntFilter<"Resume"> | number
   isPublic?: Prisma.BoolFilter<"Resume"> | boolean
+  slug?: Prisma.StringNullableFilter<"Resume"> | string | null
+  disabledByAdmin?: Prisma.BoolFilter<"Resume"> | boolean
+  noindex?: Prisma.BoolFilter<"Resume"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Resume"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Resume"> | Date | string
+  views?: Prisma.ResumeViewListRelationFilter
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   template?: Prisma.XOR<Prisma.ResumeTemplateScalarRelationFilter, Prisma.ResumeTemplateWhereInput>
   history?: Prisma.ResumeHistoryListRelationFilter
@@ -320,8 +345,12 @@ export type ResumeOrderByWithRelationInput = {
   pdfUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   version?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
+  slug?: Prisma.SortOrderInput | Prisma.SortOrder
+  disabledByAdmin?: Prisma.SortOrder
+  noindex?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  views?: Prisma.ResumeViewOrderByRelationAggregateInput
   user?: Prisma.UserOrderByWithRelationInput
   template?: Prisma.ResumeTemplateOrderByWithRelationInput
   history?: Prisma.ResumeHistoryOrderByRelationAggregateInput
@@ -329,6 +358,7 @@ export type ResumeOrderByWithRelationInput = {
 
 export type ResumeWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  slug?: string
   AND?: Prisma.ResumeWhereInput | Prisma.ResumeWhereInput[]
   OR?: Prisma.ResumeWhereInput[]
   NOT?: Prisma.ResumeWhereInput | Prisma.ResumeWhereInput[]
@@ -345,12 +375,15 @@ export type ResumeWhereUniqueInput = Prisma.AtLeast<{
   pdfUrl?: Prisma.StringNullableFilter<"Resume"> | string | null
   version?: Prisma.IntFilter<"Resume"> | number
   isPublic?: Prisma.BoolFilter<"Resume"> | boolean
+  disabledByAdmin?: Prisma.BoolFilter<"Resume"> | boolean
+  noindex?: Prisma.BoolFilter<"Resume"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Resume"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Resume"> | Date | string
+  views?: Prisma.ResumeViewListRelationFilter
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   template?: Prisma.XOR<Prisma.ResumeTemplateScalarRelationFilter, Prisma.ResumeTemplateWhereInput>
   history?: Prisma.ResumeHistoryListRelationFilter
-}, "id">
+}, "id" | "slug">
 
 export type ResumeOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -367,6 +400,9 @@ export type ResumeOrderByWithAggregationInput = {
   pdfUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   version?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
+  slug?: Prisma.SortOrderInput | Prisma.SortOrder
+  disabledByAdmin?: Prisma.SortOrder
+  noindex?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ResumeCountOrderByAggregateInput
@@ -394,6 +430,9 @@ export type ResumeScalarWhereWithAggregatesInput = {
   pdfUrl?: Prisma.StringNullableWithAggregatesFilter<"Resume"> | string | null
   version?: Prisma.IntWithAggregatesFilter<"Resume"> | number
   isPublic?: Prisma.BoolWithAggregatesFilter<"Resume"> | boolean
+  slug?: Prisma.StringNullableWithAggregatesFilter<"Resume"> | string | null
+  disabledByAdmin?: Prisma.BoolWithAggregatesFilter<"Resume"> | boolean
+  noindex?: Prisma.BoolWithAggregatesFilter<"Resume"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Resume"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Resume"> | Date | string
 }
@@ -411,8 +450,12 @@ export type ResumeCreateInput = {
   pdfUrl?: string | null
   version?: number
   isPublic?: boolean
+  slug?: string | null
+  disabledByAdmin?: boolean
+  noindex?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  views?: Prisma.ResumeViewCreateNestedManyWithoutResumeInput
   user: Prisma.UserCreateNestedOneWithoutResumesInput
   template: Prisma.ResumeTemplateCreateNestedOneWithoutResumesInput
   history?: Prisma.ResumeHistoryCreateNestedManyWithoutResumeInput
@@ -433,8 +476,12 @@ export type ResumeUncheckedCreateInput = {
   pdfUrl?: string | null
   version?: number
   isPublic?: boolean
+  slug?: string | null
+  disabledByAdmin?: boolean
+  noindex?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  views?: Prisma.ResumeViewUncheckedCreateNestedManyWithoutResumeInput
   history?: Prisma.ResumeHistoryUncheckedCreateNestedManyWithoutResumeInput
 }
 
@@ -451,8 +498,12 @@ export type ResumeUpdateInput = {
   pdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  disabledByAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  noindex?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  views?: Prisma.ResumeViewUpdateManyWithoutResumeNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutResumesNestedInput
   template?: Prisma.ResumeTemplateUpdateOneRequiredWithoutResumesNestedInput
   history?: Prisma.ResumeHistoryUpdateManyWithoutResumeNestedInput
@@ -473,8 +524,12 @@ export type ResumeUncheckedUpdateInput = {
   pdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  disabledByAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  noindex?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  views?: Prisma.ResumeViewUncheckedUpdateManyWithoutResumeNestedInput
   history?: Prisma.ResumeHistoryUncheckedUpdateManyWithoutResumeNestedInput
 }
 
@@ -493,6 +548,9 @@ export type ResumeCreateManyInput = {
   pdfUrl?: string | null
   version?: number
   isPublic?: boolean
+  slug?: string | null
+  disabledByAdmin?: boolean
+  noindex?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -510,6 +568,9 @@ export type ResumeUpdateManyMutationInput = {
   pdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  disabledByAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  noindex?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -529,6 +590,9 @@ export type ResumeUncheckedUpdateManyInput = {
   pdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  disabledByAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  noindex?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -558,6 +622,9 @@ export type ResumeCountOrderByAggregateInput = {
   pdfUrl?: Prisma.SortOrder
   version?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  disabledByAdmin?: Prisma.SortOrder
+  noindex?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -580,6 +647,9 @@ export type ResumeMaxOrderByAggregateInput = {
   pdfUrl?: Prisma.SortOrder
   version?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  disabledByAdmin?: Prisma.SortOrder
+  noindex?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -597,6 +667,9 @@ export type ResumeMinOrderByAggregateInput = {
   pdfUrl?: Prisma.SortOrder
   version?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  disabledByAdmin?: Prisma.SortOrder
+  noindex?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -725,6 +798,20 @@ export type ResumeUpdateOneRequiredWithoutHistoryNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ResumeUpdateToOneWithWhereWithoutHistoryInput, Prisma.ResumeUpdateWithoutHistoryInput>, Prisma.ResumeUncheckedUpdateWithoutHistoryInput>
 }
 
+export type ResumeCreateNestedOneWithoutViewsInput = {
+  create?: Prisma.XOR<Prisma.ResumeCreateWithoutViewsInput, Prisma.ResumeUncheckedCreateWithoutViewsInput>
+  connectOrCreate?: Prisma.ResumeCreateOrConnectWithoutViewsInput
+  connect?: Prisma.ResumeWhereUniqueInput
+}
+
+export type ResumeUpdateOneRequiredWithoutViewsNestedInput = {
+  create?: Prisma.XOR<Prisma.ResumeCreateWithoutViewsInput, Prisma.ResumeUncheckedCreateWithoutViewsInput>
+  connectOrCreate?: Prisma.ResumeCreateOrConnectWithoutViewsInput
+  upsert?: Prisma.ResumeUpsertWithoutViewsInput
+  connect?: Prisma.ResumeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ResumeUpdateToOneWithWhereWithoutViewsInput, Prisma.ResumeUpdateWithoutViewsInput>, Prisma.ResumeUncheckedUpdateWithoutViewsInput>
+}
+
 export type ResumeCreateWithoutUserInput = {
   id?: string
   title: string
@@ -738,8 +825,12 @@ export type ResumeCreateWithoutUserInput = {
   pdfUrl?: string | null
   version?: number
   isPublic?: boolean
+  slug?: string | null
+  disabledByAdmin?: boolean
+  noindex?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  views?: Prisma.ResumeViewCreateNestedManyWithoutResumeInput
   template: Prisma.ResumeTemplateCreateNestedOneWithoutResumesInput
   history?: Prisma.ResumeHistoryCreateNestedManyWithoutResumeInput
 }
@@ -758,8 +849,12 @@ export type ResumeUncheckedCreateWithoutUserInput = {
   pdfUrl?: string | null
   version?: number
   isPublic?: boolean
+  slug?: string | null
+  disabledByAdmin?: boolean
+  noindex?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  views?: Prisma.ResumeViewUncheckedCreateNestedManyWithoutResumeInput
   history?: Prisma.ResumeHistoryUncheckedCreateNestedManyWithoutResumeInput
 }
 
@@ -807,6 +902,9 @@ export type ResumeScalarWhereInput = {
   pdfUrl?: Prisma.StringNullableFilter<"Resume"> | string | null
   version?: Prisma.IntFilter<"Resume"> | number
   isPublic?: Prisma.BoolFilter<"Resume"> | boolean
+  slug?: Prisma.StringNullableFilter<"Resume"> | string | null
+  disabledByAdmin?: Prisma.BoolFilter<"Resume"> | boolean
+  noindex?: Prisma.BoolFilter<"Resume"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Resume"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Resume"> | Date | string
 }
@@ -824,8 +922,12 @@ export type ResumeCreateWithoutTemplateInput = {
   pdfUrl?: string | null
   version?: number
   isPublic?: boolean
+  slug?: string | null
+  disabledByAdmin?: boolean
+  noindex?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  views?: Prisma.ResumeViewCreateNestedManyWithoutResumeInput
   user: Prisma.UserCreateNestedOneWithoutResumesInput
   history?: Prisma.ResumeHistoryCreateNestedManyWithoutResumeInput
 }
@@ -844,8 +946,12 @@ export type ResumeUncheckedCreateWithoutTemplateInput = {
   pdfUrl?: string | null
   version?: number
   isPublic?: boolean
+  slug?: string | null
+  disabledByAdmin?: boolean
+  noindex?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  views?: Prisma.ResumeViewUncheckedCreateNestedManyWithoutResumeInput
   history?: Prisma.ResumeHistoryUncheckedCreateNestedManyWithoutResumeInput
 }
 
@@ -888,8 +994,12 @@ export type ResumeCreateWithoutHistoryInput = {
   pdfUrl?: string | null
   version?: number
   isPublic?: boolean
+  slug?: string | null
+  disabledByAdmin?: boolean
+  noindex?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  views?: Prisma.ResumeViewCreateNestedManyWithoutResumeInput
   user: Prisma.UserCreateNestedOneWithoutResumesInput
   template: Prisma.ResumeTemplateCreateNestedOneWithoutResumesInput
 }
@@ -909,8 +1019,12 @@ export type ResumeUncheckedCreateWithoutHistoryInput = {
   pdfUrl?: string | null
   version?: number
   isPublic?: boolean
+  slug?: string | null
+  disabledByAdmin?: boolean
+  noindex?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  views?: Prisma.ResumeViewUncheckedCreateNestedManyWithoutResumeInput
 }
 
 export type ResumeCreateOrConnectWithoutHistoryInput = {
@@ -942,8 +1056,12 @@ export type ResumeUpdateWithoutHistoryInput = {
   pdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  disabledByAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  noindex?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  views?: Prisma.ResumeViewUpdateManyWithoutResumeNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutResumesNestedInput
   template?: Prisma.ResumeTemplateUpdateOneRequiredWithoutResumesNestedInput
 }
@@ -963,8 +1081,120 @@ export type ResumeUncheckedUpdateWithoutHistoryInput = {
   pdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  disabledByAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  noindex?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  views?: Prisma.ResumeViewUncheckedUpdateManyWithoutResumeNestedInput
+}
+
+export type ResumeCreateWithoutViewsInput = {
+  id?: string
+  title: string
+  type?: $Enums.ResumeType
+  status?: $Enums.ResumeStatus
+  targetJobTitle?: string | null
+  jobDescription?: string | null
+  atsScore?: number | null
+  contentData: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  aiSuggestions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  pdfUrl?: string | null
+  version?: number
+  isPublic?: boolean
+  slug?: string | null
+  disabledByAdmin?: boolean
+  noindex?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutResumesInput
+  template: Prisma.ResumeTemplateCreateNestedOneWithoutResumesInput
+  history?: Prisma.ResumeHistoryCreateNestedManyWithoutResumeInput
+}
+
+export type ResumeUncheckedCreateWithoutViewsInput = {
+  id?: string
+  userId: string
+  templateId: string
+  title: string
+  type?: $Enums.ResumeType
+  status?: $Enums.ResumeStatus
+  targetJobTitle?: string | null
+  jobDescription?: string | null
+  atsScore?: number | null
+  contentData: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  aiSuggestions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  pdfUrl?: string | null
+  version?: number
+  isPublic?: boolean
+  slug?: string | null
+  disabledByAdmin?: boolean
+  noindex?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  history?: Prisma.ResumeHistoryUncheckedCreateNestedManyWithoutResumeInput
+}
+
+export type ResumeCreateOrConnectWithoutViewsInput = {
+  where: Prisma.ResumeWhereUniqueInput
+  create: Prisma.XOR<Prisma.ResumeCreateWithoutViewsInput, Prisma.ResumeUncheckedCreateWithoutViewsInput>
+}
+
+export type ResumeUpsertWithoutViewsInput = {
+  update: Prisma.XOR<Prisma.ResumeUpdateWithoutViewsInput, Prisma.ResumeUncheckedUpdateWithoutViewsInput>
+  create: Prisma.XOR<Prisma.ResumeCreateWithoutViewsInput, Prisma.ResumeUncheckedCreateWithoutViewsInput>
+  where?: Prisma.ResumeWhereInput
+}
+
+export type ResumeUpdateToOneWithWhereWithoutViewsInput = {
+  where?: Prisma.ResumeWhereInput
+  data: Prisma.XOR<Prisma.ResumeUpdateWithoutViewsInput, Prisma.ResumeUncheckedUpdateWithoutViewsInput>
+}
+
+export type ResumeUpdateWithoutViewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumResumeTypeFieldUpdateOperationsInput | $Enums.ResumeType
+  status?: Prisma.EnumResumeStatusFieldUpdateOperationsInput | $Enums.ResumeStatus
+  targetJobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  atsScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  contentData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  aiSuggestions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  pdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  disabledByAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  noindex?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutResumesNestedInput
+  template?: Prisma.ResumeTemplateUpdateOneRequiredWithoutResumesNestedInput
+  history?: Prisma.ResumeHistoryUpdateManyWithoutResumeNestedInput
+}
+
+export type ResumeUncheckedUpdateWithoutViewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  templateId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumResumeTypeFieldUpdateOperationsInput | $Enums.ResumeType
+  status?: Prisma.EnumResumeStatusFieldUpdateOperationsInput | $Enums.ResumeStatus
+  targetJobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  atsScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  contentData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  aiSuggestions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  pdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  disabledByAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  noindex?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  history?: Prisma.ResumeHistoryUncheckedUpdateManyWithoutResumeNestedInput
 }
 
 export type ResumeCreateManyUserInput = {
@@ -981,6 +1211,9 @@ export type ResumeCreateManyUserInput = {
   pdfUrl?: string | null
   version?: number
   isPublic?: boolean
+  slug?: string | null
+  disabledByAdmin?: boolean
+  noindex?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -998,8 +1231,12 @@ export type ResumeUpdateWithoutUserInput = {
   pdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  disabledByAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  noindex?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  views?: Prisma.ResumeViewUpdateManyWithoutResumeNestedInput
   template?: Prisma.ResumeTemplateUpdateOneRequiredWithoutResumesNestedInput
   history?: Prisma.ResumeHistoryUpdateManyWithoutResumeNestedInput
 }
@@ -1018,8 +1255,12 @@ export type ResumeUncheckedUpdateWithoutUserInput = {
   pdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  disabledByAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  noindex?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  views?: Prisma.ResumeViewUncheckedUpdateManyWithoutResumeNestedInput
   history?: Prisma.ResumeHistoryUncheckedUpdateManyWithoutResumeNestedInput
 }
 
@@ -1037,6 +1278,9 @@ export type ResumeUncheckedUpdateManyWithoutUserInput = {
   pdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  disabledByAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  noindex?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1055,6 +1299,9 @@ export type ResumeCreateManyTemplateInput = {
   pdfUrl?: string | null
   version?: number
   isPublic?: boolean
+  slug?: string | null
+  disabledByAdmin?: boolean
+  noindex?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1072,8 +1319,12 @@ export type ResumeUpdateWithoutTemplateInput = {
   pdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  disabledByAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  noindex?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  views?: Prisma.ResumeViewUpdateManyWithoutResumeNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutResumesNestedInput
   history?: Prisma.ResumeHistoryUpdateManyWithoutResumeNestedInput
 }
@@ -1092,8 +1343,12 @@ export type ResumeUncheckedUpdateWithoutTemplateInput = {
   pdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  disabledByAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  noindex?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  views?: Prisma.ResumeViewUncheckedUpdateManyWithoutResumeNestedInput
   history?: Prisma.ResumeHistoryUncheckedUpdateManyWithoutResumeNestedInput
 }
 
@@ -1111,6 +1366,9 @@ export type ResumeUncheckedUpdateManyWithoutTemplateInput = {
   pdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  disabledByAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  noindex?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1121,10 +1379,12 @@ export type ResumeUncheckedUpdateManyWithoutTemplateInput = {
  */
 
 export type ResumeCountOutputType = {
+  views: number
   history: number
 }
 
 export type ResumeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  views?: boolean | ResumeCountOutputTypeCountViewsArgs
   history?: boolean | ResumeCountOutputTypeCountHistoryArgs
 }
 
@@ -1136,6 +1396,13 @@ export type ResumeCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Exten
    * Select specific fields to fetch from the ResumeCountOutputType
    */
   select?: Prisma.ResumeCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ResumeCountOutputType without action
+ */
+export type ResumeCountOutputTypeCountViewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ResumeViewWhereInput
 }
 
 /**
@@ -1161,8 +1428,12 @@ export type ResumeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   pdfUrl?: boolean
   version?: boolean
   isPublic?: boolean
+  slug?: boolean
+  disabledByAdmin?: boolean
+  noindex?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  views?: boolean | Prisma.Resume$viewsArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   template?: boolean | Prisma.ResumeTemplateDefaultArgs<ExtArgs>
   history?: boolean | Prisma.Resume$historyArgs<ExtArgs>
@@ -1184,6 +1455,9 @@ export type ResumeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   pdfUrl?: boolean
   version?: boolean
   isPublic?: boolean
+  slug?: boolean
+  disabledByAdmin?: boolean
+  noindex?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1205,6 +1479,9 @@ export type ResumeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   pdfUrl?: boolean
   version?: boolean
   isPublic?: boolean
+  slug?: boolean
+  disabledByAdmin?: boolean
+  noindex?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1226,12 +1503,16 @@ export type ResumeSelectScalar = {
   pdfUrl?: boolean
   version?: boolean
   isPublic?: boolean
+  slug?: boolean
+  disabledByAdmin?: boolean
+  noindex?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ResumeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "templateId" | "title" | "type" | "status" | "targetJobTitle" | "jobDescription" | "atsScore" | "contentData" | "aiSuggestions" | "pdfUrl" | "version" | "isPublic" | "createdAt" | "updatedAt", ExtArgs["result"]["resume"]>
+export type ResumeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "templateId" | "title" | "type" | "status" | "targetJobTitle" | "jobDescription" | "atsScore" | "contentData" | "aiSuggestions" | "pdfUrl" | "version" | "isPublic" | "slug" | "disabledByAdmin" | "noindex" | "createdAt" | "updatedAt", ExtArgs["result"]["resume"]>
 export type ResumeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  views?: boolean | Prisma.Resume$viewsArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   template?: boolean | Prisma.ResumeTemplateDefaultArgs<ExtArgs>
   history?: boolean | Prisma.Resume$historyArgs<ExtArgs>
@@ -1249,6 +1530,7 @@ export type ResumeIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
 export type $ResumePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Resume"
   objects: {
+    views: Prisma.$ResumeViewPayload<ExtArgs>[]
     user: Prisma.$UserPayload<ExtArgs>
     template: Prisma.$ResumeTemplatePayload<ExtArgs>
     history: Prisma.$ResumeHistoryPayload<ExtArgs>[]
@@ -1268,6 +1550,9 @@ export type $ResumePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     pdfUrl: string | null
     version: number
     isPublic: boolean
+    slug: string | null
+    disabledByAdmin: boolean
+    noindex: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["resume"]>
@@ -1664,6 +1949,7 @@ readonly fields: ResumeFieldRefs;
  */
 export interface Prisma__ResumeClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  views<T extends Prisma.Resume$viewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Resume$viewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ResumeViewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   template<T extends Prisma.ResumeTemplateDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ResumeTemplateDefaultArgs<ExtArgs>>): Prisma.Prisma__ResumeTemplateClient<runtime.Types.Result.GetResult<Prisma.$ResumeTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   history<T extends Prisma.Resume$historyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Resume$historyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ResumeHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1710,6 +1996,9 @@ export interface ResumeFieldRefs {
   readonly pdfUrl: Prisma.FieldRef<"Resume", 'String'>
   readonly version: Prisma.FieldRef<"Resume", 'Int'>
   readonly isPublic: Prisma.FieldRef<"Resume", 'Boolean'>
+  readonly slug: Prisma.FieldRef<"Resume", 'String'>
+  readonly disabledByAdmin: Prisma.FieldRef<"Resume", 'Boolean'>
+  readonly noindex: Prisma.FieldRef<"Resume", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Resume", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Resume", 'DateTime'>
 }
@@ -2110,6 +2399,30 @@ export type ResumeDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Limit how many Resumes to delete.
    */
   limit?: number
+}
+
+/**
+ * Resume.views
+ */
+export type Resume$viewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ResumeView
+   */
+  select?: Prisma.ResumeViewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ResumeView
+   */
+  omit?: Prisma.ResumeViewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ResumeViewInclude<ExtArgs> | null
+  where?: Prisma.ResumeViewWhereInput
+  orderBy?: Prisma.ResumeViewOrderByWithRelationInput | Prisma.ResumeViewOrderByWithRelationInput[]
+  cursor?: Prisma.ResumeViewWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ResumeViewScalarFieldEnum | Prisma.ResumeViewScalarFieldEnum[]
 }
 
 /**

@@ -8,8 +8,8 @@ model UserProfile {
   firstName      String
   lastName       String
   phone          String?
-  avatarUrl      String?  // MinIO URL
-  headline       String?  // e.g. 'Senior Software Engineer'
+  avatarUrl      String? // MinIO URL
+  headline       String? // e.g. 'Senior Software Engineer'
   bio            String?
   location       String?
   website        String?
@@ -17,12 +17,12 @@ model UserProfile {
   github         String?
   skills         String[] // Array of skill tags
   languages      String[]
-  education      Json     // [{school, degree, field, from, to, gpa}]
-  experience     Json     // [{company, role, from, to, current, desc}]
-  certifications Json?    // [{name, issuer, year, url}]
+  education      Json // [{school, degree, field, from, to, gpa}]
+  experience     Json // [{company, role, from, to, current, desc}]
+  certifications Json? // [{name, issuer, year, url}]
   resumeCount    Int      @default(0)
   apiCallCount   Int      @default(0)
-  referredByCode String?  // Optional referral code captured at signup
+  referredByCode String? // Optional referral code captured at signup
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
@@ -37,10 +37,10 @@ model AdminProfile {
   firstName   String
   lastName    String
   phone       String?
-  avatarUrl   String?  // MinIO URL
+  avatarUrl   String? // MinIO URL
   department  String?
   permissions String[] // Fine-grained permission flags
-  notes       String?  // Internal admin notes
+  notes       String? // Internal admin notes
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

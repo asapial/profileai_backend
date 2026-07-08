@@ -590,7 +590,11 @@ export const resendOtp = async (email: string, type: 'EMAIL_VERIFY' | 'FORGET_PA
     return { message: 'If an account with this email exists, an OTP has been sent.' };
   }
 
-  await checkOtpRateLimit(email, type);
+  // Email verification OTPs are intentionally not rate-limited — the user
+  // may legitimately need to resend a code while waiting on a slow mailbox.
+  if (type !== 'EMAIL_VERIFY') {
+    await checkOtpRateLimit(email, type);
+  }
   const otp = generateOtp();
   await saveOtp(user.id, otp, type);
   await sendOtpEmail({ to: email, otp, type, ...(user.name.split(' ')[0] !== undefined ? { firstName: user.name.split(' ')[0]! } : {}) });
