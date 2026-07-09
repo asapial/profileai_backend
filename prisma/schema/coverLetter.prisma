@@ -1,0 +1,38 @@
+// ─────────────────────────────────────────────────────
+// Cover Letter Models
+//
+// Stores user-authored or AI-generated cover letters
+// (TipTap JSON content). Soft-deletable for compliance.
+// ─────────────────────────────────────────────────────
+
+model CoverLetter {
+  id               String            @id @default(cuid())
+  userId           String
+  resumeId         String
+  title            String
+  targetJobTitle   String?
+  targetCompany    String?
+  status           CoverLetterStatus @default(DRAFT)
+  contentJson      Json // TipTap document JSON
+  contentText      String? // Sanitized plain-text fallback (for search/AI)
+  previousVersions Json? // History snapshots from regenerate
+  pdfUrl           String?
+  deletedAt        DateTime?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resume       Resume           @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  applications JobApplication[]
+
+  @@index([userId, deletedAt, updatedAt])
+  @@index([userId, deletedAt])
+  @@index([resumeId])
+  @@map("cover_letter")
+}
+
+enum CoverLetterStatus {
+  DRAFT
+  GENERATED
+  EXPORTED
+}

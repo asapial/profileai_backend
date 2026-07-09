@@ -10,10 +10,12 @@
  */
 export type * from './models/AnalyticsEvent'
 export type * from './models/JobApplication'
+export type * from './models/ApplicationEvent'
 export type * from './models/User'
 export type * from './models/Session'
 export type * from './models/Account'
 export type * from './models/Verification'
+export type * from './models/CoverLetter'
 export type * from './models/ExportJob'
 export type * from './models/Notification'
 export type * from './models/NotificationPreference'

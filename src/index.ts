@@ -12,6 +12,8 @@ import { exportRouter } from './modules/export/export.router';
 import { adminRouter } from './modules/admin/admin.router';
 import { analyticsRouter } from './modules/analytics/analytics.router';
 import { publicResumeRouter } from './modules/publicResume/publicResume.router';
+import { coverLetterRouter } from './modules/coverLetter/coverLetter.router';
+import { toolsRouter } from './modules/tools/tools.router';
 
 const router = Router();
 
@@ -29,5 +31,7 @@ router.use('/', exportRouter); // /user/export + /user/export-jobs + /resumes/:i
 router.use('/public/resumes', publicResumeRouter);
 router.use('/admin', adminRouter);
 router.use('/analytics', analyticsRouter);
+router.use('/cover-letters', coverLetterRouter);
+router.use('/tools', toolsRouter);
 
 export const indexRouter = router;

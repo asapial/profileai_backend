@@ -46,10 +46,11 @@ model Resume {
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
 
-  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  template ResumeTemplate   @relation(fields: [templateId], references: [id])
-  history  ResumeHistory[]
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  template     ResumeTemplate   @relation(fields: [templateId], references: [id])
+  history      ResumeHistory[]
   applications JobApplication[]
+  coverLetters CoverLetter[]
 
   @@index([isPublic, disabledByAdmin])
   @@map("resume")

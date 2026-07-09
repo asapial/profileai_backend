@@ -79,6 +79,8 @@ export const listTemplates = async (options: ListTemplatesOptions = {}) => {
       isActive: true,
       isFeatured: true,
       displayOrder: true,
+      createdAt: true,
+      updatedAt: true,
       _count: { select: { resumes: true } },
     },
   });

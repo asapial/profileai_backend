@@ -31,9 +31,19 @@ export const updateApplicationSchema = z.object({
     appliedAt: z.string().datetime().optional(),
     notes: z.string().max(2000).optional(),
     resumeId: z.string().nullable().optional(),
+    coverLetterId: z.string().nullable().optional(),
+    reminderAt: z.string().datetime().nullable().optional(),
+  }),
+  params: z.object({ id: z.string().min(1) }),
+});
+
+export const patchStatusSchema = z.object({
+  body: z.object({
+    status: applicationStatusEnum,
   }),
   params: z.object({ id: z.string().min(1) }),
 });
 
 export type CreateApplicationInput = z.infer<typeof createApplicationSchema>['body'];
 export type UpdateApplicationInput = z.infer<typeof updateApplicationSchema>['body'];
+export type PatchStatusInput = z.infer<typeof patchStatusSchema>['body'];

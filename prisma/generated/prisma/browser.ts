@@ -28,6 +28,11 @@ export type AnalyticsEvent = Prisma.AnalyticsEventModel
  */
 export type JobApplication = Prisma.JobApplicationModel
 /**
+ * Model ApplicationEvent
+ * 
+ */
+export type ApplicationEvent = Prisma.ApplicationEventModel
+/**
  * Model User
  * 
  */
@@ -47,6 +52,11 @@ export type Account = Prisma.AccountModel
  * 
  */
 export type Verification = Prisma.VerificationModel
+/**
+ * Model CoverLetter
+ * 
+ */
+export type CoverLetter = Prisma.CoverLetterModel
 /**
  * Model ExportJob
  * 

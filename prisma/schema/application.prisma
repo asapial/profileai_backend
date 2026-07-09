@@ -3,23 +3,28 @@
 // ─────────────────────────────────────────────────────
 
 model JobApplication {
-  id        String            @id @default(cuid())
-  userId    String
-  company   String
-  role      String
-  status    ApplicationStatus @default(APPLIED)
-  jobUrl    String?
-  location  String?
-  appliedAt DateTime          @default(now())
-  notes     String?
-  resumeId  String?
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt
+  id            String            @id @default(cuid())
+  userId        String
+  company       String
+  role          String
+  status        ApplicationStatus @default(APPLIED)
+  jobUrl        String?
+  location      String?
+  appliedAt     DateTime          @default(now())
+  reminderAt    DateTime? // Optional follow-up reminder (surfaced on next request)
+  notes         String?
+  resumeId      String?
+  coverLetterId String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
 
-  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  resume Resume? @relation(fields: [resumeId], references: [id])
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resume      Resume?            @relation(fields: [resumeId], references: [id])
+  coverLetter CoverLetter?       @relation(fields: [coverLetterId], references: [id])
+  events      ApplicationEvent[]
 
   @@index([userId, appliedAt])
+  @@index([userId, reminderAt])
   @@map("job_application")
 }
 
@@ -29,4 +34,37 @@ enum ApplicationStatus {
   OFFER
   REJECTED
   WITHDRAWN
+}
+
+// ─────────────────────────────────────────────────────
+// Application Timeline Events
+//
+// Audit log of every state change on a JobApplication.
+// Used by the Application Detail page (U-P11) to render
+// a chronological history of activity.
+// ─────────────────────────────────────────────────────
+
+model ApplicationEvent {
+  id            String               @id @default(cuid())
+  applicationId String
+  userId        String
+  type          ApplicationEventType
+  payload       Json? // Optional structured data per event type
+  createdAt     DateTime             @default(now())
+
+  application JobApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId, createdAt])
+  @@index([userId, applicationId, createdAt])
+  @@map("application_event")
+}
+
+enum ApplicationEventType {
+  CREATED
+  STATUS_CHANGE
+  NOTE_EDIT
+  REMINDER_SET
+  REMINDER_FIRED
+  DOCUMENT_ATTACHED
 }

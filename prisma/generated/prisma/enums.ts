@@ -20,6 +20,27 @@ export const ApplicationStatus = {
 export type ApplicationStatus = (typeof ApplicationStatus)[keyof typeof ApplicationStatus]
 
 
+export const ApplicationEventType = {
+  CREATED: 'CREATED',
+  STATUS_CHANGE: 'STATUS_CHANGE',
+  NOTE_EDIT: 'NOTE_EDIT',
+  REMINDER_SET: 'REMINDER_SET',
+  REMINDER_FIRED: 'REMINDER_FIRED',
+  DOCUMENT_ATTACHED: 'DOCUMENT_ATTACHED'
+} as const
+
+export type ApplicationEventType = (typeof ApplicationEventType)[keyof typeof ApplicationEventType]
+
+
+export const CoverLetterStatus = {
+  DRAFT: 'DRAFT',
+  GENERATED: 'GENERATED',
+  EXPORTED: 'EXPORTED'
+} as const
+
+export type CoverLetterStatus = (typeof CoverLetterStatus)[keyof typeof CoverLetterStatus]
+
+
 export const Role = {
   ADMIN: 'ADMIN',
   USER: 'USER'
@@ -67,7 +88,8 @@ export type TemplateCategory = (typeof TemplateCategory)[keyof typeof TemplateCa
 
 export const ExportKind = {
   USER_DATA: 'USER_DATA',
-  RESUME_PDF: 'RESUME_PDF'
+  RESUME_PDF: 'RESUME_PDF',
+  COVER_LETTER_PDF: 'COVER_LETTER_PDF'
 } as const
 
 export type ExportKind = (typeof ExportKind)[keyof typeof ExportKind]

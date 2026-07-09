@@ -53,10 +53,12 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   AnalyticsEvent: 'AnalyticsEvent',
   JobApplication: 'JobApplication',
+  ApplicationEvent: 'ApplicationEvent',
   User: 'User',
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification',
+  CoverLetter: 'CoverLetter',
   ExportJob: 'ExportJob',
   Notification: 'Notification',
   NotificationPreference: 'NotificationPreference',
@@ -112,13 +114,27 @@ export const JobApplicationScalarFieldEnum = {
   jobUrl: 'jobUrl',
   location: 'location',
   appliedAt: 'appliedAt',
+  reminderAt: 'reminderAt',
   notes: 'notes',
   resumeId: 'resumeId',
+  coverLetterId: 'coverLetterId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type JobApplicationScalarFieldEnum = (typeof JobApplicationScalarFieldEnum)[keyof typeof JobApplicationScalarFieldEnum]
+
+
+export const ApplicationEventScalarFieldEnum = {
+  id: 'id',
+  applicationId: 'applicationId',
+  userId: 'userId',
+  type: 'type',
+  payload: 'payload',
+  createdAt: 'createdAt'
+} as const
+
+export type ApplicationEventScalarFieldEnum = (typeof ApplicationEventScalarFieldEnum)[keyof typeof ApplicationEventScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {
@@ -182,6 +198,26 @@ export const VerificationScalarFieldEnum = {
 } as const
 
 export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
+
+
+export const CoverLetterScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  resumeId: 'resumeId',
+  title: 'title',
+  targetJobTitle: 'targetJobTitle',
+  targetCompany: 'targetCompany',
+  status: 'status',
+  contentJson: 'contentJson',
+  contentText: 'contentText',
+  previousVersions: 'previousVersions',
+  pdfUrl: 'pdfUrl',
+  deletedAt: 'deletedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CoverLetterScalarFieldEnum = (typeof CoverLetterScalarFieldEnum)[keyof typeof CoverLetterScalarFieldEnum]
 
 
 export const ExportJobScalarFieldEnum = {

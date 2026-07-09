@@ -23,6 +23,7 @@ model ExportJob {
 enum ExportKind {
   USER_DATA
   RESUME_PDF
+  COVER_LETTER_PDF
 }
 
 enum JobStatus {

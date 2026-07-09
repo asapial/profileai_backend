@@ -386,10 +386,12 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   AnalyticsEvent: 'AnalyticsEvent',
   JobApplication: 'JobApplication',
+  ApplicationEvent: 'ApplicationEvent',
   User: 'User',
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification',
+  CoverLetter: 'CoverLetter',
   ExportJob: 'ExportJob',
   Notification: 'Notification',
   NotificationPreference: 'NotificationPreference',
@@ -420,7 +422,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "analyticsEvent" | "jobApplication" | "user" | "session" | "account" | "verification" | "exportJob" | "notification" | "notificationPreference" | "platformConfig" | "userLimit" | "otpCode" | "loginDevice" | "userProfile" | "adminProfile" | "project" | "reference" | "resumeTemplate" | "resume" | "resumeHistory" | "resumeView"
+    modelProps: "analyticsEvent" | "jobApplication" | "applicationEvent" | "user" | "session" | "account" | "verification" | "coverLetter" | "exportJob" | "notification" | "notificationPreference" | "platformConfig" | "userLimit" | "otpCode" | "loginDevice" | "userProfile" | "adminProfile" | "project" | "reference" | "resumeTemplate" | "resume" | "resumeHistory" | "resumeView"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -569,6 +571,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.JobApplicationCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.JobApplicationCountAggregateOutputType> | number
+        }
+      }
+    }
+    ApplicationEvent: {
+      payload: Prisma.$ApplicationEventPayload<ExtArgs>
+      fields: Prisma.ApplicationEventFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ApplicationEventFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationEventPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ApplicationEventFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationEventPayload>
+        }
+        findFirst: {
+          args: Prisma.ApplicationEventFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationEventPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ApplicationEventFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationEventPayload>
+        }
+        findMany: {
+          args: Prisma.ApplicationEventFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationEventPayload>[]
+        }
+        create: {
+          args: Prisma.ApplicationEventCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationEventPayload>
+        }
+        createMany: {
+          args: Prisma.ApplicationEventCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ApplicationEventCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationEventPayload>[]
+        }
+        delete: {
+          args: Prisma.ApplicationEventDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationEventPayload>
+        }
+        update: {
+          args: Prisma.ApplicationEventUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationEventPayload>
+        }
+        deleteMany: {
+          args: Prisma.ApplicationEventDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ApplicationEventUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ApplicationEventUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationEventPayload>[]
+        }
+        upsert: {
+          args: Prisma.ApplicationEventUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationEventPayload>
+        }
+        aggregate: {
+          args: Prisma.ApplicationEventAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateApplicationEvent>
+        }
+        groupBy: {
+          args: Prisma.ApplicationEventGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ApplicationEventGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ApplicationEventCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ApplicationEventCountAggregateOutputType> | number
         }
       }
     }
@@ -865,6 +941,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.VerificationCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.VerificationCountAggregateOutputType> | number
+        }
+      }
+    }
+    CoverLetter: {
+      payload: Prisma.$CoverLetterPayload<ExtArgs>
+      fields: Prisma.CoverLetterFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CoverLetterFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoverLetterPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CoverLetterFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoverLetterPayload>
+        }
+        findFirst: {
+          args: Prisma.CoverLetterFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoverLetterPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CoverLetterFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoverLetterPayload>
+        }
+        findMany: {
+          args: Prisma.CoverLetterFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoverLetterPayload>[]
+        }
+        create: {
+          args: Prisma.CoverLetterCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoverLetterPayload>
+        }
+        createMany: {
+          args: Prisma.CoverLetterCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CoverLetterCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoverLetterPayload>[]
+        }
+        delete: {
+          args: Prisma.CoverLetterDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoverLetterPayload>
+        }
+        update: {
+          args: Prisma.CoverLetterUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoverLetterPayload>
+        }
+        deleteMany: {
+          args: Prisma.CoverLetterDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CoverLetterUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CoverLetterUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoverLetterPayload>[]
+        }
+        upsert: {
+          args: Prisma.CoverLetterUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CoverLetterPayload>
+        }
+        aggregate: {
+          args: Prisma.CoverLetterAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCoverLetter>
+        }
+        groupBy: {
+          args: Prisma.CoverLetterGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CoverLetterGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CoverLetterCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CoverLetterCountAggregateOutputType> | number
         }
       }
     }
@@ -2039,13 +2189,27 @@ export const JobApplicationScalarFieldEnum = {
   jobUrl: 'jobUrl',
   location: 'location',
   appliedAt: 'appliedAt',
+  reminderAt: 'reminderAt',
   notes: 'notes',
   resumeId: 'resumeId',
+  coverLetterId: 'coverLetterId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type JobApplicationScalarFieldEnum = (typeof JobApplicationScalarFieldEnum)[keyof typeof JobApplicationScalarFieldEnum]
+
+
+export const ApplicationEventScalarFieldEnum = {
+  id: 'id',
+  applicationId: 'applicationId',
+  userId: 'userId',
+  type: 'type',
+  payload: 'payload',
+  createdAt: 'createdAt'
+} as const
+
+export type ApplicationEventScalarFieldEnum = (typeof ApplicationEventScalarFieldEnum)[keyof typeof ApplicationEventScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {
@@ -2109,6 +2273,26 @@ export const VerificationScalarFieldEnum = {
 } as const
 
 export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
+
+
+export const CoverLetterScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  resumeId: 'resumeId',
+  title: 'title',
+  targetJobTitle: 'targetJobTitle',
+  targetCompany: 'targetCompany',
+  status: 'status',
+  contentJson: 'contentJson',
+  contentText: 'contentText',
+  previousVersions: 'previousVersions',
+  pdfUrl: 'pdfUrl',
+  deletedAt: 'deletedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CoverLetterScalarFieldEnum = (typeof CoverLetterScalarFieldEnum)[keyof typeof CoverLetterScalarFieldEnum]
 
 
 export const ExportJobScalarFieldEnum = {
@@ -2463,6 +2647,34 @@ export type ListEnumApplicationStatusFieldRefInput<$PrismaModel> = FieldRefInput
 
 
 /**
+ * Reference to a field of type 'ApplicationEventType'
+ */
+export type EnumApplicationEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApplicationEventType'>
+    
+
+
+/**
+ * Reference to a field of type 'ApplicationEventType[]'
+ */
+export type ListEnumApplicationEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApplicationEventType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
@@ -2480,6 +2692,20 @@ export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'Role[]'
  */
 export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role[]'>
+    
+
+
+/**
+ * Reference to a field of type 'CoverLetterStatus'
+ */
+export type EnumCoverLetterStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CoverLetterStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'CoverLetterStatus[]'
+ */
+export type ListEnumCoverLetterStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CoverLetterStatus[]'>
     
 
 
@@ -2508,20 +2734,6 @@ export type EnumJobStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
  * Reference to a field of type 'JobStatus[]'
  */
 export type ListEnumJobStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'Json'
- */
-export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-/**
- * Reference to a field of type 'QueryMode'
- */
-export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -2734,10 +2946,12 @@ export type PrismaClientOptions = ({
 export type GlobalOmitConfig = {
   analyticsEvent?: Prisma.AnalyticsEventOmit
   jobApplication?: Prisma.JobApplicationOmit
+  applicationEvent?: Prisma.ApplicationEventOmit
   user?: Prisma.UserOmit
   session?: Prisma.SessionOmit
   account?: Prisma.AccountOmit
   verification?: Prisma.VerificationOmit
+  coverLetter?: Prisma.CoverLetterOmit
   exportJob?: Prisma.ExportJobOmit
   notification?: Prisma.NotificationOmit
   notificationPreference?: Prisma.NotificationPreferenceOmit

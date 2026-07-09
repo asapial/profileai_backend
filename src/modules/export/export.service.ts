@@ -36,6 +36,34 @@ export const enqueueResumeExport = async (userId: string, resumeId: string) => {
   return job;
 };
 
+export const enqueueCoverLetterExport = async (
+  userId: string,
+  coverLetterId: string,
+) => {
+  const letter = await prisma.coverLetter.findFirst({
+    where: { id: coverLetterId, userId, deletedAt: null },
+  });
+  if (!letter) throw new AppError(status.NOT_FOUND, 'Cover letter not found.');
+
+  const job = await prisma.exportJob.create({
+    data: {
+      kind: 'COVER_LETTER_PDF',
+      userId,
+      status: 'PENDING',
+      payload: { kind: 'COVER_LETTER_PDF', coverLetterId },
+    },
+  });
+
+  const payload: ExportJobPayload = {
+    kind: 'COVER_LETTER_PDF',
+    userId,
+    jobId: job.id,
+    coverLetterId,
+  };
+  await exportQueue.add('cover-letter-export', payload);
+  return job;
+};
+
 export const listExportJobs = async (userId: string, limit = 20) => {
   return prisma.exportJob.findMany({
     where: { userId },

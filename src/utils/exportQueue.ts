@@ -27,7 +27,8 @@ export const exportQueue = new Queue(QUEUE_NAME, {
 
 export type ExportJobPayload =
   | { kind: 'USER_DATA'; userId: string; jobId: string }
-  | { kind: 'RESUME_PDF'; userId: string; jobId: string; resumeId: string };
+  | { kind: 'RESUME_PDF'; userId: string; jobId: string; resumeId: string }
+  | { kind: 'COVER_LETTER_PDF'; userId: string; jobId: string; coverLetterId: string };
 
 // ─── Worker ───────────────────────────────────────────
 export const exportWorker = new Worker(
@@ -61,6 +62,27 @@ export const exportWorker = new Worker(
         // the queue job is testable end-to-end without the PDF pipeline.
         buffer = Buffer.from(JSON.stringify(resume, null, 2), 'utf8');
         objectName = `exports/${userId}/resume-${resumeId}-${jobId}.json`;
+      } else if (kind === 'COVER_LETTER_PDF') {
+        const { coverLetterId } = job.data as Extract<
+          ExportJobPayload,
+          { kind: 'COVER_LETTER_PDF' }
+        >;
+        const letter = await prisma.coverLetter.findFirst({
+          where: { id: coverLetterId, userId, deletedAt: null },
+          select: {
+            id: true,
+            title: true,
+            targetCompany: true,
+            targetJobTitle: true,
+            contentJson: true,
+          },
+        });
+        if (!letter) throw new AppError(status.NOT_FOUND, 'Cover letter not found.');
+        // The actual PDF rendering is owned by the coverLetter module's
+        // /:id/export endpoint. We persist a JSON snapshot of the TipTap
+        // document so the queue job is observable end-to-end.
+        buffer = Buffer.from(JSON.stringify(letter, null, 2), 'utf8');
+        objectName = `exports/${userId}/cover-letter-${coverLetterId}-${jobId}.json`;
       } else {
         throw new AppError(status.BAD_REQUEST, 'Unknown export kind.');
       }

@@ -329,6 +329,7 @@ export type ResumeWhereInput = {
   template?: Prisma.XOR<Prisma.ResumeTemplateScalarRelationFilter, Prisma.ResumeTemplateWhereInput>
   history?: Prisma.ResumeHistoryListRelationFilter
   applications?: Prisma.JobApplicationListRelationFilter
+  coverLetters?: Prisma.CoverLetterListRelationFilter
 }
 
 export type ResumeOrderByWithRelationInput = {
@@ -356,6 +357,7 @@ export type ResumeOrderByWithRelationInput = {
   template?: Prisma.ResumeTemplateOrderByWithRelationInput
   history?: Prisma.ResumeHistoryOrderByRelationAggregateInput
   applications?: Prisma.JobApplicationOrderByRelationAggregateInput
+  coverLetters?: Prisma.CoverLetterOrderByRelationAggregateInput
 }
 
 export type ResumeWhereUniqueInput = Prisma.AtLeast<{
@@ -386,6 +388,7 @@ export type ResumeWhereUniqueInput = Prisma.AtLeast<{
   template?: Prisma.XOR<Prisma.ResumeTemplateScalarRelationFilter, Prisma.ResumeTemplateWhereInput>
   history?: Prisma.ResumeHistoryListRelationFilter
   applications?: Prisma.JobApplicationListRelationFilter
+  coverLetters?: Prisma.CoverLetterListRelationFilter
 }, "id" | "slug">
 
 export type ResumeOrderByWithAggregationInput = {
@@ -463,6 +466,7 @@ export type ResumeCreateInput = {
   template: Prisma.ResumeTemplateCreateNestedOneWithoutResumesInput
   history?: Prisma.ResumeHistoryCreateNestedManyWithoutResumeInput
   applications?: Prisma.JobApplicationCreateNestedManyWithoutResumeInput
+  coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutResumeInput
 }
 
 export type ResumeUncheckedCreateInput = {
@@ -488,6 +492,7 @@ export type ResumeUncheckedCreateInput = {
   views?: Prisma.ResumeViewUncheckedCreateNestedManyWithoutResumeInput
   history?: Prisma.ResumeHistoryUncheckedCreateNestedManyWithoutResumeInput
   applications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutResumeInput
+  coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutResumeInput
 }
 
 export type ResumeUpdateInput = {
@@ -513,6 +518,7 @@ export type ResumeUpdateInput = {
   template?: Prisma.ResumeTemplateUpdateOneRequiredWithoutResumesNestedInput
   history?: Prisma.ResumeHistoryUpdateManyWithoutResumeNestedInput
   applications?: Prisma.JobApplicationUpdateManyWithoutResumeNestedInput
+  coverLetters?: Prisma.CoverLetterUpdateManyWithoutResumeNestedInput
 }
 
 export type ResumeUncheckedUpdateInput = {
@@ -538,6 +544,7 @@ export type ResumeUncheckedUpdateInput = {
   views?: Prisma.ResumeViewUncheckedUpdateManyWithoutResumeNestedInput
   history?: Prisma.ResumeHistoryUncheckedUpdateManyWithoutResumeNestedInput
   applications?: Prisma.JobApplicationUncheckedUpdateManyWithoutResumeNestedInput
+  coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutResumeNestedInput
 }
 
 export type ResumeCreateManyInput = {
@@ -619,6 +626,11 @@ export type ResumeOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type ResumeScalarRelationFilter = {
+  is?: Prisma.ResumeWhereInput
+  isNot?: Prisma.ResumeWhereInput
+}
+
 export type ResumeCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -691,11 +703,6 @@ export type ResumeSumOrderByAggregateInput = {
   version?: Prisma.SortOrder
 }
 
-export type ResumeScalarRelationFilter = {
-  is?: Prisma.ResumeWhereInput
-  isNot?: Prisma.ResumeWhereInput
-}
-
 export type ResumeCreateNestedOneWithoutApplicationsInput = {
   create?: Prisma.XOR<Prisma.ResumeCreateWithoutApplicationsInput, Prisma.ResumeUncheckedCreateWithoutApplicationsInput>
   connectOrCreate?: Prisma.ResumeCreateOrConnectWithoutApplicationsInput
@@ -752,6 +759,20 @@ export type ResumeUncheckedUpdateManyWithoutUserNestedInput = {
   update?: Prisma.ResumeUpdateWithWhereUniqueWithoutUserInput | Prisma.ResumeUpdateWithWhereUniqueWithoutUserInput[]
   updateMany?: Prisma.ResumeUpdateManyWithWhereWithoutUserInput | Prisma.ResumeUpdateManyWithWhereWithoutUserInput[]
   deleteMany?: Prisma.ResumeScalarWhereInput | Prisma.ResumeScalarWhereInput[]
+}
+
+export type ResumeCreateNestedOneWithoutCoverLettersInput = {
+  create?: Prisma.XOR<Prisma.ResumeCreateWithoutCoverLettersInput, Prisma.ResumeUncheckedCreateWithoutCoverLettersInput>
+  connectOrCreate?: Prisma.ResumeCreateOrConnectWithoutCoverLettersInput
+  connect?: Prisma.ResumeWhereUniqueInput
+}
+
+export type ResumeUpdateOneRequiredWithoutCoverLettersNestedInput = {
+  create?: Prisma.XOR<Prisma.ResumeCreateWithoutCoverLettersInput, Prisma.ResumeUncheckedCreateWithoutCoverLettersInput>
+  connectOrCreate?: Prisma.ResumeCreateOrConnectWithoutCoverLettersInput
+  upsert?: Prisma.ResumeUpsertWithoutCoverLettersInput
+  connect?: Prisma.ResumeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ResumeUpdateToOneWithWhereWithoutCoverLettersInput, Prisma.ResumeUpdateWithoutCoverLettersInput>, Prisma.ResumeUncheckedUpdateWithoutCoverLettersInput>
 }
 
 export type ResumeCreateNestedManyWithoutTemplateInput = {
@@ -862,6 +883,7 @@ export type ResumeCreateWithoutApplicationsInput = {
   user: Prisma.UserCreateNestedOneWithoutResumesInput
   template: Prisma.ResumeTemplateCreateNestedOneWithoutResumesInput
   history?: Prisma.ResumeHistoryCreateNestedManyWithoutResumeInput
+  coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutResumeInput
 }
 
 export type ResumeUncheckedCreateWithoutApplicationsInput = {
@@ -886,6 +908,7 @@ export type ResumeUncheckedCreateWithoutApplicationsInput = {
   updatedAt?: Date | string
   views?: Prisma.ResumeViewUncheckedCreateNestedManyWithoutResumeInput
   history?: Prisma.ResumeHistoryUncheckedCreateNestedManyWithoutResumeInput
+  coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutResumeInput
 }
 
 export type ResumeCreateOrConnectWithoutApplicationsInput = {
@@ -926,6 +949,7 @@ export type ResumeUpdateWithoutApplicationsInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutResumesNestedInput
   template?: Prisma.ResumeTemplateUpdateOneRequiredWithoutResumesNestedInput
   history?: Prisma.ResumeHistoryUpdateManyWithoutResumeNestedInput
+  coverLetters?: Prisma.CoverLetterUpdateManyWithoutResumeNestedInput
 }
 
 export type ResumeUncheckedUpdateWithoutApplicationsInput = {
@@ -950,6 +974,7 @@ export type ResumeUncheckedUpdateWithoutApplicationsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   views?: Prisma.ResumeViewUncheckedUpdateManyWithoutResumeNestedInput
   history?: Prisma.ResumeHistoryUncheckedUpdateManyWithoutResumeNestedInput
+  coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutResumeNestedInput
 }
 
 export type ResumeCreateWithoutUserInput = {
@@ -974,6 +999,7 @@ export type ResumeCreateWithoutUserInput = {
   template: Prisma.ResumeTemplateCreateNestedOneWithoutResumesInput
   history?: Prisma.ResumeHistoryCreateNestedManyWithoutResumeInput
   applications?: Prisma.JobApplicationCreateNestedManyWithoutResumeInput
+  coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutResumeInput
 }
 
 export type ResumeUncheckedCreateWithoutUserInput = {
@@ -998,6 +1024,7 @@ export type ResumeUncheckedCreateWithoutUserInput = {
   views?: Prisma.ResumeViewUncheckedCreateNestedManyWithoutResumeInput
   history?: Prisma.ResumeHistoryUncheckedCreateNestedManyWithoutResumeInput
   applications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutResumeInput
+  coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutResumeInput
 }
 
 export type ResumeCreateOrConnectWithoutUserInput = {
@@ -1051,6 +1078,122 @@ export type ResumeScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Resume"> | Date | string
 }
 
+export type ResumeCreateWithoutCoverLettersInput = {
+  id?: string
+  title: string
+  type?: $Enums.ResumeType
+  status?: $Enums.ResumeStatus
+  targetJobTitle?: string | null
+  jobDescription?: string | null
+  atsScore?: number | null
+  contentData: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  aiSuggestions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  pdfUrl?: string | null
+  version?: number
+  isPublic?: boolean
+  slug?: string | null
+  disabledByAdmin?: boolean
+  noindex?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  views?: Prisma.ResumeViewCreateNestedManyWithoutResumeInput
+  user: Prisma.UserCreateNestedOneWithoutResumesInput
+  template: Prisma.ResumeTemplateCreateNestedOneWithoutResumesInput
+  history?: Prisma.ResumeHistoryCreateNestedManyWithoutResumeInput
+  applications?: Prisma.JobApplicationCreateNestedManyWithoutResumeInput
+}
+
+export type ResumeUncheckedCreateWithoutCoverLettersInput = {
+  id?: string
+  userId: string
+  templateId: string
+  title: string
+  type?: $Enums.ResumeType
+  status?: $Enums.ResumeStatus
+  targetJobTitle?: string | null
+  jobDescription?: string | null
+  atsScore?: number | null
+  contentData: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  aiSuggestions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  pdfUrl?: string | null
+  version?: number
+  isPublic?: boolean
+  slug?: string | null
+  disabledByAdmin?: boolean
+  noindex?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  views?: Prisma.ResumeViewUncheckedCreateNestedManyWithoutResumeInput
+  history?: Prisma.ResumeHistoryUncheckedCreateNestedManyWithoutResumeInput
+  applications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutResumeInput
+}
+
+export type ResumeCreateOrConnectWithoutCoverLettersInput = {
+  where: Prisma.ResumeWhereUniqueInput
+  create: Prisma.XOR<Prisma.ResumeCreateWithoutCoverLettersInput, Prisma.ResumeUncheckedCreateWithoutCoverLettersInput>
+}
+
+export type ResumeUpsertWithoutCoverLettersInput = {
+  update: Prisma.XOR<Prisma.ResumeUpdateWithoutCoverLettersInput, Prisma.ResumeUncheckedUpdateWithoutCoverLettersInput>
+  create: Prisma.XOR<Prisma.ResumeCreateWithoutCoverLettersInput, Prisma.ResumeUncheckedCreateWithoutCoverLettersInput>
+  where?: Prisma.ResumeWhereInput
+}
+
+export type ResumeUpdateToOneWithWhereWithoutCoverLettersInput = {
+  where?: Prisma.ResumeWhereInput
+  data: Prisma.XOR<Prisma.ResumeUpdateWithoutCoverLettersInput, Prisma.ResumeUncheckedUpdateWithoutCoverLettersInput>
+}
+
+export type ResumeUpdateWithoutCoverLettersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumResumeTypeFieldUpdateOperationsInput | $Enums.ResumeType
+  status?: Prisma.EnumResumeStatusFieldUpdateOperationsInput | $Enums.ResumeStatus
+  targetJobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  atsScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  contentData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  aiSuggestions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  pdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  disabledByAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  noindex?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  views?: Prisma.ResumeViewUpdateManyWithoutResumeNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutResumesNestedInput
+  template?: Prisma.ResumeTemplateUpdateOneRequiredWithoutResumesNestedInput
+  history?: Prisma.ResumeHistoryUpdateManyWithoutResumeNestedInput
+  applications?: Prisma.JobApplicationUpdateManyWithoutResumeNestedInput
+}
+
+export type ResumeUncheckedUpdateWithoutCoverLettersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  templateId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumResumeTypeFieldUpdateOperationsInput | $Enums.ResumeType
+  status?: Prisma.EnumResumeStatusFieldUpdateOperationsInput | $Enums.ResumeStatus
+  targetJobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  atsScore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  contentData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  aiSuggestions?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  pdfUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  disabledByAdmin?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  noindex?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  views?: Prisma.ResumeViewUncheckedUpdateManyWithoutResumeNestedInput
+  history?: Prisma.ResumeHistoryUncheckedUpdateManyWithoutResumeNestedInput
+  applications?: Prisma.JobApplicationUncheckedUpdateManyWithoutResumeNestedInput
+}
+
 export type ResumeCreateWithoutTemplateInput = {
   id?: string
   title: string
@@ -1073,6 +1216,7 @@ export type ResumeCreateWithoutTemplateInput = {
   user: Prisma.UserCreateNestedOneWithoutResumesInput
   history?: Prisma.ResumeHistoryCreateNestedManyWithoutResumeInput
   applications?: Prisma.JobApplicationCreateNestedManyWithoutResumeInput
+  coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutResumeInput
 }
 
 export type ResumeUncheckedCreateWithoutTemplateInput = {
@@ -1097,6 +1241,7 @@ export type ResumeUncheckedCreateWithoutTemplateInput = {
   views?: Prisma.ResumeViewUncheckedCreateNestedManyWithoutResumeInput
   history?: Prisma.ResumeHistoryUncheckedCreateNestedManyWithoutResumeInput
   applications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutResumeInput
+  coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutResumeInput
 }
 
 export type ResumeCreateOrConnectWithoutTemplateInput = {
@@ -1147,6 +1292,7 @@ export type ResumeCreateWithoutHistoryInput = {
   user: Prisma.UserCreateNestedOneWithoutResumesInput
   template: Prisma.ResumeTemplateCreateNestedOneWithoutResumesInput
   applications?: Prisma.JobApplicationCreateNestedManyWithoutResumeInput
+  coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutResumeInput
 }
 
 export type ResumeUncheckedCreateWithoutHistoryInput = {
@@ -1171,6 +1317,7 @@ export type ResumeUncheckedCreateWithoutHistoryInput = {
   updatedAt?: Date | string
   views?: Prisma.ResumeViewUncheckedCreateNestedManyWithoutResumeInput
   applications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutResumeInput
+  coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutResumeInput
 }
 
 export type ResumeCreateOrConnectWithoutHistoryInput = {
@@ -1211,6 +1358,7 @@ export type ResumeUpdateWithoutHistoryInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutResumesNestedInput
   template?: Prisma.ResumeTemplateUpdateOneRequiredWithoutResumesNestedInput
   applications?: Prisma.JobApplicationUpdateManyWithoutResumeNestedInput
+  coverLetters?: Prisma.CoverLetterUpdateManyWithoutResumeNestedInput
 }
 
 export type ResumeUncheckedUpdateWithoutHistoryInput = {
@@ -1235,6 +1383,7 @@ export type ResumeUncheckedUpdateWithoutHistoryInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   views?: Prisma.ResumeViewUncheckedUpdateManyWithoutResumeNestedInput
   applications?: Prisma.JobApplicationUncheckedUpdateManyWithoutResumeNestedInput
+  coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutResumeNestedInput
 }
 
 export type ResumeCreateWithoutViewsInput = {
@@ -1259,6 +1408,7 @@ export type ResumeCreateWithoutViewsInput = {
   template: Prisma.ResumeTemplateCreateNestedOneWithoutResumesInput
   history?: Prisma.ResumeHistoryCreateNestedManyWithoutResumeInput
   applications?: Prisma.JobApplicationCreateNestedManyWithoutResumeInput
+  coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutResumeInput
 }
 
 export type ResumeUncheckedCreateWithoutViewsInput = {
@@ -1283,6 +1433,7 @@ export type ResumeUncheckedCreateWithoutViewsInput = {
   updatedAt?: Date | string
   history?: Prisma.ResumeHistoryUncheckedCreateNestedManyWithoutResumeInput
   applications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutResumeInput
+  coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutResumeInput
 }
 
 export type ResumeCreateOrConnectWithoutViewsInput = {
@@ -1323,6 +1474,7 @@ export type ResumeUpdateWithoutViewsInput = {
   template?: Prisma.ResumeTemplateUpdateOneRequiredWithoutResumesNestedInput
   history?: Prisma.ResumeHistoryUpdateManyWithoutResumeNestedInput
   applications?: Prisma.JobApplicationUpdateManyWithoutResumeNestedInput
+  coverLetters?: Prisma.CoverLetterUpdateManyWithoutResumeNestedInput
 }
 
 export type ResumeUncheckedUpdateWithoutViewsInput = {
@@ -1347,6 +1499,7 @@ export type ResumeUncheckedUpdateWithoutViewsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   history?: Prisma.ResumeHistoryUncheckedUpdateManyWithoutResumeNestedInput
   applications?: Prisma.JobApplicationUncheckedUpdateManyWithoutResumeNestedInput
+  coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutResumeNestedInput
 }
 
 export type ResumeCreateManyUserInput = {
@@ -1392,6 +1545,7 @@ export type ResumeUpdateWithoutUserInput = {
   template?: Prisma.ResumeTemplateUpdateOneRequiredWithoutResumesNestedInput
   history?: Prisma.ResumeHistoryUpdateManyWithoutResumeNestedInput
   applications?: Prisma.JobApplicationUpdateManyWithoutResumeNestedInput
+  coverLetters?: Prisma.CoverLetterUpdateManyWithoutResumeNestedInput
 }
 
 export type ResumeUncheckedUpdateWithoutUserInput = {
@@ -1416,6 +1570,7 @@ export type ResumeUncheckedUpdateWithoutUserInput = {
   views?: Prisma.ResumeViewUncheckedUpdateManyWithoutResumeNestedInput
   history?: Prisma.ResumeHistoryUncheckedUpdateManyWithoutResumeNestedInput
   applications?: Prisma.JobApplicationUncheckedUpdateManyWithoutResumeNestedInput
+  coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutResumeNestedInput
 }
 
 export type ResumeUncheckedUpdateManyWithoutUserInput = {
@@ -1482,6 +1637,7 @@ export type ResumeUpdateWithoutTemplateInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutResumesNestedInput
   history?: Prisma.ResumeHistoryUpdateManyWithoutResumeNestedInput
   applications?: Prisma.JobApplicationUpdateManyWithoutResumeNestedInput
+  coverLetters?: Prisma.CoverLetterUpdateManyWithoutResumeNestedInput
 }
 
 export type ResumeUncheckedUpdateWithoutTemplateInput = {
@@ -1506,6 +1662,7 @@ export type ResumeUncheckedUpdateWithoutTemplateInput = {
   views?: Prisma.ResumeViewUncheckedUpdateManyWithoutResumeNestedInput
   history?: Prisma.ResumeHistoryUncheckedUpdateManyWithoutResumeNestedInput
   applications?: Prisma.JobApplicationUncheckedUpdateManyWithoutResumeNestedInput
+  coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutResumeNestedInput
 }
 
 export type ResumeUncheckedUpdateManyWithoutTemplateInput = {
@@ -1538,12 +1695,14 @@ export type ResumeCountOutputType = {
   views: number
   history: number
   applications: number
+  coverLetters: number
 }
 
 export type ResumeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   views?: boolean | ResumeCountOutputTypeCountViewsArgs
   history?: boolean | ResumeCountOutputTypeCountHistoryArgs
   applications?: boolean | ResumeCountOutputTypeCountApplicationsArgs
+  coverLetters?: boolean | ResumeCountOutputTypeCountCoverLettersArgs
 }
 
 /**
@@ -1577,6 +1736,13 @@ export type ResumeCountOutputTypeCountApplicationsArgs<ExtArgs extends runtime.T
   where?: Prisma.JobApplicationWhereInput
 }
 
+/**
+ * ResumeCountOutputType without action
+ */
+export type ResumeCountOutputTypeCountCoverLettersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CoverLetterWhereInput
+}
+
 
 export type ResumeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1603,6 +1769,7 @@ export type ResumeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   template?: boolean | Prisma.ResumeTemplateDefaultArgs<ExtArgs>
   history?: boolean | Prisma.Resume$historyArgs<ExtArgs>
   applications?: boolean | Prisma.Resume$applicationsArgs<ExtArgs>
+  coverLetters?: boolean | Prisma.Resume$coverLettersArgs<ExtArgs>
   _count?: boolean | Prisma.ResumeCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["resume"]>
 
@@ -1683,6 +1850,7 @@ export type ResumeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   template?: boolean | Prisma.ResumeTemplateDefaultArgs<ExtArgs>
   history?: boolean | Prisma.Resume$historyArgs<ExtArgs>
   applications?: boolean | Prisma.Resume$applicationsArgs<ExtArgs>
+  coverLetters?: boolean | Prisma.Resume$coverLettersArgs<ExtArgs>
   _count?: boolean | Prisma.ResumeCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ResumeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1702,6 +1870,7 @@ export type $ResumePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     template: Prisma.$ResumeTemplatePayload<ExtArgs>
     history: Prisma.$ResumeHistoryPayload<ExtArgs>[]
     applications: Prisma.$JobApplicationPayload<ExtArgs>[]
+    coverLetters: Prisma.$CoverLetterPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2122,6 +2291,7 @@ export interface Prisma__ResumeClient<T, Null = never, ExtArgs extends runtime.T
   template<T extends Prisma.ResumeTemplateDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ResumeTemplateDefaultArgs<ExtArgs>>): Prisma.Prisma__ResumeTemplateClient<runtime.Types.Result.GetResult<Prisma.$ResumeTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   history<T extends Prisma.Resume$historyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Resume$historyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ResumeHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   applications<T extends Prisma.Resume$applicationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Resume$applicationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  coverLetters<T extends Prisma.Resume$coverLettersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Resume$coverLettersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CoverLetterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2640,6 +2810,30 @@ export type Resume$applicationsArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.JobApplicationScalarFieldEnum | Prisma.JobApplicationScalarFieldEnum[]
+}
+
+/**
+ * Resume.coverLetters
+ */
+export type Resume$coverLettersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CoverLetter
+   */
+  select?: Prisma.CoverLetterSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CoverLetter
+   */
+  omit?: Prisma.CoverLetterOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CoverLetterInclude<ExtArgs> | null
+  where?: Prisma.CoverLetterWhereInput
+  orderBy?: Prisma.CoverLetterOrderByWithRelationInput | Prisma.CoverLetterOrderByWithRelationInput[]
+  cursor?: Prisma.CoverLetterWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CoverLetterScalarFieldEnum | Prisma.CoverLetterScalarFieldEnum[]
 }
 
 /**

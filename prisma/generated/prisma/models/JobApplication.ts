@@ -33,8 +33,10 @@ export type JobApplicationMinAggregateOutputType = {
   jobUrl: string | null
   location: string | null
   appliedAt: Date | null
+  reminderAt: Date | null
   notes: string | null
   resumeId: string | null
+  coverLetterId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -48,8 +50,10 @@ export type JobApplicationMaxAggregateOutputType = {
   jobUrl: string | null
   location: string | null
   appliedAt: Date | null
+  reminderAt: Date | null
   notes: string | null
   resumeId: string | null
+  coverLetterId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -63,8 +67,10 @@ export type JobApplicationCountAggregateOutputType = {
   jobUrl: number
   location: number
   appliedAt: number
+  reminderAt: number
   notes: number
   resumeId: number
+  coverLetterId: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -80,8 +86,10 @@ export type JobApplicationMinAggregateInputType = {
   jobUrl?: true
   location?: true
   appliedAt?: true
+  reminderAt?: true
   notes?: true
   resumeId?: true
+  coverLetterId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -95,8 +103,10 @@ export type JobApplicationMaxAggregateInputType = {
   jobUrl?: true
   location?: true
   appliedAt?: true
+  reminderAt?: true
   notes?: true
   resumeId?: true
+  coverLetterId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -110,8 +120,10 @@ export type JobApplicationCountAggregateInputType = {
   jobUrl?: true
   location?: true
   appliedAt?: true
+  reminderAt?: true
   notes?: true
   resumeId?: true
+  coverLetterId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -198,8 +210,10 @@ export type JobApplicationGroupByOutputType = {
   jobUrl: string | null
   location: string | null
   appliedAt: Date
+  reminderAt: Date | null
   notes: string | null
   resumeId: string | null
+  coverLetterId: string | null
   createdAt: Date
   updatedAt: Date
   _count: JobApplicationCountAggregateOutputType | null
@@ -234,12 +248,16 @@ export type JobApplicationWhereInput = {
   jobUrl?: Prisma.StringNullableFilter<"JobApplication"> | string | null
   location?: Prisma.StringNullableFilter<"JobApplication"> | string | null
   appliedAt?: Prisma.DateTimeFilter<"JobApplication"> | Date | string
+  reminderAt?: Prisma.DateTimeNullableFilter<"JobApplication"> | Date | string | null
   notes?: Prisma.StringNullableFilter<"JobApplication"> | string | null
   resumeId?: Prisma.StringNullableFilter<"JobApplication"> | string | null
+  coverLetterId?: Prisma.StringNullableFilter<"JobApplication"> | string | null
   createdAt?: Prisma.DateTimeFilter<"JobApplication"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"JobApplication"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   resume?: Prisma.XOR<Prisma.ResumeNullableScalarRelationFilter, Prisma.ResumeWhereInput> | null
+  coverLetter?: Prisma.XOR<Prisma.CoverLetterNullableScalarRelationFilter, Prisma.CoverLetterWhereInput> | null
+  events?: Prisma.ApplicationEventListRelationFilter
 }
 
 export type JobApplicationOrderByWithRelationInput = {
@@ -251,12 +269,16 @@ export type JobApplicationOrderByWithRelationInput = {
   jobUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
   appliedAt?: Prisma.SortOrder
+  reminderAt?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   resumeId?: Prisma.SortOrderInput | Prisma.SortOrder
+  coverLetterId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   resume?: Prisma.ResumeOrderByWithRelationInput
+  coverLetter?: Prisma.CoverLetterOrderByWithRelationInput
+  events?: Prisma.ApplicationEventOrderByRelationAggregateInput
 }
 
 export type JobApplicationWhereUniqueInput = Prisma.AtLeast<{
@@ -271,12 +293,16 @@ export type JobApplicationWhereUniqueInput = Prisma.AtLeast<{
   jobUrl?: Prisma.StringNullableFilter<"JobApplication"> | string | null
   location?: Prisma.StringNullableFilter<"JobApplication"> | string | null
   appliedAt?: Prisma.DateTimeFilter<"JobApplication"> | Date | string
+  reminderAt?: Prisma.DateTimeNullableFilter<"JobApplication"> | Date | string | null
   notes?: Prisma.StringNullableFilter<"JobApplication"> | string | null
   resumeId?: Prisma.StringNullableFilter<"JobApplication"> | string | null
+  coverLetterId?: Prisma.StringNullableFilter<"JobApplication"> | string | null
   createdAt?: Prisma.DateTimeFilter<"JobApplication"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"JobApplication"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   resume?: Prisma.XOR<Prisma.ResumeNullableScalarRelationFilter, Prisma.ResumeWhereInput> | null
+  coverLetter?: Prisma.XOR<Prisma.CoverLetterNullableScalarRelationFilter, Prisma.CoverLetterWhereInput> | null
+  events?: Prisma.ApplicationEventListRelationFilter
 }, "id">
 
 export type JobApplicationOrderByWithAggregationInput = {
@@ -288,8 +314,10 @@ export type JobApplicationOrderByWithAggregationInput = {
   jobUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
   appliedAt?: Prisma.SortOrder
+  reminderAt?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   resumeId?: Prisma.SortOrderInput | Prisma.SortOrder
+  coverLetterId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.JobApplicationCountOrderByAggregateInput
@@ -309,8 +337,10 @@ export type JobApplicationScalarWhereWithAggregatesInput = {
   jobUrl?: Prisma.StringNullableWithAggregatesFilter<"JobApplication"> | string | null
   location?: Prisma.StringNullableWithAggregatesFilter<"JobApplication"> | string | null
   appliedAt?: Prisma.DateTimeWithAggregatesFilter<"JobApplication"> | Date | string
+  reminderAt?: Prisma.DateTimeNullableWithAggregatesFilter<"JobApplication"> | Date | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"JobApplication"> | string | null
   resumeId?: Prisma.StringNullableWithAggregatesFilter<"JobApplication"> | string | null
+  coverLetterId?: Prisma.StringNullableWithAggregatesFilter<"JobApplication"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"JobApplication"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"JobApplication"> | Date | string
 }
@@ -323,11 +353,14 @@ export type JobApplicationCreateInput = {
   jobUrl?: string | null
   location?: string | null
   appliedAt?: Date | string
+  reminderAt?: Date | string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutJobApplicationsInput
   resume?: Prisma.ResumeCreateNestedOneWithoutApplicationsInput
+  coverLetter?: Prisma.CoverLetterCreateNestedOneWithoutApplicationsInput
+  events?: Prisma.ApplicationEventCreateNestedManyWithoutApplicationInput
 }
 
 export type JobApplicationUncheckedCreateInput = {
@@ -339,10 +372,13 @@ export type JobApplicationUncheckedCreateInput = {
   jobUrl?: string | null
   location?: string | null
   appliedAt?: Date | string
+  reminderAt?: Date | string | null
   notes?: string | null
   resumeId?: string | null
+  coverLetterId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  events?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutApplicationInput
 }
 
 export type JobApplicationUpdateInput = {
@@ -353,11 +389,14 @@ export type JobApplicationUpdateInput = {
   jobUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutJobApplicationsNestedInput
   resume?: Prisma.ResumeUpdateOneWithoutApplicationsNestedInput
+  coverLetter?: Prisma.CoverLetterUpdateOneWithoutApplicationsNestedInput
+  events?: Prisma.ApplicationEventUpdateManyWithoutApplicationNestedInput
 }
 
 export type JobApplicationUncheckedUpdateInput = {
@@ -369,10 +408,13 @@ export type JobApplicationUncheckedUpdateInput = {
   jobUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverLetterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.ApplicationEventUncheckedUpdateManyWithoutApplicationNestedInput
 }
 
 export type JobApplicationCreateManyInput = {
@@ -384,8 +426,10 @@ export type JobApplicationCreateManyInput = {
   jobUrl?: string | null
   location?: string | null
   appliedAt?: Date | string
+  reminderAt?: Date | string | null
   notes?: string | null
   resumeId?: string | null
+  coverLetterId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -398,6 +442,7 @@ export type JobApplicationUpdateManyMutationInput = {
   jobUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -412,8 +457,10 @@ export type JobApplicationUncheckedUpdateManyInput = {
   jobUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverLetterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -427,8 +474,10 @@ export type JobApplicationCountOrderByAggregateInput = {
   jobUrl?: Prisma.SortOrder
   location?: Prisma.SortOrder
   appliedAt?: Prisma.SortOrder
+  reminderAt?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   resumeId?: Prisma.SortOrder
+  coverLetterId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -442,8 +491,10 @@ export type JobApplicationMaxOrderByAggregateInput = {
   jobUrl?: Prisma.SortOrder
   location?: Prisma.SortOrder
   appliedAt?: Prisma.SortOrder
+  reminderAt?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   resumeId?: Prisma.SortOrder
+  coverLetterId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -457,10 +508,17 @@ export type JobApplicationMinOrderByAggregateInput = {
   jobUrl?: Prisma.SortOrder
   location?: Prisma.SortOrder
   appliedAt?: Prisma.SortOrder
+  reminderAt?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   resumeId?: Prisma.SortOrder
+  coverLetterId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type JobApplicationScalarRelationFilter = {
+  is?: Prisma.JobApplicationWhereInput
+  isNot?: Prisma.JobApplicationWhereInput
 }
 
 export type JobApplicationListRelationFilter = {
@@ -475,6 +533,24 @@ export type JobApplicationOrderByRelationAggregateInput = {
 
 export type EnumApplicationStatusFieldUpdateOperationsInput = {
   set?: $Enums.ApplicationStatus
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
+export type JobApplicationCreateNestedOneWithoutEventsInput = {
+  create?: Prisma.XOR<Prisma.JobApplicationCreateWithoutEventsInput, Prisma.JobApplicationUncheckedCreateWithoutEventsInput>
+  connectOrCreate?: Prisma.JobApplicationCreateOrConnectWithoutEventsInput
+  connect?: Prisma.JobApplicationWhereUniqueInput
+}
+
+export type JobApplicationUpdateOneRequiredWithoutEventsNestedInput = {
+  create?: Prisma.XOR<Prisma.JobApplicationCreateWithoutEventsInput, Prisma.JobApplicationUncheckedCreateWithoutEventsInput>
+  connectOrCreate?: Prisma.JobApplicationCreateOrConnectWithoutEventsInput
+  upsert?: Prisma.JobApplicationUpsertWithoutEventsInput
+  connect?: Prisma.JobApplicationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.JobApplicationUpdateToOneWithWhereWithoutEventsInput, Prisma.JobApplicationUpdateWithoutEventsInput>, Prisma.JobApplicationUncheckedUpdateWithoutEventsInput>
 }
 
 export type JobApplicationCreateNestedManyWithoutUserInput = {
@@ -516,6 +592,48 @@ export type JobApplicationUncheckedUpdateManyWithoutUserNestedInput = {
   connect?: Prisma.JobApplicationWhereUniqueInput | Prisma.JobApplicationWhereUniqueInput[]
   update?: Prisma.JobApplicationUpdateWithWhereUniqueWithoutUserInput | Prisma.JobApplicationUpdateWithWhereUniqueWithoutUserInput[]
   updateMany?: Prisma.JobApplicationUpdateManyWithWhereWithoutUserInput | Prisma.JobApplicationUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.JobApplicationScalarWhereInput | Prisma.JobApplicationScalarWhereInput[]
+}
+
+export type JobApplicationCreateNestedManyWithoutCoverLetterInput = {
+  create?: Prisma.XOR<Prisma.JobApplicationCreateWithoutCoverLetterInput, Prisma.JobApplicationUncheckedCreateWithoutCoverLetterInput> | Prisma.JobApplicationCreateWithoutCoverLetterInput[] | Prisma.JobApplicationUncheckedCreateWithoutCoverLetterInput[]
+  connectOrCreate?: Prisma.JobApplicationCreateOrConnectWithoutCoverLetterInput | Prisma.JobApplicationCreateOrConnectWithoutCoverLetterInput[]
+  createMany?: Prisma.JobApplicationCreateManyCoverLetterInputEnvelope
+  connect?: Prisma.JobApplicationWhereUniqueInput | Prisma.JobApplicationWhereUniqueInput[]
+}
+
+export type JobApplicationUncheckedCreateNestedManyWithoutCoverLetterInput = {
+  create?: Prisma.XOR<Prisma.JobApplicationCreateWithoutCoverLetterInput, Prisma.JobApplicationUncheckedCreateWithoutCoverLetterInput> | Prisma.JobApplicationCreateWithoutCoverLetterInput[] | Prisma.JobApplicationUncheckedCreateWithoutCoverLetterInput[]
+  connectOrCreate?: Prisma.JobApplicationCreateOrConnectWithoutCoverLetterInput | Prisma.JobApplicationCreateOrConnectWithoutCoverLetterInput[]
+  createMany?: Prisma.JobApplicationCreateManyCoverLetterInputEnvelope
+  connect?: Prisma.JobApplicationWhereUniqueInput | Prisma.JobApplicationWhereUniqueInput[]
+}
+
+export type JobApplicationUpdateManyWithoutCoverLetterNestedInput = {
+  create?: Prisma.XOR<Prisma.JobApplicationCreateWithoutCoverLetterInput, Prisma.JobApplicationUncheckedCreateWithoutCoverLetterInput> | Prisma.JobApplicationCreateWithoutCoverLetterInput[] | Prisma.JobApplicationUncheckedCreateWithoutCoverLetterInput[]
+  connectOrCreate?: Prisma.JobApplicationCreateOrConnectWithoutCoverLetterInput | Prisma.JobApplicationCreateOrConnectWithoutCoverLetterInput[]
+  upsert?: Prisma.JobApplicationUpsertWithWhereUniqueWithoutCoverLetterInput | Prisma.JobApplicationUpsertWithWhereUniqueWithoutCoverLetterInput[]
+  createMany?: Prisma.JobApplicationCreateManyCoverLetterInputEnvelope
+  set?: Prisma.JobApplicationWhereUniqueInput | Prisma.JobApplicationWhereUniqueInput[]
+  disconnect?: Prisma.JobApplicationWhereUniqueInput | Prisma.JobApplicationWhereUniqueInput[]
+  delete?: Prisma.JobApplicationWhereUniqueInput | Prisma.JobApplicationWhereUniqueInput[]
+  connect?: Prisma.JobApplicationWhereUniqueInput | Prisma.JobApplicationWhereUniqueInput[]
+  update?: Prisma.JobApplicationUpdateWithWhereUniqueWithoutCoverLetterInput | Prisma.JobApplicationUpdateWithWhereUniqueWithoutCoverLetterInput[]
+  updateMany?: Prisma.JobApplicationUpdateManyWithWhereWithoutCoverLetterInput | Prisma.JobApplicationUpdateManyWithWhereWithoutCoverLetterInput[]
+  deleteMany?: Prisma.JobApplicationScalarWhereInput | Prisma.JobApplicationScalarWhereInput[]
+}
+
+export type JobApplicationUncheckedUpdateManyWithoutCoverLetterNestedInput = {
+  create?: Prisma.XOR<Prisma.JobApplicationCreateWithoutCoverLetterInput, Prisma.JobApplicationUncheckedCreateWithoutCoverLetterInput> | Prisma.JobApplicationCreateWithoutCoverLetterInput[] | Prisma.JobApplicationUncheckedCreateWithoutCoverLetterInput[]
+  connectOrCreate?: Prisma.JobApplicationCreateOrConnectWithoutCoverLetterInput | Prisma.JobApplicationCreateOrConnectWithoutCoverLetterInput[]
+  upsert?: Prisma.JobApplicationUpsertWithWhereUniqueWithoutCoverLetterInput | Prisma.JobApplicationUpsertWithWhereUniqueWithoutCoverLetterInput[]
+  createMany?: Prisma.JobApplicationCreateManyCoverLetterInputEnvelope
+  set?: Prisma.JobApplicationWhereUniqueInput | Prisma.JobApplicationWhereUniqueInput[]
+  disconnect?: Prisma.JobApplicationWhereUniqueInput | Prisma.JobApplicationWhereUniqueInput[]
+  delete?: Prisma.JobApplicationWhereUniqueInput | Prisma.JobApplicationWhereUniqueInput[]
+  connect?: Prisma.JobApplicationWhereUniqueInput | Prisma.JobApplicationWhereUniqueInput[]
+  update?: Prisma.JobApplicationUpdateWithWhereUniqueWithoutCoverLetterInput | Prisma.JobApplicationUpdateWithWhereUniqueWithoutCoverLetterInput[]
+  updateMany?: Prisma.JobApplicationUpdateManyWithWhereWithoutCoverLetterInput | Prisma.JobApplicationUpdateManyWithWhereWithoutCoverLetterInput[]
   deleteMany?: Prisma.JobApplicationScalarWhereInput | Prisma.JobApplicationScalarWhereInput[]
 }
 
@@ -561,6 +679,90 @@ export type JobApplicationUncheckedUpdateManyWithoutResumeNestedInput = {
   deleteMany?: Prisma.JobApplicationScalarWhereInput | Prisma.JobApplicationScalarWhereInput[]
 }
 
+export type JobApplicationCreateWithoutEventsInput = {
+  id?: string
+  company: string
+  role: string
+  status?: $Enums.ApplicationStatus
+  jobUrl?: string | null
+  location?: string | null
+  appliedAt?: Date | string
+  reminderAt?: Date | string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutJobApplicationsInput
+  resume?: Prisma.ResumeCreateNestedOneWithoutApplicationsInput
+  coverLetter?: Prisma.CoverLetterCreateNestedOneWithoutApplicationsInput
+}
+
+export type JobApplicationUncheckedCreateWithoutEventsInput = {
+  id?: string
+  userId: string
+  company: string
+  role: string
+  status?: $Enums.ApplicationStatus
+  jobUrl?: string | null
+  location?: string | null
+  appliedAt?: Date | string
+  reminderAt?: Date | string | null
+  notes?: string | null
+  resumeId?: string | null
+  coverLetterId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type JobApplicationCreateOrConnectWithoutEventsInput = {
+  where: Prisma.JobApplicationWhereUniqueInput
+  create: Prisma.XOR<Prisma.JobApplicationCreateWithoutEventsInput, Prisma.JobApplicationUncheckedCreateWithoutEventsInput>
+}
+
+export type JobApplicationUpsertWithoutEventsInput = {
+  update: Prisma.XOR<Prisma.JobApplicationUpdateWithoutEventsInput, Prisma.JobApplicationUncheckedUpdateWithoutEventsInput>
+  create: Prisma.XOR<Prisma.JobApplicationCreateWithoutEventsInput, Prisma.JobApplicationUncheckedCreateWithoutEventsInput>
+  where?: Prisma.JobApplicationWhereInput
+}
+
+export type JobApplicationUpdateToOneWithWhereWithoutEventsInput = {
+  where?: Prisma.JobApplicationWhereInput
+  data: Prisma.XOR<Prisma.JobApplicationUpdateWithoutEventsInput, Prisma.JobApplicationUncheckedUpdateWithoutEventsInput>
+}
+
+export type JobApplicationUpdateWithoutEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  company?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
+  jobUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutJobApplicationsNestedInput
+  resume?: Prisma.ResumeUpdateOneWithoutApplicationsNestedInput
+  coverLetter?: Prisma.CoverLetterUpdateOneWithoutApplicationsNestedInput
+}
+
+export type JobApplicationUncheckedUpdateWithoutEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  company?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
+  jobUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverLetterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type JobApplicationCreateWithoutUserInput = {
   id?: string
   company: string
@@ -569,10 +771,13 @@ export type JobApplicationCreateWithoutUserInput = {
   jobUrl?: string | null
   location?: string | null
   appliedAt?: Date | string
+  reminderAt?: Date | string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   resume?: Prisma.ResumeCreateNestedOneWithoutApplicationsInput
+  coverLetter?: Prisma.CoverLetterCreateNestedOneWithoutApplicationsInput
+  events?: Prisma.ApplicationEventCreateNestedManyWithoutApplicationInput
 }
 
 export type JobApplicationUncheckedCreateWithoutUserInput = {
@@ -583,10 +788,13 @@ export type JobApplicationUncheckedCreateWithoutUserInput = {
   jobUrl?: string | null
   location?: string | null
   appliedAt?: Date | string
+  reminderAt?: Date | string | null
   notes?: string | null
   resumeId?: string | null
+  coverLetterId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  events?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutApplicationInput
 }
 
 export type JobApplicationCreateOrConnectWithoutUserInput = {
@@ -627,10 +835,72 @@ export type JobApplicationScalarWhereInput = {
   jobUrl?: Prisma.StringNullableFilter<"JobApplication"> | string | null
   location?: Prisma.StringNullableFilter<"JobApplication"> | string | null
   appliedAt?: Prisma.DateTimeFilter<"JobApplication"> | Date | string
+  reminderAt?: Prisma.DateTimeNullableFilter<"JobApplication"> | Date | string | null
   notes?: Prisma.StringNullableFilter<"JobApplication"> | string | null
   resumeId?: Prisma.StringNullableFilter<"JobApplication"> | string | null
+  coverLetterId?: Prisma.StringNullableFilter<"JobApplication"> | string | null
   createdAt?: Prisma.DateTimeFilter<"JobApplication"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"JobApplication"> | Date | string
+}
+
+export type JobApplicationCreateWithoutCoverLetterInput = {
+  id?: string
+  company: string
+  role: string
+  status?: $Enums.ApplicationStatus
+  jobUrl?: string | null
+  location?: string | null
+  appliedAt?: Date | string
+  reminderAt?: Date | string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutJobApplicationsInput
+  resume?: Prisma.ResumeCreateNestedOneWithoutApplicationsInput
+  events?: Prisma.ApplicationEventCreateNestedManyWithoutApplicationInput
+}
+
+export type JobApplicationUncheckedCreateWithoutCoverLetterInput = {
+  id?: string
+  userId: string
+  company: string
+  role: string
+  status?: $Enums.ApplicationStatus
+  jobUrl?: string | null
+  location?: string | null
+  appliedAt?: Date | string
+  reminderAt?: Date | string | null
+  notes?: string | null
+  resumeId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  events?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutApplicationInput
+}
+
+export type JobApplicationCreateOrConnectWithoutCoverLetterInput = {
+  where: Prisma.JobApplicationWhereUniqueInput
+  create: Prisma.XOR<Prisma.JobApplicationCreateWithoutCoverLetterInput, Prisma.JobApplicationUncheckedCreateWithoutCoverLetterInput>
+}
+
+export type JobApplicationCreateManyCoverLetterInputEnvelope = {
+  data: Prisma.JobApplicationCreateManyCoverLetterInput | Prisma.JobApplicationCreateManyCoverLetterInput[]
+  skipDuplicates?: boolean
+}
+
+export type JobApplicationUpsertWithWhereUniqueWithoutCoverLetterInput = {
+  where: Prisma.JobApplicationWhereUniqueInput
+  update: Prisma.XOR<Prisma.JobApplicationUpdateWithoutCoverLetterInput, Prisma.JobApplicationUncheckedUpdateWithoutCoverLetterInput>
+  create: Prisma.XOR<Prisma.JobApplicationCreateWithoutCoverLetterInput, Prisma.JobApplicationUncheckedCreateWithoutCoverLetterInput>
+}
+
+export type JobApplicationUpdateWithWhereUniqueWithoutCoverLetterInput = {
+  where: Prisma.JobApplicationWhereUniqueInput
+  data: Prisma.XOR<Prisma.JobApplicationUpdateWithoutCoverLetterInput, Prisma.JobApplicationUncheckedUpdateWithoutCoverLetterInput>
+}
+
+export type JobApplicationUpdateManyWithWhereWithoutCoverLetterInput = {
+  where: Prisma.JobApplicationScalarWhereInput
+  data: Prisma.XOR<Prisma.JobApplicationUpdateManyMutationInput, Prisma.JobApplicationUncheckedUpdateManyWithoutCoverLetterInput>
 }
 
 export type JobApplicationCreateWithoutResumeInput = {
@@ -641,10 +911,13 @@ export type JobApplicationCreateWithoutResumeInput = {
   jobUrl?: string | null
   location?: string | null
   appliedAt?: Date | string
+  reminderAt?: Date | string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutJobApplicationsInput
+  coverLetter?: Prisma.CoverLetterCreateNestedOneWithoutApplicationsInput
+  events?: Prisma.ApplicationEventCreateNestedManyWithoutApplicationInput
 }
 
 export type JobApplicationUncheckedCreateWithoutResumeInput = {
@@ -656,9 +929,12 @@ export type JobApplicationUncheckedCreateWithoutResumeInput = {
   jobUrl?: string | null
   location?: string | null
   appliedAt?: Date | string
+  reminderAt?: Date | string | null
   notes?: string | null
+  coverLetterId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  events?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutApplicationInput
 }
 
 export type JobApplicationCreateOrConnectWithoutResumeInput = {
@@ -695,8 +971,10 @@ export type JobApplicationCreateManyUserInput = {
   jobUrl?: string | null
   location?: string | null
   appliedAt?: Date | string
+  reminderAt?: Date | string | null
   notes?: string | null
   resumeId?: string | null
+  coverLetterId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -709,10 +987,13 @@ export type JobApplicationUpdateWithoutUserInput = {
   jobUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resume?: Prisma.ResumeUpdateOneWithoutApplicationsNestedInput
+  coverLetter?: Prisma.CoverLetterUpdateOneWithoutApplicationsNestedInput
+  events?: Prisma.ApplicationEventUpdateManyWithoutApplicationNestedInput
 }
 
 export type JobApplicationUncheckedUpdateWithoutUserInput = {
@@ -723,10 +1004,13 @@ export type JobApplicationUncheckedUpdateWithoutUserInput = {
   jobUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverLetterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.ApplicationEventUncheckedUpdateManyWithoutApplicationNestedInput
 }
 
 export type JobApplicationUncheckedUpdateManyWithoutUserInput = {
@@ -737,6 +1021,74 @@ export type JobApplicationUncheckedUpdateManyWithoutUserInput = {
   jobUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverLetterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type JobApplicationCreateManyCoverLetterInput = {
+  id?: string
+  userId: string
+  company: string
+  role: string
+  status?: $Enums.ApplicationStatus
+  jobUrl?: string | null
+  location?: string | null
+  appliedAt?: Date | string
+  reminderAt?: Date | string | null
+  notes?: string | null
+  resumeId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type JobApplicationUpdateWithoutCoverLetterInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  company?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
+  jobUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutJobApplicationsNestedInput
+  resume?: Prisma.ResumeUpdateOneWithoutApplicationsNestedInput
+  events?: Prisma.ApplicationEventUpdateManyWithoutApplicationNestedInput
+}
+
+export type JobApplicationUncheckedUpdateWithoutCoverLetterInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  company?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
+  jobUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.ApplicationEventUncheckedUpdateManyWithoutApplicationNestedInput
+}
+
+export type JobApplicationUncheckedUpdateManyWithoutCoverLetterInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  company?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
+  jobUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -752,7 +1104,9 @@ export type JobApplicationCreateManyResumeInput = {
   jobUrl?: string | null
   location?: string | null
   appliedAt?: Date | string
+  reminderAt?: Date | string | null
   notes?: string | null
+  coverLetterId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -765,10 +1119,13 @@ export type JobApplicationUpdateWithoutResumeInput = {
   jobUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutJobApplicationsNestedInput
+  coverLetter?: Prisma.CoverLetterUpdateOneWithoutApplicationsNestedInput
+  events?: Prisma.ApplicationEventUpdateManyWithoutApplicationNestedInput
 }
 
 export type JobApplicationUncheckedUpdateWithoutResumeInput = {
@@ -780,9 +1137,12 @@ export type JobApplicationUncheckedUpdateWithoutResumeInput = {
   jobUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverLetterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.ApplicationEventUncheckedUpdateManyWithoutApplicationNestedInput
 }
 
 export type JobApplicationUncheckedUpdateManyWithoutResumeInput = {
@@ -794,11 +1154,42 @@ export type JobApplicationUncheckedUpdateManyWithoutResumeInput = {
   jobUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  coverLetterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type JobApplicationCountOutputType
+ */
+
+export type JobApplicationCountOutputType = {
+  events: number
+}
+
+export type JobApplicationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  events?: boolean | JobApplicationCountOutputTypeCountEventsArgs
+}
+
+/**
+ * JobApplicationCountOutputType without action
+ */
+export type JobApplicationCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the JobApplicationCountOutputType
+   */
+  select?: Prisma.JobApplicationCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * JobApplicationCountOutputType without action
+ */
+export type JobApplicationCountOutputTypeCountEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ApplicationEventWhereInput
+}
 
 
 export type JobApplicationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -810,12 +1201,17 @@ export type JobApplicationSelect<ExtArgs extends runtime.Types.Extensions.Intern
   jobUrl?: boolean
   location?: boolean
   appliedAt?: boolean
+  reminderAt?: boolean
   notes?: boolean
   resumeId?: boolean
+  coverLetterId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   resume?: boolean | Prisma.JobApplication$resumeArgs<ExtArgs>
+  coverLetter?: boolean | Prisma.JobApplication$coverLetterArgs<ExtArgs>
+  events?: boolean | Prisma.JobApplication$eventsArgs<ExtArgs>
+  _count?: boolean | Prisma.JobApplicationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["jobApplication"]>
 
 export type JobApplicationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -827,12 +1223,15 @@ export type JobApplicationSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   jobUrl?: boolean
   location?: boolean
   appliedAt?: boolean
+  reminderAt?: boolean
   notes?: boolean
   resumeId?: boolean
+  coverLetterId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   resume?: boolean | Prisma.JobApplication$resumeArgs<ExtArgs>
+  coverLetter?: boolean | Prisma.JobApplication$coverLetterArgs<ExtArgs>
 }, ExtArgs["result"]["jobApplication"]>
 
 export type JobApplicationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -844,12 +1243,15 @@ export type JobApplicationSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   jobUrl?: boolean
   location?: boolean
   appliedAt?: boolean
+  reminderAt?: boolean
   notes?: boolean
   resumeId?: boolean
+  coverLetterId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   resume?: boolean | Prisma.JobApplication$resumeArgs<ExtArgs>
+  coverLetter?: boolean | Prisma.JobApplication$coverLetterArgs<ExtArgs>
 }, ExtArgs["result"]["jobApplication"]>
 
 export type JobApplicationSelectScalar = {
@@ -861,24 +1263,31 @@ export type JobApplicationSelectScalar = {
   jobUrl?: boolean
   location?: boolean
   appliedAt?: boolean
+  reminderAt?: boolean
   notes?: boolean
   resumeId?: boolean
+  coverLetterId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type JobApplicationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "company" | "role" | "status" | "jobUrl" | "location" | "appliedAt" | "notes" | "resumeId" | "createdAt" | "updatedAt", ExtArgs["result"]["jobApplication"]>
+export type JobApplicationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "company" | "role" | "status" | "jobUrl" | "location" | "appliedAt" | "reminderAt" | "notes" | "resumeId" | "coverLetterId" | "createdAt" | "updatedAt", ExtArgs["result"]["jobApplication"]>
 export type JobApplicationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   resume?: boolean | Prisma.JobApplication$resumeArgs<ExtArgs>
+  coverLetter?: boolean | Prisma.JobApplication$coverLetterArgs<ExtArgs>
+  events?: boolean | Prisma.JobApplication$eventsArgs<ExtArgs>
+  _count?: boolean | Prisma.JobApplicationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type JobApplicationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   resume?: boolean | Prisma.JobApplication$resumeArgs<ExtArgs>
+  coverLetter?: boolean | Prisma.JobApplication$coverLetterArgs<ExtArgs>
 }
 export type JobApplicationIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   resume?: boolean | Prisma.JobApplication$resumeArgs<ExtArgs>
+  coverLetter?: boolean | Prisma.JobApplication$coverLetterArgs<ExtArgs>
 }
 
 export type $JobApplicationPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -886,6 +1295,8 @@ export type $JobApplicationPayload<ExtArgs extends runtime.Types.Extensions.Inte
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
     resume: Prisma.$ResumePayload<ExtArgs> | null
+    coverLetter: Prisma.$CoverLetterPayload<ExtArgs> | null
+    events: Prisma.$ApplicationEventPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -896,8 +1307,10 @@ export type $JobApplicationPayload<ExtArgs extends runtime.Types.Extensions.Inte
     jobUrl: string | null
     location: string | null
     appliedAt: Date
+    reminderAt: Date | null
     notes: string | null
     resumeId: string | null
+    coverLetterId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["jobApplication"]>
@@ -1296,6 +1709,8 @@ export interface Prisma__JobApplicationClient<T, Null = never, ExtArgs extends r
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   resume<T extends Prisma.JobApplication$resumeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.JobApplication$resumeArgs<ExtArgs>>): Prisma.Prisma__ResumeClient<runtime.Types.Result.GetResult<Prisma.$ResumePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  coverLetter<T extends Prisma.JobApplication$coverLetterArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.JobApplication$coverLetterArgs<ExtArgs>>): Prisma.Prisma__CoverLetterClient<runtime.Types.Result.GetResult<Prisma.$CoverLetterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  events<T extends Prisma.JobApplication$eventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.JobApplication$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApplicationEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1333,8 +1748,10 @@ export interface JobApplicationFieldRefs {
   readonly jobUrl: Prisma.FieldRef<"JobApplication", 'String'>
   readonly location: Prisma.FieldRef<"JobApplication", 'String'>
   readonly appliedAt: Prisma.FieldRef<"JobApplication", 'DateTime'>
+  readonly reminderAt: Prisma.FieldRef<"JobApplication", 'DateTime'>
   readonly notes: Prisma.FieldRef<"JobApplication", 'String'>
   readonly resumeId: Prisma.FieldRef<"JobApplication", 'String'>
+  readonly coverLetterId: Prisma.FieldRef<"JobApplication", 'String'>
   readonly createdAt: Prisma.FieldRef<"JobApplication", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"JobApplication", 'DateTime'>
 }
@@ -1754,6 +2171,49 @@ export type JobApplication$resumeArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   include?: Prisma.ResumeInclude<ExtArgs> | null
   where?: Prisma.ResumeWhereInput
+}
+
+/**
+ * JobApplication.coverLetter
+ */
+export type JobApplication$coverLetterArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CoverLetter
+   */
+  select?: Prisma.CoverLetterSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CoverLetter
+   */
+  omit?: Prisma.CoverLetterOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CoverLetterInclude<ExtArgs> | null
+  where?: Prisma.CoverLetterWhereInput
+}
+
+/**
+ * JobApplication.events
+ */
+export type JobApplication$eventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ApplicationEvent
+   */
+  select?: Prisma.ApplicationEventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ApplicationEvent
+   */
+  omit?: Prisma.ApplicationEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ApplicationEventInclude<ExtArgs> | null
+  where?: Prisma.ApplicationEventWhereInput
+  orderBy?: Prisma.ApplicationEventOrderByWithRelationInput | Prisma.ApplicationEventOrderByWithRelationInput[]
+  cursor?: Prisma.ApplicationEventWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ApplicationEventScalarFieldEnum | Prisma.ApplicationEventScalarFieldEnum[]
 }
 
 /**

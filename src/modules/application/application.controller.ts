@@ -31,6 +31,16 @@ export const update = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, { status: status.OK, success: true, message: 'Application updated.', data });
 });
 
+export const patchStatus = catchAsync(async (req: Request, res: Response) => {
+  const data = await applicationService.patchStatus(req.user.userId, queryString(req.params.id) ?? '', req.body);
+  sendResponse(res, { status: status.OK, success: true, message: 'Application status updated.', data });
+});
+
+export const timeline = catchAsync(async (req: Request, res: Response) => {
+  const data = await applicationService.getTimeline(req.user.userId, queryString(req.params.id) ?? '');
+  sendResponse(res, { status: status.OK, success: true, message: 'Timeline retrieved.', data });
+});
+
 export const remove = catchAsync(async (req: Request, res: Response) => {
   const data = await applicationService.deleteApplication(req.user.userId, queryString(req.params.id) ?? '');
   sendResponse(res, { status: status.OK, success: true, message: 'Application deleted.', data });
