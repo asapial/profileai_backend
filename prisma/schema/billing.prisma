@@ -1,0 +1,148 @@
+// ─── Billing (U-P14) ──────────────────────────────────────────────────────
+// Mirrors Stripe's data model — Stripe is the source of truth, but we
+// snapshot enough locally to:
+//   - Render a "current plan" page without a live Stripe API call.
+//   - Apply feature-gates (apiLimit / resumeLimit) the moment a
+//     subscription is confirmed in the webhook.
+//   - Idempotency: every inbound webhook event is recorded before we
+//     react to it so replays are no-ops.
+// ─────────────────────────────────────────────────────────────────────────
+
+// Local snapshot of each Stripe Price — refreshed by admin tooling.
+model Plan {
+  id              String   @id @default(cuid())
+  slug            String   @unique // "free" | "pro" | "business"
+  name            String
+  description     String?
+  stripePriceId   String   @unique
+  stripeProductId String
+  amount          Int // cents
+  currency        String   @default("usd")
+  interval        BillingInterval @default(MONTH)
+  isActive        Boolean  @default(true)
+  features        Json
+  apiLimit        Int      @default(0)
+  resumeLimit     Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  subscriptions   Subscription[]
+  @@index([slug])
+  @@map("plan")
+}
+
+// One row per user (a user has at most one *active* subscription;
+// history is kept separately via Subscription). Mirrors Stripe's
+// "active customer with one sub" — multi-sub / seat-based billing is
+// not in scope for v1.
+model Subscription {
+  id                    String   @id @default(cuid())
+  userId                String
+  planId                String
+  stripeSubscriptionId  String   @unique
+  stripeCustomerId      String
+  status                SubscriptionStatus @default(ACTIVE)
+  currentPeriodStart    DateTime
+  currentPeriodEnd      DateTime
+  cancelAtPeriodEnd     Boolean  @default(false)
+  canceledAt            DateTime?
+  couponId              String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan                  Plan     @relation(fields: [planId], references: [id])
+  coupon                Coupon?  @relation(fields: [couponId], references: [id])
+
+  @@index([userId])
+  @@index([stripeCustomerId])
+  @@map("subscription")
+}
+
+model Invoice {
+  id                 String   @id @default(cuid())
+  userId             String
+  stripeInvoiceId    String   @unique
+  amountPaid         Int
+  amountDue          Int
+  currency           String   @default("usd")
+  status             InvoiceStatus @default(PAID)
+  hostedInvoiceUrl   String?
+  invoicePdfUrl      String?
+  issuedAt           DateTime
+  paidAt             DateTime?
+
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("invoice")
+}
+
+// Promo codes — applied client-side via /billing/coupons/redeem then
+// carried into the Checkout session.
+model Coupon {
+  id                  String   @id @default(cuid())
+  code                String   @unique
+  stripeCouponId      String?  @unique
+  percentOff          Int?
+  amountOff           Int?
+  currency            String   @default("usd")
+  duration            CouponDuration @default(ONCE)
+  durationMonths      Int?
+  maxRedemptions      Int?
+  redeemed            Int      @default(0)
+  expiresAt           DateTime?
+  isActive            Boolean  @default(true)
+  createdAt           DateTime @default(now())
+
+  subscriptions       Subscription[]
+  @@map("coupon")
+}
+
+// Webhook event ledger — every Stripe event we accept goes here first.
+// We check on `stripeEventId` before mutating to keep replays idempotent.
+model PaymentEvent {
+  id              String   @id @default(cuid())
+  stripeEventId   String   @unique
+  type            String
+  processed       Boolean  @default(false)
+  processedAt     DateTime?
+  payload         Json
+  receivedAt      DateTime @default(now())
+  errorMessage    String?
+
+  @@index([type])
+  @@map("payment_event")
+}
+
+enum BillingInterval {
+  MONTH
+  YEAR
+  @@map("billing_interval")
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  INCOMPLETE
+  UNPAID
+  @@map("subscription_status")
+}
+
+enum InvoiceStatus {
+  DRAFT
+  OPEN
+  PAID
+  UNCOLLECTIBLE
+  VOID
+  @@map("invoice_status")
+}
+
+enum CouponDuration {
+  ONCE
+  REPEATING
+  FOREVER
+  @@map("coupon_duration")
+}

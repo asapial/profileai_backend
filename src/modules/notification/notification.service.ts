@@ -69,3 +69,55 @@ export const deleteNotification = async (userId: string, id: string) => {
   await bustDashboardCache(userId);
   return { id };
 };
+
+// ─── Dispatcher helper ──────────────────────────────────────────────────────
+// Single entry point every other module should use to surface in-app activity
+// (resume exports finishing, application status changes, billing alerts,
+// etc.). It wraps the row insert + cache bust so callers don't have to
+// remember either step — and crucially, fails silently (logs only) so a
+// notification failure can never block the parent business operation.
+export interface CreateNotificationInput {
+  userId: string;
+  type:
+    | 'SYSTEM'
+    | 'RESUME'
+    | 'APPLICATION'
+    | 'BILLING'
+    | 'SECURITY';
+  title: string;
+  body?: string | null;
+  link?: string | null;
+}
+
+export const createNotification = async (
+  input: CreateNotificationInput
+): Promise<void> => {
+  try {
+    await prisma.notification.create({
+      data: {
+        userId: input.userId,
+        type: input.type,
+        title: input.title,
+        body: input.body ?? null,
+        link: input.link ?? null,
+        read: false,
+      },
+    });
+    await bustDashboardCache(input.userId);
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error('[notification] createNotification failed:', err);
+    // Never propagate — notifications are best-effort UX, not business
+    // state. The parent write should succeed even if this side-effect
+    // throws.
+  }
+};
+
+export const getUnreadCount = async (
+  userId: string
+): Promise<{ unreadCount: number }> => {
+  const unreadCount = await prisma.notification.count({
+    where: { userId, read: false },
+  });
+  return { unreadCount };
+};

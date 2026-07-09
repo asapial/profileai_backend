@@ -58,6 +58,11 @@ export const ModelName = {
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification',
+  Plan: 'Plan',
+  Subscription: 'Subscription',
+  Invoice: 'Invoice',
+  Coupon: 'Coupon',
+  PaymentEvent: 'PaymentEvent',
   CoverLetter: 'CoverLetter',
   ExportJob: 'ExportJob',
   Notification: 'Notification',
@@ -70,6 +75,9 @@ export const ModelName = {
   AdminProfile: 'AdminProfile',
   Project: 'Project',
   Reference: 'Reference',
+  Referral: 'Referral',
+  RewardLedger: 'RewardLedger',
+  ReferralProgram: 'ReferralProgram',
   ResumeTemplate: 'ResumeTemplate',
   Resume: 'Resume',
   ResumeHistory: 'ResumeHistory',
@@ -155,8 +163,6 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 
 
 export const SessionScalarFieldEnum = {
-  id: 'id',
-  expiresAt: 'expiresAt',
   token: 'token',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
@@ -198,6 +204,96 @@ export const VerificationScalarFieldEnum = {
 } as const
 
 export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
+
+
+export const PlanScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  name: 'name',
+  description: 'description',
+  stripePriceId: 'stripePriceId',
+  stripeProductId: 'stripeProductId',
+  amount: 'amount',
+  currency: 'currency',
+  interval: 'interval',
+  isActive: 'isActive',
+  features: 'features',
+  apiLimit: 'apiLimit',
+  resumeLimit: 'resumeLimit',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PlanScalarFieldEnum = (typeof PlanScalarFieldEnum)[keyof typeof PlanScalarFieldEnum]
+
+
+export const SubscriptionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  planId: 'planId',
+  stripeSubscriptionId: 'stripeSubscriptionId',
+  stripeCustomerId: 'stripeCustomerId',
+  status: 'status',
+  currentPeriodStart: 'currentPeriodStart',
+  currentPeriodEnd: 'currentPeriodEnd',
+  cancelAtPeriodEnd: 'cancelAtPeriodEnd',
+  canceledAt: 'canceledAt',
+  couponId: 'couponId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SubscriptionScalarFieldEnum = (typeof SubscriptionScalarFieldEnum)[keyof typeof SubscriptionScalarFieldEnum]
+
+
+export const InvoiceScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  stripeInvoiceId: 'stripeInvoiceId',
+  amountPaid: 'amountPaid',
+  amountDue: 'amountDue',
+  currency: 'currency',
+  status: 'status',
+  hostedInvoiceUrl: 'hostedInvoiceUrl',
+  invoicePdfUrl: 'invoicePdfUrl',
+  issuedAt: 'issuedAt',
+  paidAt: 'paidAt'
+} as const
+
+export type InvoiceScalarFieldEnum = (typeof InvoiceScalarFieldEnum)[keyof typeof InvoiceScalarFieldEnum]
+
+
+export const CouponScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  stripeCouponId: 'stripeCouponId',
+  percentOff: 'percentOff',
+  amountOff: 'amountOff',
+  currency: 'currency',
+  duration: 'duration',
+  durationMonths: 'durationMonths',
+  maxRedemptions: 'maxRedemptions',
+  redeemed: 'redeemed',
+  expiresAt: 'expiresAt',
+  isActive: 'isActive',
+  createdAt: 'createdAt'
+} as const
+
+export type CouponScalarFieldEnum = (typeof CouponScalarFieldEnum)[keyof typeof CouponScalarFieldEnum]
+
+
+export const PaymentEventScalarFieldEnum = {
+  id: 'id',
+  stripeEventId: 'stripeEventId',
+  type: 'type',
+  processed: 'processed',
+  processedAt: 'processedAt',
+  payload: 'payload',
+  receivedAt: 'receivedAt',
+  errorMessage: 'errorMessage'
+} as const
+
+export type PaymentEventScalarFieldEnum = (typeof PaymentEventScalarFieldEnum)[keyof typeof PaymentEventScalarFieldEnum]
 
 
 export const CoverLetterScalarFieldEnum = {
@@ -345,6 +441,7 @@ export const UserProfileScalarFieldEnum = {
   resumeCount: 'resumeCount',
   apiCallCount: 'apiCallCount',
   referredByCode: 'referredByCode',
+  referralCode: 'referralCode',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -400,6 +497,51 @@ export const ReferenceScalarFieldEnum = {
 } as const
 
 export type ReferenceScalarFieldEnum = (typeof ReferenceScalarFieldEnum)[keyof typeof ReferenceScalarFieldEnum]
+
+
+export const ReferralScalarFieldEnum = {
+  id: 'id',
+  referrerId: 'referrerId',
+  refereeId: 'refereeId',
+  referralCode: 'referralCode',
+  trigger: 'trigger',
+  status: 'status',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  rewardId: 'rewardId',
+  createdAt: 'createdAt',
+  rewardedAt: 'rewardedAt'
+} as const
+
+export type ReferralScalarFieldEnum = (typeof ReferralScalarFieldEnum)[keyof typeof ReferralScalarFieldEnum]
+
+
+export const RewardLedgerScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  amount: 'amount',
+  reason: 'reason',
+  status: 'status',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type RewardLedgerScalarFieldEnum = (typeof RewardLedgerScalarFieldEnum)[keyof typeof RewardLedgerScalarFieldEnum]
+
+
+export const ReferralProgramScalarFieldEnum = {
+  id: 'id',
+  isActive: 'isActive',
+  referrerReward: 'referrerReward',
+  refereeReward: 'refereeReward',
+  paidConversionBonus: 'paidConversionBonus',
+  blockSelfReferral: 'blockSelfReferral',
+  dailyIpCap: 'dailyIpCap',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReferralProgramScalarFieldEnum = (typeof ReferralProgramScalarFieldEnum)[keyof typeof ReferralProgramScalarFieldEnum]
 
 
 export const ResumeTemplateScalarFieldEnum = {

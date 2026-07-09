@@ -6,7 +6,7 @@ import { tokenUtils } from '../../utils/token';
 import * as authService from './auth.service';
 
 export const register = catchAsync(async (req: Request, res: Response) => {
-  const result = await authService.registerUser(req.body);
+  const result = await authService.registerUser(req.body, req);
   sendResponse(res, {
     status: status.CREATED,
     success: true,

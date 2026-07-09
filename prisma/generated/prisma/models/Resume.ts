@@ -825,14 +825,6 @@ export type EnumResumeStatusFieldUpdateOperationsInput = {
   set?: $Enums.ResumeStatus
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type ResumeCreateNestedOneWithoutHistoryInput = {
   create?: Prisma.XOR<Prisma.ResumeCreateWithoutHistoryInput, Prisma.ResumeUncheckedCreateWithoutHistoryInput>
   connectOrCreate?: Prisma.ResumeCreateOrConnectWithoutHistoryInput

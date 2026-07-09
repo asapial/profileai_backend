@@ -48,6 +48,12 @@ interface EnvConfig {
   };
 
   PUPPETEER_SERVICE_URL: string;
+  STRIPE: {
+    STRIPE_ENABLED: boolean;
+    STRIPE_SECRET_KEY: string | undefined;
+    STRIPE_WEBHOOK_SECRET: string | undefined;
+    STRIPE_PORTAL_RETURN_URL: string;
+  };
 }
 
 const loadEnvVariables = (): EnvConfig => {
@@ -141,6 +147,12 @@ const loadEnvVariables = (): EnvConfig => {
       CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET as string,
     },
     PUPPETEER_SERVICE_URL: process.env.PUPPETEER_SERVICE_URL as string,
+    STRIPE: {
+      STRIPE_ENABLED: (process.env.STRIPE_ENABLED ?? 'false').toLowerCase() === 'true',
+      STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY as string | undefined,
+      STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET as string | undefined,
+      STRIPE_PORTAL_RETURN_URL: process.env.STRIPE_PORTAL_RETURN_URL ?? '/dashboard/billing',
+    },
   };
 };
 

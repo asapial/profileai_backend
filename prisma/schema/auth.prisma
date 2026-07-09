@@ -32,14 +32,14 @@ model User {
   projects               Project[]  
   references             Reference[]
   exportJobs             ExportJob[]
-
-  @@unique([email])
-  @@map("user")
+  referralsGiven         Referral[]   @relation("ReferralsGiven")
+  referralReceived       Referral?    @relation("ReferralReceived")
+  rewardLedger           RewardLedger[]
+  subscriptions          Subscription[]
+  invoices               Invoice[]
 }
 
 model Session {
-  id        String   @id
-  expiresAt DateTime
   token     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

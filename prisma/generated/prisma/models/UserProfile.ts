@@ -52,6 +52,7 @@ export type UserProfileMinAggregateOutputType = {
   resumeCount: number | null
   apiCallCount: number | null
   referredByCode: string | null
+  referralCode: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -72,6 +73,7 @@ export type UserProfileMaxAggregateOutputType = {
   resumeCount: number | null
   apiCallCount: number | null
   referredByCode: string | null
+  referralCode: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -97,6 +99,7 @@ export type UserProfileCountAggregateOutputType = {
   resumeCount: number
   apiCallCount: number
   referredByCode: number
+  referralCode: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -129,6 +132,7 @@ export type UserProfileMinAggregateInputType = {
   resumeCount?: true
   apiCallCount?: true
   referredByCode?: true
+  referralCode?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -149,6 +153,7 @@ export type UserProfileMaxAggregateInputType = {
   resumeCount?: true
   apiCallCount?: true
   referredByCode?: true
+  referralCode?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -174,6 +179,7 @@ export type UserProfileCountAggregateInputType = {
   resumeCount?: true
   apiCallCount?: true
   referredByCode?: true
+  referralCode?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -286,6 +292,7 @@ export type UserProfileGroupByOutputType = {
   resumeCount: number
   apiCallCount: number
   referredByCode: string | null
+  referralCode: string | null
   createdAt: Date
   updatedAt: Date
   _count: UserProfileCountAggregateOutputType | null
@@ -334,6 +341,7 @@ export type UserProfileWhereInput = {
   resumeCount?: Prisma.IntFilter<"UserProfile"> | number
   apiCallCount?: Prisma.IntFilter<"UserProfile"> | number
   referredByCode?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  referralCode?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -360,6 +368,7 @@ export type UserProfileOrderByWithRelationInput = {
   resumeCount?: Prisma.SortOrder
   apiCallCount?: Prisma.SortOrder
   referredByCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  referralCode?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -368,6 +377,7 @@ export type UserProfileOrderByWithRelationInput = {
 export type UserProfileWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   userId?: string
+  referralCode?: string
   AND?: Prisma.UserProfileWhereInput | Prisma.UserProfileWhereInput[]
   OR?: Prisma.UserProfileWhereInput[]
   NOT?: Prisma.UserProfileWhereInput | Prisma.UserProfileWhereInput[]
@@ -392,7 +402,7 @@ export type UserProfileWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id" | "userId">
+}, "id" | "userId" | "referralCode">
 
 export type UserProfileOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -415,6 +425,7 @@ export type UserProfileOrderByWithAggregationInput = {
   resumeCount?: Prisma.SortOrder
   apiCallCount?: Prisma.SortOrder
   referredByCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  referralCode?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserProfileCountOrderByAggregateInput
@@ -448,6 +459,7 @@ export type UserProfileScalarWhereWithAggregatesInput = {
   resumeCount?: Prisma.IntWithAggregatesFilter<"UserProfile"> | number
   apiCallCount?: Prisma.IntWithAggregatesFilter<"UserProfile"> | number
   referredByCode?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
+  referralCode?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"UserProfile"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"UserProfile"> | Date | string
 }
@@ -472,6 +484,7 @@ export type UserProfileCreateInput = {
   resumeCount?: number
   apiCallCount?: number
   referredByCode?: string | null
+  referralCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutProfileInput
@@ -498,6 +511,7 @@ export type UserProfileUncheckedCreateInput = {
   resumeCount?: number
   apiCallCount?: number
   referredByCode?: string | null
+  referralCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -522,6 +536,7 @@ export type UserProfileUpdateInput = {
   resumeCount?: Prisma.IntFieldUpdateOperationsInput | number
   apiCallCount?: Prisma.IntFieldUpdateOperationsInput | number
   referredByCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referralCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
@@ -548,6 +563,7 @@ export type UserProfileUncheckedUpdateInput = {
   resumeCount?: Prisma.IntFieldUpdateOperationsInput | number
   apiCallCount?: Prisma.IntFieldUpdateOperationsInput | number
   referredByCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referralCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -573,6 +589,7 @@ export type UserProfileCreateManyInput = {
   resumeCount?: number
   apiCallCount?: number
   referredByCode?: string | null
+  referralCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -597,6 +614,7 @@ export type UserProfileUpdateManyMutationInput = {
   resumeCount?: Prisma.IntFieldUpdateOperationsInput | number
   apiCallCount?: Prisma.IntFieldUpdateOperationsInput | number
   referredByCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referralCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -622,6 +640,7 @@ export type UserProfileUncheckedUpdateManyInput = {
   resumeCount?: Prisma.IntFieldUpdateOperationsInput | number
   apiCallCount?: Prisma.IntFieldUpdateOperationsInput | number
   referredByCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referralCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -660,6 +679,7 @@ export type UserProfileCountOrderByAggregateInput = {
   resumeCount?: Prisma.SortOrder
   apiCallCount?: Prisma.SortOrder
   referredByCode?: Prisma.SortOrder
+  referralCode?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -685,6 +705,7 @@ export type UserProfileMaxOrderByAggregateInput = {
   resumeCount?: Prisma.SortOrder
   apiCallCount?: Prisma.SortOrder
   referredByCode?: Prisma.SortOrder
+  referralCode?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -705,6 +726,7 @@ export type UserProfileMinOrderByAggregateInput = {
   resumeCount?: Prisma.SortOrder
   apiCallCount?: Prisma.SortOrder
   referredByCode?: Prisma.SortOrder
+  referralCode?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -784,6 +806,7 @@ export type UserProfileCreateWithoutUserInput = {
   resumeCount?: number
   apiCallCount?: number
   referredByCode?: string | null
+  referralCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -808,6 +831,7 @@ export type UserProfileUncheckedCreateWithoutUserInput = {
   resumeCount?: number
   apiCallCount?: number
   referredByCode?: string | null
+  referralCode?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -848,6 +872,7 @@ export type UserProfileUpdateWithoutUserInput = {
   resumeCount?: Prisma.IntFieldUpdateOperationsInput | number
   apiCallCount?: Prisma.IntFieldUpdateOperationsInput | number
   referredByCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referralCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -872,6 +897,7 @@ export type UserProfileUncheckedUpdateWithoutUserInput = {
   resumeCount?: Prisma.IntFieldUpdateOperationsInput | number
   apiCallCount?: Prisma.IntFieldUpdateOperationsInput | number
   referredByCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referralCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -899,6 +925,7 @@ export type UserProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   resumeCount?: boolean
   apiCallCount?: boolean
   referredByCode?: boolean
+  referralCode?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -925,6 +952,7 @@ export type UserProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   resumeCount?: boolean
   apiCallCount?: boolean
   referredByCode?: boolean
+  referralCode?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -951,6 +979,7 @@ export type UserProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   resumeCount?: boolean
   apiCallCount?: boolean
   referredByCode?: boolean
+  referralCode?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -977,11 +1006,12 @@ export type UserProfileSelectScalar = {
   resumeCount?: boolean
   apiCallCount?: boolean
   referredByCode?: boolean
+  referralCode?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "firstName" | "lastName" | "phone" | "avatarUrl" | "headline" | "bio" | "location" | "website" | "linkedIn" | "github" | "skills" | "languages" | "education" | "experience" | "certifications" | "resumeCount" | "apiCallCount" | "referredByCode" | "createdAt" | "updatedAt", ExtArgs["result"]["userProfile"]>
+export type UserProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "firstName" | "lastName" | "phone" | "avatarUrl" | "headline" | "bio" | "location" | "website" | "linkedIn" | "github" | "skills" | "languages" | "education" | "experience" | "certifications" | "resumeCount" | "apiCallCount" | "referredByCode" | "referralCode" | "createdAt" | "updatedAt", ExtArgs["result"]["userProfile"]>
 export type UserProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -1018,6 +1048,7 @@ export type $UserProfilePayload<ExtArgs extends runtime.Types.Extensions.Interna
     resumeCount: number
     apiCallCount: number
     referredByCode: string | null
+    referralCode: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["userProfile"]>
@@ -1464,6 +1495,7 @@ export interface UserProfileFieldRefs {
   readonly resumeCount: Prisma.FieldRef<"UserProfile", 'Int'>
   readonly apiCallCount: Prisma.FieldRef<"UserProfile", 'Int'>
   readonly referredByCode: Prisma.FieldRef<"UserProfile", 'String'>
+  readonly referralCode: Prisma.FieldRef<"UserProfile", 'String'>
   readonly createdAt: Prisma.FieldRef<"UserProfile", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"UserProfile", 'DateTime'>
 }

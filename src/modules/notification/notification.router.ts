@@ -7,6 +7,7 @@ const router = Router();
 router.use(checkAuth());
 
 router.get('/', notificationController.list);
+router.get('/unread-count', notificationController.unreadCount);
 router.patch('/read-all', notificationController.markAllRead);
 router.patch('/:id/read', notificationController.markRead);
 router.delete('/:id', notificationController.remove);

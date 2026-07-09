@@ -30,8 +30,3 @@ export const remove = catchAsync(async (req: Request, res: Response) => {
   const data = await notificationService.deleteNotification(req.user.userId, queryString(req.params.id) ?? '');
   sendResponse(res, { status: status.OK, success: true, message: 'Notification deleted.', data });
 });
-
-export const unreadCount = catchAsync(async (req: Request, res: Response) => {
-  const data = await notificationService.getUnreadCount(req.user.userId);
-  sendResponse(res, { status: status.OK, success: true, message: 'Unread count retrieved.', data });
-});

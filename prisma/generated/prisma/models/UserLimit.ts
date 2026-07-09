@@ -472,14 +472,6 @@ export type UserLimitUncheckedUpdateOneWithoutUserNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserLimitUpdateToOneWithWhereWithoutUserInput, Prisma.UserLimitUpdateWithoutUserInput>, Prisma.UserLimitUncheckedUpdateWithoutUserInput>
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type UserLimitCreateWithoutUserInput = {
   id?: string
   resumeLimit?: number

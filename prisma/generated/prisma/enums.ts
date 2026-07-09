@@ -32,6 +32,46 @@ export const ApplicationEventType = {
 export type ApplicationEventType = (typeof ApplicationEventType)[keyof typeof ApplicationEventType]
 
 
+export const BillingInterval = {
+  MONTH: 'MONTH',
+  YEAR: 'YEAR'
+} as const
+
+export type BillingInterval = (typeof BillingInterval)[keyof typeof BillingInterval]
+
+
+export const SubscriptionStatus = {
+  TRIALING: 'TRIALING',
+  ACTIVE: 'ACTIVE',
+  PAST_DUE: 'PAST_DUE',
+  CANCELED: 'CANCELED',
+  INCOMPLETE: 'INCOMPLETE',
+  UNPAID: 'UNPAID'
+} as const
+
+export type SubscriptionStatus = (typeof SubscriptionStatus)[keyof typeof SubscriptionStatus]
+
+
+export const InvoiceStatus = {
+  DRAFT: 'DRAFT',
+  OPEN: 'OPEN',
+  PAID: 'PAID',
+  UNCOLLECTIBLE: 'UNCOLLECTIBLE',
+  VOID: 'VOID'
+} as const
+
+export type InvoiceStatus = (typeof InvoiceStatus)[keyof typeof InvoiceStatus]
+
+
+export const CouponDuration = {
+  ONCE: 'ONCE',
+  REPEATING: 'REPEATING',
+  FOREVER: 'FOREVER'
+} as const
+
+export type CouponDuration = (typeof CouponDuration)[keyof typeof CouponDuration]
+
+
 export const CoverLetterStatus = {
   DRAFT: 'DRAFT',
   GENERATED: 'GENERATED',
@@ -114,3 +154,38 @@ export const NotificationType = {
 } as const
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
+
+
+export const ReferralTrigger = {
+  EMAIL_VERIFIED: 'EMAIL_VERIFIED',
+  SUBSCRIBED: 'SUBSCRIBED'
+} as const
+
+export type ReferralTrigger = (typeof ReferralTrigger)[keyof typeof ReferralTrigger]
+
+
+export const ReferralStatus = {
+  PENDING: 'PENDING',
+  REWARDED: 'REWARDED',
+  VOIDED: 'VOIDED'
+} as const
+
+export type ReferralStatus = (typeof ReferralStatus)[keyof typeof ReferralStatus]
+
+
+export const RewardType = {
+  API_CREDIT: 'API_CREDIT',
+  RESUME_CREDIT: 'RESUME_CREDIT',
+  CASH: 'CASH'
+} as const
+
+export type RewardType = (typeof RewardType)[keyof typeof RewardType]
+
+
+export const RewardStatus = {
+  PENDING: 'PENDING',
+  GRANTED: 'GRANTED',
+  VOIDED: 'VOIDED'
+} as const
+
+export type RewardStatus = (typeof RewardStatus)[keyof typeof RewardStatus]

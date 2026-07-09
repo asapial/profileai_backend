@@ -1,0 +1,101 @@
+// ─────────────────────────────────────────────────────────────────────────
+// Referral Program (U-P13)
+//
+// One row per referral relationship. The referrer (`referrerId`) and
+// referee (`refereeId`) are the two User ids involved. We keep this
+// denormalized on UserProfile.referredByCode so registration can stamp
+// the incoming code without a join.
+//
+// RewardLedger records every reward event (granted, voided, paid) so
+// we have an immutable audit trail.
+//
+// ReferralProgram is a singleton (we always read id="default") that
+// stores the current reward rules (signup credits, percentage payouts,
+// eligibility conditions). This lets ops tweak rewards without a
+// migration.
+// ─────────────────────────────────────────────────────────────────────────
+
+model Referral {
+  id            String           @id @default(cuid())
+  referrerId    String
+  refereeId     String           @unique
+  referralCode  String
+  // The referee action that unlocked the reward — at present we only
+  // support EMAIL_VERIFIED but the enum leaves room for SUBSCRIBED.
+  trigger       ReferralTrigger  @default(EMAIL_VERIFIED)
+  status        ReferralStatus   @default(PENDING)
+  ipAddress     String?
+  userAgent     String?
+  rewardId      String?          @unique
+  createdAt     DateTime         @default(now())
+  rewardedAt    DateTime?
+
+  referrer User          @relation("ReferralsGiven",    fields: [referrerId], references: [id], onDelete: Cascade)
+  referee  User          @relation("ReferralReceived",  fields: [refereeId],  references: [id], onDelete: Cascade)
+  reward   RewardLedger? @relation(fields: [rewardId],   references: [id])
+
+  @@index([referrerId, status])
+  @@index([referralCode])
+  @@map("referral")
+}
+
+model RewardLedger {
+  id            String        @id @default(cuid())
+  userId        String
+  type          RewardType
+  // Positive = credits added, Negative = clawback. Stored as Int so we
+  // can switch to cents/credits without a schema change.
+  amount        Int
+  // Free-form reason for audit ("REFERRAL_BONUS", "ADMIN_ADJUSTMENT").
+  reason        String
+  status        RewardStatus  @default(GRANTED)
+  metadata      Json?
+  createdAt     DateTime      @default(now())
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  referral  Referral?
+
+  @@index([userId, type, createdAt])
+  @@map("reward_ledger")
+}
+
+model ReferralProgram {
+  id                  String   @id @default("default")
+  isActive            Boolean  @default(true)
+  // API credits granted to the REFERRER when a referee verifies email.
+  referrerReward      Int      @default(50)
+  // API credits granted to the REFEREE on the same trigger.
+  refereeReward       Int      @default(25)
+  // Optional bonus when the referee converts to a paid plan. 0 disables.
+  paidConversionBonus Int      @default(0)
+  // Self-referral guard (always on, stored for explicitness).
+  blockSelfReferral   Boolean  @default(true)
+  // Per-IP daily cap to deter device-farm abuse.
+  dailyIpCap          Int      @default(3)
+  updatedAt           DateTime @updatedAt
+
+  @@map("referral_program")
+}
+
+enum ReferralTrigger {
+  EMAIL_VERIFIED
+  SUBSCRIBED
+}
+
+enum ReferralStatus {
+  PENDING
+  REWARDED
+  VOIDED
+}
+
+enum RewardType {
+  API_CREDIT
+  RESUME_CREDIT
+  CASH
+}
+
+enum RewardStatus {
+  PENDING
+  GRANTED
+  VOIDED
+}

@@ -7,6 +7,7 @@ import { auth } from "./lib/auth";
 import { indexRouter } from ".";
 import { globalErrorHandler } from "./middleware/globalErrorHandler";
 import { envVars } from "./config/env";
+import { stripeWebhookRouter } from "./modules/billing/stripe.webhooks.router";
 
 const app: Application = express();
 
@@ -15,6 +16,11 @@ app.use(helmet());
 
 // ─── Core Middleware ──────────────────────────────────
 app.use(cookieParser());
+
+// Stripe webhook MUST run before express.json() so the signature
+// verifier sees the raw byte stream.
+app.use('/webhooks', stripeWebhookRouter);
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 

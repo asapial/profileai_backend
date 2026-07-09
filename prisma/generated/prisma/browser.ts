@@ -53,6 +53,31 @@ export type Account = Prisma.AccountModel
  */
 export type Verification = Prisma.VerificationModel
 /**
+ * Model Plan
+ * 
+ */
+export type Plan = Prisma.PlanModel
+/**
+ * Model Subscription
+ * 
+ */
+export type Subscription = Prisma.SubscriptionModel
+/**
+ * Model Invoice
+ * 
+ */
+export type Invoice = Prisma.InvoiceModel
+/**
+ * Model Coupon
+ * 
+ */
+export type Coupon = Prisma.CouponModel
+/**
+ * Model PaymentEvent
+ * 
+ */
+export type PaymentEvent = Prisma.PaymentEventModel
+/**
  * Model CoverLetter
  * 
  */
@@ -112,6 +137,21 @@ export type Project = Prisma.ProjectModel
  * 
  */
 export type Reference = Prisma.ReferenceModel
+/**
+ * Model Referral
+ * 
+ */
+export type Referral = Prisma.ReferralModel
+/**
+ * Model RewardLedger
+ * 
+ */
+export type RewardLedger = Prisma.RewardLedgerModel
+/**
+ * Model ReferralProgram
+ * 
+ */
+export type ReferralProgram = Prisma.ReferralProgramModel
 /**
  * Model ResumeTemplate
  * 

@@ -14,6 +14,8 @@ import { analyticsRouter } from './modules/analytics/analytics.router';
 import { publicResumeRouter } from './modules/publicResume/publicResume.router';
 import { coverLetterRouter } from './modules/coverLetter/coverLetter.router';
 import { toolsRouter } from './modules/tools/tools.router';
+import { referralRouter } from './modules/referral/referral.router';
+import { billingRouter } from './modules/billing/billing.router';
 
 const router = Router();
 
@@ -33,5 +35,7 @@ router.use('/admin', adminRouter);
 router.use('/analytics', analyticsRouter);
 router.use('/cover-letters', coverLetterRouter);
 router.use('/tools', toolsRouter);
+router.use('/referrals', referralRouter);
+router.use('/billing', billingRouter);
 
 export const indexRouter = router;

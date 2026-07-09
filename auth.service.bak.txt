@@ -17,11 +17,6 @@ import {
   TwoFactorVerifyInput,
   VerifyEmailInput,
 } from './auth.schema';
-import {
-  claimReferralCode,
-  ensureReferralCodeForUser,
-  onEmailVerified,
-} from '../referral/referral.service';
 
 // ─── Constants ───────────────────────────────────────
 const OTP_TTL_MINUTES = 10;
@@ -222,7 +217,7 @@ const registerDevice = async (
 
 // ─── Auth Services ───────────────────────────────────
 
-export const registerUser = async (data: RegisterInput, req?: Request) => {
+export const registerUser = async (data: RegisterInput) => {
   const { firstName, lastName, email, password, referredByCode } = data;
 
   const existing = await prisma.user.findUnique({ where: { email } });
@@ -325,36 +320,6 @@ export const registerUser = async (data: RegisterInput, req?: Request) => {
     console.error('[registerUser] verification email failed:', err);
   });
 
-  // Referral side-effects — all best-effort, never block registration.
-  void (async () => {
-    try {
-      // (1) Every user gets their own referral code so they can start
-      //     inviting immediately. Idempotent — no-op if the upsert already
-      //     ran. We only run after the post-transaction profile exists.
-      await ensureReferralCodeForUser(user.id);
-
-      // (2) If the caller supplied a valid ref code, attribute the
-      //     invite. Self-referral / IP-cap / program-active guards live
-      //     in `claimReferralCode`.
-      if (referredByCode) {
-        const ip =
-          (req?.headers['x-forwarded-for'] as string | undefined)
-            ?.split(',')[0]
-            ?.trim() ?? req?.ip ?? null;
-        const ua = (req?.headers['user-agent'] as string | undefined) ?? null;
-        await claimReferralCode({
-          userId: user.id,
-          code: referredByCode,
-          ip,
-          userAgent: ua,
-        });
-      }
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error('[registerUser] referral side-effect failed:', err);
-    }
-  })();
-
   return { userId: user.id, email: user.email };
 };
 
@@ -373,16 +338,6 @@ export const verifyEmail = async (data: VerifyEmailInput) => {
   });
 
   await sendWelcomeEmail(email, user.name.split(' ')[0] ?? '');
-
-  // Referral payout: if this user came in via a referral code, mint the
-  // REWARDED status, credit both parties, and send in-app notifications.
-  // Best-effort — never throws back into the verify response.
-  try {
-    await onEmailVerified(user.id);
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error('[verifyEmail] referral reward failed:', err);
-  }
 
   return { message: 'Email verified successfully.' };
 };
