@@ -8,6 +8,7 @@
     "test:ai": "npx tsx src/scripts/testAiResponse.ts",
     "dev": "npx tsx watch src/server.ts",
     "seeding": "npx tsx src/scripts/seeding.ts",
+    "seed:user-profile": "npx tsx src/scripts/seedDemoUser.ts",
     "seed:templates": "npx tsx src/scripts/seedTemplates.ts",
     "migrate": "npx prisma migrate dev",
     "generate": "npx prisma generate",

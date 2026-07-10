@@ -1,10 +1,18 @@
 // Provision a known user+password for end-to-end login testing.
+import 'dotenv/config';
 import { PrismaClient } from '../prisma/generated/prisma/client.js';
+import { PrismaPg } from '@prisma/adapter-pg';
 import bcrypt from 'bcryptjs';
-const p = new PrismaClient();
+const p = new PrismaClient({
+  adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+});
 
-const TEST_EMAIL = 'heptex.project4@gmail.com';
-const TEST_PASSWORD = 'Test12345!';
+const TEST_EMAIL = process.env.SEED_USER_EMAIL;
+const TEST_PASSWORD = process.env.SEED_USER_PASSWORD;
+
+if (!TEST_EMAIL || !TEST_PASSWORD) {
+  throw new Error('SEED_USER_EMAIL and SEED_USER_PASSWORD are required.');
+}
 
 const user = await p.user.findUnique({
   where: { email: TEST_EMAIL },
