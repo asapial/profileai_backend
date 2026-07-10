@@ -1,0 +1,19 @@
+{
+  "url": "http://127.0.0.1:5000/api/v1/auth/login",
+  "status": 401,
+  "body": {
+    "success": false,
+    "message": "Invalid email or password.",
+    "errorSources": [
+      {
+        "path": "",
+        "message": "Invalid email or password."
+      }
+    ],
+    "error": {
+      "statusCode": 401
+    },
+    "stack": "Error: Invalid email or password.\n    at Module.loginUser (D:\\Project\\ProfileAI\\profileai_backend\\src\\modules\\auth\\auth.service.ts:426:11)\n    at async <anonymous> (D:\\Project\\ProfileAI\\profileai_backend\\src\\modules\\auth\\auth.controller.ts:29:18)\n    at async <anonymous> (D:\\Project\\ProfileAI\\profileai_backend\\src\\utils\\catchAsync.ts:8:13)"
+  },
+  "error": null
+}

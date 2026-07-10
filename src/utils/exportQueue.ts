@@ -152,3 +152,15 @@ exportWorker.on('completed', (job) => {
 exportWorker.on('failed', (job, err) => {
   console.error(`[Export] Job ${job?.id} failed:`, err.message);
 });
+
+// --- Hot-reload cleanup ---------------------------------
+// Close the BullMQ Queue + Worker so the per-instance ioredis pub/sub
+// connections are released on every `tsx watch` reload. Without this
+// orphans accumulate and eventually exhaust Redis's `maxclients`.
+const RELOAD_SIGNALS: NodeJS.Signals[] = ['SIGINT', 'SIGTERM'];
+for (const signal of RELOAD_SIGNALS) {
+  process.once(signal, () => {
+    console.log(`[Export] ${signal} received, closing queue + worker…`);
+    Promise.allSettled([exportWorker.close(), exportQueue.close()]).catch(() => undefined);
+  });
+}

@@ -453,13 +453,11 @@ export const loginUser = async (data: LoginInput, req: Request) => {
   });
   const refreshToken = tokenUtils.createRefreshToken({ userId: user.id });
 
-  // Create session record
-  const sessionId = crypto.randomUUID();
+  // Keep the database session valid for the refresh-token lifetime.
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
   await prisma.session.create({
     data: {
-      id: sessionId,
       token: accessToken,
       userId: user.id,
       deviceId,
@@ -501,12 +499,10 @@ export const verifyTwoFactor = async (data: TwoFactorVerifyInput, req: Request) 
   });
   const refreshToken = tokenUtils.createRefreshToken({ userId: user.id });
 
-  const sessionId = crypto.randomUUID();
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
   await prisma.session.create({
     data: {
-      id: sessionId,
       token: accessToken,
       userId: user.id,
       deviceId,

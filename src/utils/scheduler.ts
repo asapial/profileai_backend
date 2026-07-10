@@ -60,3 +60,12 @@ schedulerWorker.on('completed', (job) => {
 schedulerWorker.on('failed', (job, err) => {
   console.error(`[Scheduler] Job "${job?.name}" failed:`, err.message);
 });
+
+// --- Hot-reload cleanup ---------------------------------
+const RELOAD_SIGNALS: NodeJS.Signals[] = ['SIGINT', 'SIGTERM'];
+for (const signal of RELOAD_SIGNALS) {
+  process.once(signal, () => {
+    console.log(`[Scheduler] ${signal} received, closing queue + worker…`);
+    Promise.allSettled([schedulerWorker.close(), schedulerQueue.close()]).catch(() => undefined);
+  });
+}
