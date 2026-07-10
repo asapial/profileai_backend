@@ -3,7 +3,7 @@
 model User {
   id            String   @id
   name          String
-  email         String
+  email         String   @unique
   emailVerified Boolean  @default(false)
   image         String?
   createdAt     DateTime @default(now())
@@ -37,6 +37,11 @@ model User {
   rewardLedger           RewardLedger[]
   subscriptions          Subscription[]
   invoices               Invoice[]
+
+  // DB table is lowercase `"user"` (matches init migration); without this
+  // directive the Prisma client resolves the table as `"User"` and every
+  // query fails with P2021 "table does not exist".
+  @@map("user")
 }
 
 model Session {

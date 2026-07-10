@@ -49,6 +49,62 @@ export const deleteUser = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, { status: status.OK, success: true, message: result.message, data: null });
 });
 
+export const changeUserRole = catchAsync(async (req: Request, res: Response) => {
+  const { role } = req.body as { role: 'ADMIN' | 'USER' };
+  if (role !== 'ADMIN' && role !== 'USER') {
+    sendResponse(res, {
+      status: status.BAD_REQUEST,
+      success: false,
+      message: 'Role must be ADMIN or USER.',
+      data: null,
+    });
+    return;
+  }
+  const data = await adminService.changeUserRole(String(req.params.id), role);
+  sendResponse(res, {
+    status: status.OK,
+    success: true,
+    message: `Role updated to ${data.role}.`,
+    data,
+  });
+});
+
+export const verifyUserEmail = catchAsync(async (req: Request, res: Response) => {
+  const data = await adminService.verifyUserEmail(String(req.params.id));
+  sendResponse(res, {
+    status: status.OK,
+    success: true,
+    message: data.alreadyVerified
+      ? 'Email was already verified.'
+      : 'Email marked as verified.',
+    data,
+  });
+});
+
+export const forceResetUser = catchAsync(async (req: Request, res: Response) => {
+  const data = await adminService.forceResetUser(String(req.params.id));
+  sendResponse(res, {
+    status: status.OK,
+    success: true,
+    message: data.message,
+    data,
+  });
+});
+
+export const bulkUserAction = catchAsync(async (req: Request, res: Response) => {
+  const { userIds, action } = req.body as {
+    userIds: string[];
+    action: adminService.BulkUserAction;
+  };
+  const data = await adminService.bulkUserAction(userIds, action);
+  sendResponse(res, {
+    status: status.OK,
+    success: true,
+    message: `Bulk ${action} applied to ${data.affected} user(s).`,
+    data,
+  });
+});
+
 export const getSettings = catchAsync(async (_req: Request, res: Response) => {
   const data = await adminService.getSettings();
   sendResponse(res, { status: status.OK, success: true, message: 'Settings retrieved.', data });
