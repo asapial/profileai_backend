@@ -60,8 +60,8 @@ var require_main = __commonJS({
     function supportsAnsi() {
       return process.stdout.isTTY;
     }
-    function dim(text) {
-      return supportsAnsi() ? `\x1B[2m${text}\x1B[0m` : text;
+    function dim(text2) {
+      return supportsAnsi() ? `\x1B[2m${text2}\x1B[0m` : text2;
     }
     var LINE = /(?:^|^)\s*(?:export\s+)?([\w.-]+)(?:\s*=\s*?|:\s+?)(\s*'(?:\\'|[^'])*'|\s*"(?:\\"|[^"])*"|\s*`(?:\\`|[^`])*`|[^#\r\n]+)?\s*(?:#.*)?(?:$|$)/mg;
     function parse(src) {
@@ -3801,7 +3801,518 @@ async function getAiResponse(params) {
   };
 }
 
+// src/modules/resume/resumeDocument.ts
+import {
+  AlignmentType,
+  BorderStyle,
+  Document,
+  Packer,
+  Paragraph,
+  ShadingType,
+  Table,
+  TableBorders,
+  TableCell,
+  TableRow,
+  TextRun,
+  WidthType
+} from "docx";
+import PDFDocument from "pdfkit";
+var asObject = (value) => value && typeof value === "object" && !Array.isArray(value) ? value : {};
+var asObjects = (value) => Array.isArray(value) ? value.map(asObject) : [];
+var asStrings = (value) => Array.isArray(value) ? value.filter((item) => typeof item === "string").map((item) => item.trim()).filter(Boolean) : [];
+var text = (value) => typeof value === "string" || typeof value === "number" ? String(value).trim() : "";
+var cleanHex = (value) => value.replace("#", "").toUpperCase();
+function templateAccent(template) {
+  const source = `${template.htmlLayout}
+${template.cssStyles}`;
+  const match = source.match(/--accent\s*:\s*(#[0-9a-f]{6})/i);
+  if (match) return cleanHex(match[1]);
+  if (template.category === "CREATIVE") return "7C3AED";
+  if (template.category === "MODERN") return "4F46E5";
+  return "0F172A";
+}
+function sectionTitle(label, accent) {
+  return new Paragraph({
+    spacing: { before: 220, after: 80 },
+    border: {
+      bottom: { color: accent, size: 8, style: BorderStyle.SINGLE }
+    },
+    children: [
+      new TextRun({
+        text: label.toUpperCase(),
+        bold: true,
+        color: accent,
+        size: 19,
+        characterSpacing: 24
+      })
+    ]
+  });
+}
+function summaryChildren(data, accent) {
+  const summary = text(data.summary ?? data.bio);
+  if (!summary) return [];
+  return [
+    sectionTitle("Summary", accent),
+    new Paragraph({
+      spacing: { after: 80 },
+      children: [new TextRun({ text: summary, size: 20 })]
+    })
+  ];
+}
+function experienceChildren(data, accent) {
+  const rows = asObjects(data.experience);
+  if (!rows.length) return [];
+  const children = [sectionTitle("Experience", accent)];
+  for (const row of rows) {
+    const role = text(row.role ?? row.title);
+    const company = text(row.company);
+    const location = text(row.location);
+    const from = text(row.from ?? row.startDate);
+    const to = row.current ? "Present" : text(row.to ?? row.endDate);
+    children.push(
+      new Paragraph({
+        keepNext: true,
+        spacing: { before: 90, after: 20 },
+        children: [
+          new TextRun({ text: role || "Role", bold: true, size: 21 }),
+          new TextRun({ text: company ? `  |  ${company}` : "", bold: true, color: accent, size: 20 })
+        ]
+      }),
+      new Paragraph({
+        keepNext: true,
+        spacing: { after: 35 },
+        children: [
+          new TextRun({
+            text: [location, [from, to].filter(Boolean).join(" \u2013 ")].filter(Boolean).join("  |  "),
+            italics: true,
+            color: "64748B",
+            size: 17
+          })
+        ]
+      })
+    );
+    const bullets = asStrings(row.bullets);
+    const fallback = text(row.desc);
+    for (const bullet of bullets.length ? bullets : fallback ? fallback.split(/\r?\n/).filter(Boolean) : []) {
+      children.push(
+        new Paragraph({
+          bullet: { level: 0 },
+          spacing: { after: 35 },
+          children: [new TextRun({ text: bullet, size: 19 })]
+        })
+      );
+    }
+  }
+  return children;
+}
+function educationChildren(data, accent) {
+  const rows = asObjects(data.education);
+  if (!rows.length) return [];
+  const children = [sectionTitle("Education", accent)];
+  for (const row of rows) {
+    const school = text(row.school ?? row.institution);
+    const degree = [text(row.degree), text(row.field)].filter(Boolean).join(", ");
+    const dates = [text(row.from ?? row.startDate), text(row.to ?? row.endDate)].filter(Boolean).join(" \u2013 ");
+    const gpa = text(row.gpa);
+    children.push(
+      new Paragraph({
+        keepNext: true,
+        spacing: { before: 70, after: 20 },
+        children: [new TextRun({ text: school, bold: true, size: 20, color: accent })]
+      }),
+      new Paragraph({
+        spacing: { after: 50 },
+        children: [
+          new TextRun({ text: degree, size: 19 }),
+          new TextRun({ text: [dates, gpa ? `GPA ${gpa}` : ""].filter(Boolean).join("  |  "), italics: true, color: "64748B", size: 17, break: degree ? 1 : 0 })
+        ]
+      })
+    );
+  }
+  return children;
+}
+function stringListChildren(label, items, accent) {
+  if (!items.length) return [];
+  return [
+    sectionTitle(label, accent),
+    ...items.map(
+      (item) => new Paragraph({
+        bullet: { level: 0 },
+        spacing: { after: 25 },
+        children: [new TextRun({ text: item, size: 18 })]
+      })
+    )
+  ];
+}
+function certificationChildren(data, accent) {
+  const rows = asObjects(data.certifications);
+  if (!rows.length) return [];
+  return [
+    sectionTitle("Certifications", accent),
+    ...rows.map(
+      (row) => new Paragraph({
+        spacing: { after: 35 },
+        children: [
+          new TextRun({ text: text(row.name), bold: true, size: 18 }),
+          new TextRun({
+            text: [text(row.issuer), text(row.year)].filter(Boolean).join(" \xB7 "),
+            color: "64748B",
+            size: 17,
+            break: 1
+          })
+        ]
+      })
+    )
+  ];
+}
+function headerChildren(data, template, accent) {
+  const personal = asObject(data.personalInfo);
+  const firstName = text(personal.firstName ?? data.firstName);
+  const lastName = text(personal.lastName ?? data.lastName);
+  const headline = text(personal.headline ?? data.headline);
+  const contact = [
+    text(personal.email ?? data.email),
+    text(personal.phone ?? data.phone),
+    text(personal.location ?? data.location),
+    text(personal.website ?? data.website),
+    text(personal.linkedIn ?? data.linkedIn)
+  ].filter(Boolean);
+  const colorful = template.category === "MODERN" || template.category === "CREATIVE";
+  const alignment = template.category === "CLASSIC" ? AlignmentType.CENTER : AlignmentType.LEFT;
+  const headerColor = colorful ? "FFFFFF" : accent;
+  return [
+    new Paragraph({
+      alignment,
+      shading: colorful ? { fill: accent, type: ShadingType.CLEAR, color: "auto" } : void 0,
+      spacing: { before: colorful ? 180 : 0, after: 55 },
+      children: [
+        new TextRun({
+          text: [firstName, lastName].filter(Boolean).join(" ") || "Untitled Candidate",
+          bold: true,
+          color: headerColor,
+          size: 36
+        })
+      ]
+    }),
+    new Paragraph({
+      alignment,
+      shading: colorful ? { fill: accent, type: ShadingType.CLEAR, color: "auto" } : void 0,
+      spacing: { after: 35 },
+      children: [new TextRun({ text: headline, color: colorful ? "EDE9FE" : "475569", size: 21 })]
+    }),
+    new Paragraph({
+      alignment,
+      shading: colorful ? { fill: accent, type: ShadingType.CLEAR, color: "auto" } : void 0,
+      spacing: { after: colorful ? 180 : 90 },
+      children: [
+        new TextRun({
+          text: contact.join("  \u2022  "),
+          color: colorful ? "FFFFFF" : "475569",
+          size: 17
+        })
+      ]
+    })
+  ];
+}
+async function buildResumeDocx(contentData, template, title) {
+  const accent = templateAccent(template);
+  const main2 = [
+    ...summaryChildren(contentData, accent),
+    ...experienceChildren(contentData, accent)
+  ];
+  const supporting = [
+    ...stringListChildren("Skills", asStrings(contentData.skills), accent),
+    ...educationChildren(contentData, accent),
+    ...certificationChildren(contentData, accent),
+    ...stringListChildren("Languages", asStrings(contentData.languages), accent)
+  ];
+  const body = template.category === "MODERN" || template.category === "CREATIVE" ? [
+    new Table({
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      borders: TableBorders.NONE,
+      columnWidths: [6200, 3200],
+      rows: [
+        new TableRow({
+          children: [
+            new TableCell({
+              width: { size: 66, type: WidthType.PERCENTAGE },
+              margins: { right: 180 },
+              borders: TableBorders.NONE,
+              children: main2.length ? main2 : [new Paragraph("")]
+            }),
+            new TableCell({
+              width: { size: 34, type: WidthType.PERCENTAGE },
+              shading: { fill: "F8FAFC", type: ShadingType.CLEAR, color: "auto" },
+              margins: { top: 120, bottom: 120, left: 180, right: 120 },
+              borders: TableBorders.NONE,
+              children: supporting.length ? supporting : [new Paragraph("")]
+            })
+          ]
+        })
+      ]
+    })
+  ] : [...main2, ...supporting];
+  const document = new Document({
+    title,
+    subject: `Resume using the ${template.name} template`,
+    creator: "ProFile AI",
+    sections: [
+      {
+        properties: {
+          page: {
+            size: { width: 11906, height: 16838 },
+            margin: { top: 720, right: 720, bottom: 720, left: 720 }
+          }
+        },
+        children: [...headerChildren(contentData, template, accent), ...body]
+      }
+    ]
+  });
+  return Packer.toBuffer(document);
+}
+async function buildResumePdf(contentData, template, title, pageSize = "A4") {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    const doc = new PDFDocument({
+      size: pageSize,
+      margins: { top: 42, right: 48, bottom: 42, left: 48 },
+      bufferPages: true,
+      info: { Title: title, Author: "ProFile AI", Subject: `${template.name} resume` }
+    });
+    doc.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
+    doc.on("end", () => resolve(Buffer.concat(chunks)));
+    doc.on("error", reject);
+    const accent = `#${templateAccent(template)}`;
+    const personal = asObject(contentData.personalInfo);
+    const candidate = [text(personal.firstName), text(personal.lastName)].filter(Boolean).join(" ");
+    const headline = text(personal.headline);
+    const contact = [
+      text(personal.email),
+      text(personal.phone),
+      text(personal.location),
+      text(personal.website),
+      text(personal.linkedIn)
+    ].filter(Boolean).join("  \u2022  ");
+    const colorful = template.category === "MODERN" || template.category === "CREATIVE";
+    const contentWidth = doc.page.width - doc.page.margins.left - doc.page.margins.right;
+    if (colorful) {
+      doc.save().rect(0, 0, doc.page.width, 122).fill(accent).restore();
+      doc.fillColor("#FFFFFF");
+    } else {
+      doc.fillColor(accent);
+    }
+    doc.font("Helvetica-Bold").fontSize(25).text(candidate || "Untitled Candidate", {
+      align: template.category === "CLASSIC" ? "center" : "left"
+    });
+    doc.moveDown(0.15).font("Helvetica").fontSize(12).fillColor(colorful ? "#F5F3FF" : "#475569").text(headline, {
+      align: template.category === "CLASSIC" ? "center" : "left"
+    });
+    doc.moveDown(0.3).fontSize(9).fillColor(colorful ? "#FFFFFF" : "#475569").text(contact, {
+      align: template.category === "CLASSIC" ? "center" : "left"
+    });
+    doc.y = colorful ? Math.max(doc.y + 26, 142) : doc.y + 12;
+    const ensureSpace = (height = 72) => {
+      if (doc.y + height > doc.page.height - doc.page.margins.bottom) doc.addPage();
+    };
+    const section = (label) => {
+      ensureSpace(48);
+      doc.moveDown(0.45);
+      doc.font("Helvetica-Bold").fontSize(10).fillColor(accent).text(label.toUpperCase(), {
+        characterSpacing: 1.4
+      });
+      const lineY = doc.y + 2;
+      doc.save().strokeColor(accent).lineWidth(0.8).moveTo(doc.page.margins.left, lineY).lineTo(doc.page.margins.left + contentWidth, lineY).stroke().restore();
+      doc.y = lineY + 8;
+    };
+    const body = (value, options = {}) => {
+      doc.font("Helvetica").fontSize(9.5).fillColor("#1F2937").text(value, {
+        lineGap: 2.2,
+        ...options
+      });
+    };
+    const summary = text(contentData.summary ?? contentData.bio);
+    if (summary) {
+      section("Summary");
+      body(summary);
+    }
+    const experiences = asObjects(contentData.experience);
+    if (experiences.length) {
+      section("Experience");
+      for (const row of experiences) {
+        ensureSpace(86);
+        const role = text(row.role ?? row.title);
+        const company = text(row.company);
+        const from = text(row.from ?? row.startDate);
+        const to = row.current ? "Present" : text(row.to ?? row.endDate);
+        doc.font("Helvetica-Bold").fontSize(10.5).fillColor("#111827").text(role || "Role", { continued: Boolean(company) });
+        if (company) doc.fillColor(accent).text(`  |  ${company}`);
+        doc.font("Helvetica-Oblique").fontSize(8.5).fillColor("#64748B").text([from, to].filter(Boolean).join(" \u2013 "));
+        const bullets = asStrings(row.bullets);
+        const fallback = text(row.desc);
+        for (const bullet of bullets.length ? bullets : fallback ? fallback.split(/\r?\n/).filter(Boolean) : []) {
+          body(`\u2022  ${bullet}`, { indent: 8, paragraphGap: 2 });
+        }
+        doc.moveDown(0.25);
+      }
+    }
+    const skills = asStrings(contentData.skills);
+    if (skills.length) {
+      section("Skills");
+      body(skills.join("  \u2022  "));
+    }
+    const educations = asObjects(contentData.education);
+    if (educations.length) {
+      section("Education");
+      for (const row of educations) {
+        ensureSpace(54);
+        const school = text(row.school ?? row.institution);
+        const degree = [text(row.degree), text(row.field)].filter(Boolean).join(", ");
+        const dates = [text(row.from ?? row.startDate), text(row.to ?? row.endDate)].filter(Boolean).join(" \u2013 ");
+        doc.font("Helvetica-Bold").fontSize(10).fillColor(accent).text(school);
+        body([degree, dates, text(row.gpa) ? `GPA ${text(row.gpa)}` : ""].filter(Boolean).join("  |  "));
+      }
+    }
+    const certifications = asObjects(contentData.certifications);
+    if (certifications.length) {
+      section("Certifications");
+      for (const row of certifications) {
+        body(`\u2022  ${[text(row.name), text(row.issuer), text(row.year)].filter(Boolean).join(" \xB7 ")}`, { indent: 8 });
+      }
+    }
+    const languages = asStrings(contentData.languages);
+    if (languages.length) {
+      section("Languages");
+      body(languages.join("  \u2022  "));
+    }
+    const range = doc.bufferedPageRange();
+    for (let index = range.start; index < range.start + range.count; index += 1) {
+      doc.switchToPage(index);
+      doc.font("Helvetica").fontSize(8).fillColor("#94A3B8").text(
+        `${template.name} \xB7 ${index + 1}/${range.count}`,
+        doc.page.margins.left,
+        doc.page.height - 28,
+        { width: contentWidth, align: "right" }
+      );
+    }
+    doc.end();
+  });
+}
+
 // src/modules/resume/resume.service.ts
+var asObject2 = (value) => value && typeof value === "object" && !Array.isArray(value) ? value : {};
+var asObjects2 = (value) => Array.isArray(value) ? value.map(asObject2) : [];
+var asStrings2 = (value) => Array.isArray(value) ? value.filter((item) => typeof item === "string").map((item) => item.trim()).filter(Boolean) : [];
+var stringValue = (value) => typeof value === "string" || typeof value === "number" ? String(value) : "";
+var firstNonEmpty = (...values) => {
+  for (const value of values) {
+    const candidate = stringValue(value).trim();
+    if (candidate) return candidate;
+  }
+  return "";
+};
+var mergeGeneratedWithProfile = (profile, aiValue, targetJobTitle) => {
+  const ai = asObject2(aiValue);
+  const aiPersonal = asObject2(ai.personalInfo);
+  const profileExperience = asObjects2(profile.experience);
+  const aiExperience = asObjects2(ai.experience);
+  const profileEducation = asObjects2(profile.education);
+  const aiEducation = asObjects2(ai.education);
+  const profileCertifications = asObjects2(profile.certifications);
+  const aiCertifications = asObjects2(ai.certifications);
+  const profileSkills = asStrings2(profile.skills);
+  const aiSkills = asStrings2(ai.skills);
+  const profileSkillLookup = new Map(
+    profileSkills.map((skill) => [skill.toLocaleLowerCase(), skill])
+  );
+  const prioritisedSkills = aiSkills.map((skill) => profileSkillLookup.get(skill.toLocaleLowerCase())).filter((skill) => Boolean(skill));
+  const skills = [.../* @__PURE__ */ new Set([...prioritisedSkills, ...profileSkills])];
+  const experience = profileExperience.map((source, index) => {
+    const enhanced = aiExperience[index] ?? {};
+    const sourceDescription = firstNonEmpty(source.desc, source.description);
+    const enhancedBullets = asStrings2(enhanced.bullets);
+    return {
+      ...enhanced,
+      company: firstNonEmpty(source.company),
+      role: firstNonEmpty(source.role, source.title),
+      location: firstNonEmpty(source.location),
+      from: firstNonEmpty(source.from, source.startDate),
+      to: firstNonEmpty(source.to, source.endDate),
+      current: Boolean(source.current),
+      bullets: enhancedBullets.length ? enhancedBullets : sourceDescription ? sourceDescription.split(/\r?\n/).map((item) => item.trim()).filter(Boolean) : []
+    };
+  });
+  const education = profileEducation.map((source, index) => {
+    const enhanced = aiEducation[index] ?? {};
+    return {
+      ...enhanced,
+      school: firstNonEmpty(source.school, source.institution),
+      degree: firstNonEmpty(source.degree),
+      field: firstNonEmpty(source.field),
+      from: firstNonEmpty(source.from, source.startDate),
+      to: firstNonEmpty(source.to, source.endDate),
+      gpa: firstNonEmpty(source.gpa)
+    };
+  });
+  const certifications = profileCertifications.map((source, index) => {
+    const enhanced = aiCertifications[index] ?? {};
+    return {
+      ...enhanced,
+      name: firstNonEmpty(source.name),
+      issuer: firstNonEmpty(source.issuer),
+      year: firstNonEmpty(source.year),
+      url: firstNonEmpty(source.url)
+    };
+  });
+  const summary = firstNonEmpty(
+    ai.summary,
+    ai.bio,
+    profile.bio,
+    `${firstNonEmpty(profile.headline, targetJobTitle)} targeting ${targetJobTitle}`
+  );
+  return {
+    ...ai,
+    summary,
+    experience,
+    education,
+    skills,
+    languages: asStrings2(profile.languages),
+    certifications,
+    personalInfo: {
+      ...aiPersonal,
+      firstName: firstNonEmpty(profile.firstName),
+      lastName: firstNonEmpty(profile.lastName),
+      email: firstNonEmpty(profile.email),
+      phone: firstNonEmpty(profile.phone),
+      location: firstNonEmpty(profile.location),
+      headline: firstNonEmpty(profile.headline),
+      website: firstNonEmpty(profile.website),
+      linkedIn: firstNonEmpty(profile.linkedIn),
+      github: firstNonEmpty(profile.github)
+    }
+  };
+};
+var toTemplateContext = (value) => {
+  const data = asObject2(value);
+  const personalInfo = asObject2(data.personalInfo);
+  return {
+    ...data,
+    ...personalInfo,
+    bio: firstNonEmpty(data.bio, data.summary),
+    experience: asObjects2(data.experience).map((item) => ({
+      ...item,
+      role: firstNonEmpty(item.role, item.title),
+      from: firstNonEmpty(item.from, item.startDate),
+      to: firstNonEmpty(item.to, item.endDate),
+      desc: firstNonEmpty(item.desc, asStrings2(item.bullets).join("\n"))
+    })),
+    education: asObjects2(data.education).map((item) => ({
+      ...item,
+      school: firstNonEmpty(item.school, item.institution),
+      from: firstNonEmpty(item.from, item.startDate),
+      to: firstNonEmpty(item.to, item.endDate)
+    }))
+  };
+};
 var buildResumePrompt = (profile, input) => {
   return `
 You are an expert resume writer and career coach. Generate a professional, ATS-optimized resume for the following person targeting the specified job title.
@@ -3830,6 +4341,8 @@ ${input.jobDescription}` : ""}
 3. Highlight skills most relevant to the target role
 4. Ensure ATS-friendly formatting
 5. Use action verbs for experience descriptions
+6. Never invent employers, job titles, schools, dates, credentials, contact details, or skills
+7. Preserve every profile experience, education, language, and certification entry
 `;
 };
 var buildAtsPrompt = (contentData, jobDescription) => {
@@ -3918,6 +4431,11 @@ var generateResume = async (userId, input) => {
   if (!aiResult.success || !aiResult.data) {
     throw new AppError_default(status20.INTERNAL_SERVER_ERROR, "AI generation failed. Please try again.");
   }
+  const contentData = mergeGeneratedWithProfile(
+    profileData,
+    aiResult.data,
+    input.targetJobTitle
+  );
   const createData = {
     userId,
     templateId: input.templateId,
@@ -3925,11 +4443,14 @@ var generateResume = async (userId, input) => {
     type: input.type,
     status: "GENERATED",
     targetJobTitle: input.targetJobTitle,
-    contentData: aiResult.data,
+    contentData,
     version: 1
   };
   if (input.jobDescription !== void 0) createData.jobDescription = input.jobDescription;
-  const resume = await prisma.resume.create({ data: createData });
+  const resume = await prisma.resume.create({
+    data: createData,
+    include: { template: true }
+  });
   await prisma.userLimit.update({
     where: { userId },
     data: { resumeUsed: { increment: 1 }, apiUsed: { increment: 1 } }
@@ -3938,7 +4459,7 @@ var generateResume = async (userId, input) => {
     where: { userId },
     data: { resumeCount: { increment: 1 }, apiCallCount: { increment: 1 } }
   });
-  return { resume, template };
+  return resume;
 };
 var updateResume = async (userId, resumeId, data) => {
   const existing = await prisma.resume.findFirst({ where: { id: resumeId, userId } });
@@ -3960,7 +4481,8 @@ var updateResume = async (userId, resumeId, data) => {
   if (data.jobDescription !== void 0) updateData.jobDescription = data.jobDescription;
   return prisma.resume.update({
     where: { id: resumeId },
-    data: updateData
+    data: updateData,
+    include: { template: true }
   });
 };
 var deleteResume = async (userId, resumeId) => {
@@ -3992,7 +4514,8 @@ var runAtsCheck = async (userId, resumeId, data) => {
       atsScore: aiResult.data.atsScore,
       jobDescription: data.jobDescription,
       aiSuggestions: aiResult.data
-    }
+    },
+    include: { template: true }
   });
   await prisma.userLimit.update({ where: { userId }, data: { apiUsed: { increment: 1 } } });
   return { resume: updated, atsData: aiResult.data };
@@ -4004,33 +4527,100 @@ var exportPdf = async (userId, resumeId, format = "A4") => {
   });
   if (!resume) throw new AppError_default(status20.NOT_FOUND, "Resume not found.");
   const template = Handlebars.compile(resume.template.htmlLayout);
-  const contentData = resume.contentData;
-  const personalInfo = contentData.personalInfo || {};
   const renderedHtml = template({
-    ...contentData,
-    ...personalInfo,
+    ...toTemplateContext(resume.contentData),
     cssStyles: resume.template.cssStyles
   });
   const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${resume.template.cssStyles}</style></head><body>${renderedHtml}</body></html>`;
-  const puppeteerUrl = envVars.PUPPETEER_SERVICE_URL;
-  const response = await fetch(`${puppeteerUrl}/render`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ html: fullHtml, options: { format } })
-  });
-  if (!response.ok) {
-    throw new AppError_default(status20.INTERNAL_SERVER_ERROR, "PDF generation failed.");
+  let pdfBuffer;
+  if (envVars.NODE_ENV === "production") {
+    try {
+      const puppeteerUrl = envVars.PUPPETEER_SERVICE_URL;
+      const response = await fetch(`${puppeteerUrl}/render`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ html: fullHtml, options: { format } }),
+        signal: AbortSignal.timeout(2e4)
+      });
+      if (!response.ok) throw new Error(`Renderer returned ${response.status}`);
+      pdfBuffer = Buffer.from(await response.arrayBuffer());
+    } catch (error) {
+      console.warn("[Resume export] Browser PDF renderer unavailable; using PDFKit.", error);
+      pdfBuffer = await buildResumePdf(
+        asObject2(resume.contentData),
+        resume.template,
+        resume.title,
+        format
+      );
+    }
+  } else {
+    pdfBuffer = await buildResumePdf(
+      asObject2(resume.contentData),
+      resume.template,
+      resume.title,
+      format
+    );
   }
-  const pdfBuffer = Buffer.from(await response.arrayBuffer());
   const objectName = `resumes/${userId}/${resumeId}/resume.pdf`;
-  await uploadBuffer(objectName, pdfBuffer, "application/pdf");
-  const presignedUrl = await getPresignedUrl(objectName, 3600);
+  let presignedUrl;
+  if (envVars.NODE_ENV === "production") {
+    try {
+      await uploadBuffer(objectName, pdfBuffer, "application/pdf");
+      presignedUrl = await getPresignedUrl(objectName, 3600);
+    } catch (error) {
+      console.warn("[Resume export] PDF object storage unavailable; returning inline download.", error);
+    }
+  }
   await prisma.resume.update({
     where: { id: resumeId },
-    data: { pdfUrl: objectName, status: "EXPORTED" }
+    data: {
+      ...presignedUrl ? { pdfUrl: objectName } : {},
+      status: "EXPORTED"
+    }
   });
-  return { presignedUrl };
+  return {
+    presignedUrl,
+    base64: pdfBuffer.toString("base64"),
+    fileName: `${resume.title}.pdf`,
+    contentType: "application/pdf",
+    format: "PDF"
+  };
 };
+var exportDocx = async (userId, resumeId) => {
+  const resume = await prisma.resume.findFirst({
+    where: { id: resumeId, userId },
+    include: { template: true }
+  });
+  if (!resume) throw new AppError_default(status20.NOT_FOUND, "Resume not found.");
+  const docxBuffer = await buildResumeDocx(
+    asObject2(resume.contentData),
+    resume.template,
+    resume.title
+  );
+  const objectName = `resumes/${userId}/${resumeId}/resume.docx`;
+  const contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+  let presignedUrl;
+  if (envVars.NODE_ENV === "production") {
+    try {
+      await uploadBuffer(objectName, docxBuffer, contentType);
+      presignedUrl = await getPresignedUrl(objectName, 3600);
+    } catch (error) {
+      console.warn("[Resume export] DOCX object storage unavailable; returning inline download.", error);
+    }
+  }
+  await prisma.resume.update({
+    where: { id: resumeId },
+    data: { status: "EXPORTED" }
+  });
+  return {
+    presignedUrl,
+    base64: docxBuffer.toString("base64"),
+    fileName: `${resume.title}.docx`,
+    contentType,
+    format: "DOCX"
+  };
+};
+var exportResume = async (userId, resumeId, fileType = "PDF", pageSize = "A4") => fileType === "DOCX" ? exportDocx(userId, resumeId) : exportPdf(userId, resumeId, pageSize);
 var getResumeHistory = async (userId, resumeId) => {
   const resume = await prisma.resume.findFirst({ where: { id: resumeId, userId } });
   if (!resume) throw new AppError_default(status20.NOT_FOUND, "Resume not found.");
@@ -4048,7 +4638,8 @@ var restoreVersion = async (userId, resumeId, version) => {
   });
   return prisma.resume.update({
     where: { id: resumeId },
-    data: { contentData: historyEntry.snapshot, version: resume.version + 1 }
+    data: { contentData: historyEntry.snapshot, version: resume.version + 1 },
+    include: { template: true }
   });
 };
 var duplicateResume = async (userId, resumeId) => {
@@ -4068,7 +4659,8 @@ var duplicateResume = async (userId, resumeId) => {
       targetJobTitle: resume.targetJobTitle,
       contentData: resume.contentData,
       version: 1
-    }
+    },
+    include: { template: true }
   });
   await prisma.userLimit.update({ where: { userId }, data: { resumeUsed: { increment: 1 } } });
   return duplicate;
@@ -4096,7 +4688,8 @@ Instruction: ${data.instruction}`,
   const newContentData = { ...contentData, [data.section]: aiResult.data.updatedSection };
   const updated = await prisma.resume.update({
     where: { id: resumeId },
-    data: { contentData: newContentData }
+    data: { contentData: newContentData },
+    include: { template: true }
   });
   await prisma.userLimit.update({ where: { userId }, data: { apiUsed: { increment: 1 } } });
   return updated;
@@ -4116,7 +4709,7 @@ var listResumes2 = catchAsync(async (req, res) => {
     status: status21.OK,
     success: true,
     message: "Resumes retrieved.",
-    data: result.resumes,
+    data: result,
     meta: result.meta
   });
 });
@@ -4141,9 +4734,20 @@ var atsCheck = catchAsync(async (req, res) => {
   sendResponse(res, { status: status21.OK, success: true, message: "ATS analysis complete.", data });
 });
 var exportPdf2 = catchAsync(async (req, res) => {
-  const format = req.body.format || "A4";
-  const data = await exportPdf(req.user.userId, String(req.params.id), format);
-  sendResponse(res, { status: status21.OK, success: true, message: "PDF exported.", data });
+  const fileType = req.body.fileType || "PDF";
+  const pageSize = req.body.pageSize || "A4";
+  const data = await exportResume(
+    req.user.userId,
+    String(req.params.id),
+    fileType,
+    pageSize
+  );
+  sendResponse(res, {
+    status: status21.OK,
+    success: true,
+    message: `${fileType} exported.`,
+    data
+  });
 });
 var getHistory = catchAsync(async (req, res) => {
   const data = await getResumeHistory(req.user.userId, String(req.params.id));
@@ -4192,6 +4796,12 @@ var aiModifySchema = z7.object({
     instruction: z7.string().min(1, "Instruction is required").max(500)
   })
 });
+var exportResumeSchema = z7.object({
+  body: z7.object({
+    fileType: z7.enum(["PDF", "DOCX"]).default("PDF"),
+    pageSize: z7.enum(["A4", "Letter"]).default("A4")
+  })
+});
 
 // src/modules/resume/resume.router.ts
 var router9 = Router9();
@@ -4202,7 +4812,7 @@ router9.get("/:id", getResume2);
 router9.put("/:id", validateRequest(updateResumeSchema), updateResume2);
 router9.delete("/:id", deleteResume2);
 router9.post("/:id/ats-check", validateRequest(atsCheckSchema), atsCheck);
-router9.post("/:id/export", exportPdf2);
+router9.post("/:id/export", validateRequest(exportResumeSchema), exportPdf2);
 router9.get("/:id/history", getHistory);
 router9.post("/:id/restore/:version", restoreVersion2);
 router9.post("/:id/duplicate", duplicateResume2);
@@ -5598,8 +6208,8 @@ var analyzeJd = async (userId, input) => {
     if (!resume) {
       throw new AppError_default(status32.BAD_REQUEST, "Attached resume not found.");
     }
-    const text = extractResumeText(resume.data);
-    const trimmed = text.length > 4e3 ? text.slice(0, 4e3) : text;
+    const text2 = extractResumeText(resume.data);
+    const trimmed = text2.length > 4e3 ? text2.slice(0, 4e3) : text2;
     resumeContext = `
 
 For context, here is the candidate's current resume (truncated to 4000 chars):

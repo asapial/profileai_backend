@@ -36,6 +36,13 @@ export const aiModifySchema = z.object({
   }),
 });
 
+export const exportResumeSchema = z.object({
+  body: z.object({
+    fileType: z.enum(['PDF', 'DOCX']).default('PDF'),
+    pageSize: z.enum(['A4', 'Letter']).default('A4'),
+  }),
+});
+
 export type GenerateResumeInput = z.infer<typeof generateResumeSchema>['body'];
 export type UpdateResumeInput = z.infer<typeof updateResumeSchema>['body'];
 export type AtsCheckInput = z.infer<typeof atsCheckSchema>['body'];

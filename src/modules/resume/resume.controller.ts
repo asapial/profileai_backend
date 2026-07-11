@@ -17,7 +17,7 @@ export const listResumes = catchAsync(async (req: Request, res: Response) => {
     status: status.OK,
     success: true,
     message: 'Resumes retrieved.',
-    data: result.resumes,
+    data: result,
     meta: result.meta,
   });
 });
@@ -48,9 +48,20 @@ export const atsCheck = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const exportPdf = catchAsync(async (req: Request, res: Response) => {
-  const format = (req.body.format as 'A4' | 'Letter') || 'A4';
-  const data = await resumeService.exportPdf(req.user.userId, String(req.params.id), format);
-  sendResponse(res, { status: status.OK, success: true, message: 'PDF exported.', data });
+  const fileType = (req.body.fileType as 'PDF' | 'DOCX') || 'PDF';
+  const pageSize = (req.body.pageSize as 'A4' | 'Letter') || 'A4';
+  const data = await resumeService.exportResume(
+    req.user.userId,
+    String(req.params.id),
+    fileType,
+    pageSize,
+  );
+  sendResponse(res, {
+    status: status.OK,
+    success: true,
+    message: `${fileType} exported.`,
+    data,
+  });
 });
 
 export const getHistory = catchAsync(async (req: Request, res: Response) => {

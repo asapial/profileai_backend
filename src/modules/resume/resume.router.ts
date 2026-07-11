@@ -7,6 +7,7 @@ import {
   updateResumeSchema,
   atsCheckSchema,
   aiModifySchema,
+  exportResumeSchema,
 } from './resume.schema';
 
 const router = Router();
@@ -20,7 +21,7 @@ router.get('/:id', resumeController.getResume);
 router.put('/:id', validateRequest(updateResumeSchema), resumeController.updateResume);
 router.delete('/:id', resumeController.deleteResume);
 router.post('/:id/ats-check', validateRequest(atsCheckSchema), resumeController.atsCheck);
-router.post('/:id/export', resumeController.exportPdf);
+router.post('/:id/export', validateRequest(exportResumeSchema), resumeController.exportPdf);
 router.get('/:id/history', resumeController.getHistory);
 router.post('/:id/restore/:version', resumeController.restoreVersion);
 router.post('/:id/duplicate', resumeController.duplicateResume);
