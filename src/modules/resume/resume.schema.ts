@@ -36,6 +36,18 @@ export const aiModifySchema = z.object({
   }),
 });
 
+export const updateResumeTemplateSchema = z.object({
+  body: z.object({
+    templateId: z.string().min(1, 'Template ID is required'),
+  }),
+});
+
+export const shareResumeSchema = z.object({
+  body: z.object({
+    enabled: z.boolean(),
+  }),
+});
+
 export const exportResumeSchema = z.object({
   body: z.object({
     fileType: z.enum(['PDF', 'DOCX']).default('PDF'),
@@ -47,3 +59,5 @@ export type GenerateResumeInput = z.infer<typeof generateResumeSchema>['body'];
 export type UpdateResumeInput = z.infer<typeof updateResumeSchema>['body'];
 export type AtsCheckInput = z.infer<typeof atsCheckSchema>['body'];
 export type AiModifyInput = z.infer<typeof aiModifySchema>['body'];
+export type UpdateResumeTemplateInput = z.infer<typeof updateResumeTemplateSchema>['body'];
+export type ShareResumeInput = z.infer<typeof shareResumeSchema>['body'];

@@ -8,6 +8,8 @@ import {
   atsCheckSchema,
   aiModifySchema,
   exportResumeSchema,
+  updateResumeTemplateSchema,
+  shareResumeSchema,
 } from './resume.schema';
 
 const router = Router();
@@ -26,5 +28,8 @@ router.get('/:id/history', resumeController.getHistory);
 router.post('/:id/restore/:version', resumeController.restoreVersion);
 router.post('/:id/duplicate', resumeController.duplicateResume);
 router.put('/:id/ai-modify', validateRequest(aiModifySchema), resumeController.aiModifySection);
+router.put('/:id/template', validateRequest(updateResumeTemplateSchema), resumeController.updateResumeTemplate);
+router.post('/:id/share', validateRequest(shareResumeSchema), resumeController.shareResume);
+router.get('/:id/analytics', resumeController.getResumeAnalytics);
 
 export const resumeRouter = router;

@@ -83,3 +83,26 @@ export const aiModifySection = catchAsync(async (req: Request, res: Response) =>
   const data = await resumeService.aiModifySection(req.user.userId, String(req.params.id), req.body);
   sendResponse(res, { status: status.OK, success: true, message: 'Section updated by AI.', data });
 });
+
+export const updateResumeTemplate = catchAsync(async (req: Request, res: Response) => {
+  const data = await resumeService.updateResumeTemplate(
+    req.user.userId,
+    String(req.params.id),
+    req.body,
+  );
+  sendResponse(res, { status: status.OK, success: true, message: 'Resume template updated.', data });
+});
+
+export const shareResume = catchAsync(async (req: Request, res: Response) => {
+  const data = await resumeService.shareResume(
+    req.user.userId,
+    String(req.params.id),
+    req.body,
+  );
+  sendResponse(res, { status: status.OK, success: true, message: 'Resume sharing updated.', data });
+});
+
+export const getResumeAnalytics = catchAsync(async (req: Request, res: Response) => {
+  const data = await resumeService.getResumeAnalytics(req.user.userId, String(req.params.id));
+  sendResponse(res, { status: status.OK, success: true, message: 'Resume analytics retrieved.', data });
+});

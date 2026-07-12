@@ -1,4 +1,5 @@
 import status from 'http-status';
+import { randomBytes } from 'node:crypto';
 import Handlebars from 'handlebars';
 import { Prisma } from '../../../prisma/generated/prisma/client';
 import { prisma } from '../../lib/prisma';
@@ -6,7 +7,14 @@ import { getAiResponse } from '../../utils/aiResponse';
 import { uploadBuffer, getPresignedUrl } from '../../lib/minio';
 import { envVars } from '../../config/env';
 import AppError from '../../errorHelpers/AppError';
-import { GenerateResumeInput, UpdateResumeInput, AtsCheckInput, AiModifyInput } from './resume.schema';
+import {
+  GenerateResumeInput,
+  UpdateResumeInput,
+  AtsCheckInput,
+  AiModifyInput,
+  UpdateResumeTemplateInput,
+  ShareResumeInput,
+} from './resume.schema';
 import { buildResumeDocx, buildResumePdf } from './resumeDocument';
 
 type JsonObject = Record<string, unknown>;
@@ -654,4 +662,78 @@ export const aiModifySection = async (userId: string, resumeId: string, data: Ai
 
   await prisma.userLimit.update({ where: { userId }, data: { apiUsed: { increment: 1 } } });
   return updated;
+};
+
+export const updateResumeTemplate = async (
+  userId: string,
+  resumeId: string,
+  data: UpdateResumeTemplateInput,
+) => {
+  const resume = await prisma.resume.findFirst({ where: { id: resumeId, userId } });
+  if (!resume) throw new AppError(status.NOT_FOUND, 'Resume not found.');
+
+  const template = await prisma.resumeTemplate.findFirst({
+    where: { id: data.templateId, isActive: true },
+  });
+  if (!template) throw new AppError(status.NOT_FOUND, 'Template is not available.');
+
+  return prisma.resume.update({
+    where: { id: resumeId },
+    data: { templateId: template.id, version: { increment: 1 } },
+    include: { template: true },
+  });
+};
+
+const newPublicSlug = () => randomBytes(18).toString('base64url');
+
+export const shareResume = async (
+  userId: string,
+  resumeId: string,
+  data: ShareResumeInput,
+) => {
+  const resume = await prisma.resume.findFirst({ where: { id: resumeId, userId } });
+  if (!resume) throw new AppError(status.NOT_FOUND, 'Resume not found.');
+  if (data.enabled && resume.disabledByAdmin) {
+    throw new AppError(status.FORBIDDEN, 'This resume cannot be shared.');
+  }
+
+  let slug = resume.slug;
+  if (data.enabled && !slug) {
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      const candidate = newPublicSlug();
+      const existing = await prisma.resume.findUnique({
+        where: { slug: candidate },
+        select: { id: true },
+      });
+      if (!existing) {
+        slug = candidate;
+        break;
+      }
+    }
+    if (!slug) throw new AppError(status.INTERNAL_SERVER_ERROR, 'Could not create a public link.');
+  }
+
+  return prisma.resume.update({
+    where: { id: resumeId },
+    data: { isPublic: data.enabled, slug },
+    include: { template: true },
+  });
+};
+
+export const getResumeAnalytics = async (userId: string, resumeId: string) => {
+  const resume = await prisma.resume.findFirst({
+    where: { id: resumeId, userId },
+    select: { id: true },
+  });
+  if (!resume) throw new AppError(status.NOT_FOUND, 'Resume not found.');
+
+  const counts = await prisma.resumeView.groupBy({
+    by: ['eventType'],
+    where: { resumeId },
+    _count: { _all: true },
+  });
+  const totalViews = counts.find((entry) => entry.eventType === 'view')?._count._all ?? 0;
+  const totalDownloads = counts.find((entry) => entry.eventType === 'download')?._count._all ?? 0;
+
+  return { totalViews, totalDownloads };
 };
