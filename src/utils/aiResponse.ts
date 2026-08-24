@@ -43,6 +43,22 @@ export interface AiRequestParams {
   restrictedAnswer?: string;
   /** Per-request timeout in milliseconds (default: 5000 ms) */
   responseTime?: number;
+  /**
+   * Optional trusted system instructions. Existing callers can omit this and
+   * retain the original concise JSON-only prompt.
+   */
+  systemPrompt?: string;
+  /** Prior, already-authorized conversation turns for contextual features. */
+  conversationMessages?: AiConversationMessage[];
+  /** Limit provider fallbacks for latency-sensitive features. */
+  maxModels?: number;
+  /** Optional caller cancellation signal. */
+  signal?: AbortSignal;
+}
+
+export interface AiConversationMessage {
+  role: "user" | "assistant";
+  content: string;
 }
 
 export interface AiResponse<T = unknown> {
@@ -80,10 +96,15 @@ async function fetchFromModel(
   model: string,
   systemPrompt: string,
   userMessage: string,
-  timeoutMs: number
+  timeoutMs: number,
+  conversationMessages: AiConversationMessage[] = [],
+  externalSignal?: AbortSignal,
 ): Promise<string> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const cancel = () => controller.abort();
+  if (externalSignal?.aborted) controller.abort();
+  else externalSignal?.addEventListener("abort", cancel, { once: true });
 
   try {
     const response = await fetch(
@@ -98,6 +119,7 @@ async function fetchFromModel(
           model,
           messages: [
             { role: "system", content: systemPrompt },
+            ...conversationMessages,
             { role: "user", content: userMessage },
           ],
           response_format: { type: "json_object" },
@@ -124,6 +146,7 @@ async function fetchFromModel(
     return content;
   } finally {
     clearTimeout(timer);
+    externalSignal?.removeEventListener("abort", cancel);
   }
 }
 
@@ -167,15 +190,27 @@ export async function getAiResponse<T = unknown>(
     aiModel,
     restrictedAnswer = "",
     responseTime = 5000,
+    systemPrompt: trustedSystemPrompt,
+    conversationMessages = [],
+    maxModels,
+    signal,
   } = params;
 
-  const systemPrompt = buildSystemPrompt(responseStyle, restrictedAnswer);
-  const modelsToTry: string[] = aiModel ? [aiModel] : FREE_MODELS;
+  const jsonInstructions = buildSystemPrompt(responseStyle, restrictedAnswer);
+  const systemPrompt = trustedSystemPrompt?.trim()
+    ? `${trustedSystemPrompt.trim()}\n\n${jsonInstructions}`
+    : jsonInstructions;
+  const modelsToTry: string[] = aiModel
+    ? [aiModel]
+    : FREE_MODELS.slice(0, Math.max(1, maxModels ?? FREE_MODELS.length));
 
   let lastError = "Unknown error";
 
   for (const model of modelsToTry) {
     for (let attempt = 1; attempt <= retryNumber; attempt++) {
+      if (signal?.aborted) {
+        return { success: false, model, data: null, error: "Request aborted by caller." };
+      }
       try {
         console.log(
           `[AI] Trying model "${model}" — attempt ${attempt}/${retryNumber}`
@@ -185,7 +220,9 @@ export async function getAiResponse<T = unknown>(
           model,
           systemPrompt,
           context,
-          responseTime
+          responseTime,
+          conversationMessages,
+          signal,
         );
 
         const parsed = safeParseJson<T>(rawText);
@@ -215,6 +252,10 @@ export async function getAiResponse<T = unknown>(
         console.error(
           `[AI] Model "${model}" attempt ${attempt} failed: ${lastError}`
         );
+
+        if (signal?.aborted) {
+          return { success: false, model, data: null, error: "Request aborted by caller." };
+        }
 
         // If we still have retries left, wait briefly before retrying
         if (attempt < retryNumber) {

@@ -3,6 +3,7 @@ import { Prisma } from '../../../prisma/generated/prisma/client';
 import { prisma } from '../../lib/prisma';
 import AppError from '../../errorHelpers/AppError';
 import { getAiResponse } from '../../utils/aiResponse';
+import { recordAiUsage } from '../../utils/aiUsage';
 import {
   CreateCoverLetterInput,
   ListCoverLettersInput,
@@ -284,6 +285,7 @@ export const regenerateCoverLetter = async (
       data: { apiUsed: { increment: 1 } },
     }),
   ]);
+  await recordAiUsage(userId, 'cover_letter_generation');
 
   return updated;
 };

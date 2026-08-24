@@ -1,6 +1,7 @@
 import status from 'http-status';
 import { prisma } from '../../lib/prisma';
 import { getAiResponse } from '../../utils/aiResponse';
+import { recordAiUsage } from '../../utils/aiUsage';
 import AppError from '../../errorHelpers/AppError';
 import { AnalyzeJdInput, AnalyzeJdResponse } from './tools.schema';
 
@@ -35,12 +36,12 @@ export const analyzeJd = async (
   if (input.resumeId) {
     const resume = await prisma.resume.findFirst({
       where: { id: input.resumeId, userId },
-      select: { id: true, title: true, data: true },
+      select: { id: true, title: true, contentData: true },
     });
     if (!resume) {
       throw new AppError(status.BAD_REQUEST, 'Attached resume not found.');
     }
-    const text = extractResumeText(resume.data);
+    const text = extractResumeText(resume.contentData);
     const trimmed = text.length > 4000 ? text.slice(0, 4000) : text;
     resumeContext = `\n\nFor context, here is the candidate's current resume (truncated to 4000 chars):\n${trimmed}`;
   }
@@ -64,6 +65,7 @@ export const analyzeJd = async (
     where: { userId },
     data: { apiUsed: { increment: 1 } },
   });
+  await recordAiUsage(userId, 'job_description_analysis');
 
   return sanitize(result.data);
 };

@@ -16,6 +16,8 @@ import { coverLetterRouter } from './modules/coverLetter/coverLetter.router';
 import { toolsRouter } from './modules/tools/tools.router';
 import { referralRouter } from './modules/referral/referral.router';
 import { billingRouter } from './modules/billing/billing.router';
+import { contentRouter } from './modules/content/content.router';
+import { aiChatRouter } from './modules/aiChat/aiChat.router';
 
 const router = Router();
 
@@ -37,5 +39,7 @@ router.use('/cover-letters', coverLetterRouter);
 router.use('/tools', toolsRouter);
 router.use('/referrals', referralRouter);
 router.use('/billing', billingRouter);
+router.use('/content', contentRouter);
+router.use('/ai', aiChatRouter);
 
 export const indexRouter = router;

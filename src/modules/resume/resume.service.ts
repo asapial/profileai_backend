@@ -4,6 +4,7 @@ import Handlebars from 'handlebars';
 import { Prisma } from '../../../prisma/generated/prisma/client';
 import { prisma } from '../../lib/prisma';
 import { getAiResponse } from '../../utils/aiResponse';
+import { recordAiUsage } from '../../utils/aiUsage';
 import { uploadBuffer, getPresignedUrl } from '../../lib/minio';
 import { envVars } from '../../config/env';
 import AppError from '../../errorHelpers/AppError';
@@ -289,7 +290,13 @@ export const generateResume = async (userId: string, input: GenerateResumeInput)
   if (!profile) throw new AppError(status.BAD_REQUEST, 'Please complete your profile before generating a resume.');
 
   // Verify template exists
-  const template = await prisma.resumeTemplate.findUnique({ where: { id: input.templateId } });
+  const template = await prisma.resumeTemplate.findFirst({
+    where: {
+      id: input.templateId,
+      isActive: true,
+      OR: [{ reviewStatus: 'APPROVED' }, { ownerId: userId }],
+    },
+  });
   if (!template) throw new AppError(status.NOT_FOUND, 'Template not found.');
 
   const profileData = {
@@ -329,7 +336,7 @@ export const generateResume = async (userId: string, input: GenerateResumeInput)
     userId,
     templateId: input.templateId,
     title: input.title,
-    type: input.type as any,
+    type: template.documentType,
     status: 'GENERATED',
     targetJobTitle: input.targetJobTitle,
     contentData: contentData as Prisma.InputJsonValue,
@@ -350,6 +357,8 @@ export const generateResume = async (userId: string, input: GenerateResumeInput)
     where: { userId },
     data: { resumeCount: { increment: 1 }, apiCallCount: { increment: 1 } },
   });
+
+  await recordAiUsage(userId, 'resume_generation');
 
   return resume;
 };
@@ -433,6 +442,8 @@ export const runAtsCheck = async (userId: string, resumeId: string, data: AtsChe
   });
 
   await prisma.userLimit.update({ where: { userId }, data: { apiUsed: { increment: 1 } } });
+
+  await recordAiUsage(userId, 'ats_analysis');
 
   return { resume: updated, atsData: aiResult.data };
 };
@@ -661,6 +672,7 @@ export const aiModifySection = async (userId: string, resumeId: string, data: Ai
   });
 
   await prisma.userLimit.update({ where: { userId }, data: { apiUsed: { increment: 1 } } });
+  await recordAiUsage(userId, 'resume_section_rewrite');
   return updated;
 };
 
@@ -673,13 +685,21 @@ export const updateResumeTemplate = async (
   if (!resume) throw new AppError(status.NOT_FOUND, 'Resume not found.');
 
   const template = await prisma.resumeTemplate.findFirst({
-    where: { id: data.templateId, isActive: true },
+    where: {
+      id: data.templateId,
+      isActive: true,
+      OR: [{ reviewStatus: 'APPROVED' }, { ownerId: userId }],
+    },
   });
   if (!template) throw new AppError(status.NOT_FOUND, 'Template is not available.');
 
   return prisma.resume.update({
     where: { id: resumeId },
-    data: { templateId: template.id, version: { increment: 1 } },
+    data: {
+      templateId: template.id,
+      type: template.documentType,
+      version: { increment: 1 },
+    },
     include: { template: true },
   });
 };
