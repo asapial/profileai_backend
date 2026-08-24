@@ -1,0 +1,48 @@
+// Content management and flexible admin-operation records.
+//
+// HomepageContent keeps draft and published copies separate so editing never
+// changes the public site until an administrator explicitly publishes.
+// ContentPage powers the public footer/legal/company pages.
+// AdminResource stores operational records whose shape evolves frequently
+// (tickets, announcements, feature flags, moderation and help articles)
+// without coupling every copy change to a database migration.
+
+model HomepageContent {
+  id          String    @id @default("homepage")
+  draft       Json
+  published   Json
+  version     Int       @default(1)
+  updatedBy   String?
+  updatedAt   DateTime  @updatedAt
+  publishedAt DateTime?
+
+  @@map("homepage_content")
+}
+
+model ContentPage {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  description String?
+  body        String
+  published   Boolean  @default(true)
+  updatedBy   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([published, slug])
+  @@map("content_page")
+}
+
+model AdminResource {
+  id        String   @id @default(cuid())
+  type      String
+  key       String?
+  data      Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([type, key])
+  @@index([type, updatedAt])
+  @@map("admin_resource")
+}

@@ -817,10 +817,6 @@ export type ResumeUncheckedUpdateManyWithoutTemplateNestedInput = {
   deleteMany?: Prisma.ResumeScalarWhereInput | Prisma.ResumeScalarWhereInput[]
 }
 
-export type EnumResumeTypeFieldUpdateOperationsInput = {
-  set?: $Enums.ResumeType
-}
-
 export type EnumResumeStatusFieldUpdateOperationsInput = {
   set?: $Enums.ResumeStatus
 }

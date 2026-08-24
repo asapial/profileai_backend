@@ -577,14 +577,6 @@ export type CouponUpdateOneWithoutSubscriptionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CouponUpdateToOneWithWhereWithoutSubscriptionsInput, Prisma.CouponUpdateWithoutSubscriptionsInput>, Prisma.CouponUncheckedUpdateWithoutSubscriptionsInput>
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type EnumCouponDurationFieldUpdateOperationsInput = {
   set?: $Enums.CouponDuration
 }

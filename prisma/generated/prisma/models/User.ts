@@ -236,6 +236,7 @@ export type UserWhereInput = {
   adminProfile?: Prisma.XOR<Prisma.AdminProfileNullableScalarRelationFilter, Prisma.AdminProfileWhereInput> | null
   devices?: Prisma.LoginDeviceListRelationFilter
   resumes?: Prisma.ResumeListRelationFilter
+  ownedTemplates?: Prisma.ResumeTemplateListRelationFilter
   otps?: Prisma.OtpCodeListRelationFilter
   limits?: Prisma.XOR<Prisma.UserLimitNullableScalarRelationFilter, Prisma.UserLimitWhereInput> | null
   notificationPreference?: Prisma.XOR<Prisma.NotificationPreferenceNullableScalarRelationFilter, Prisma.NotificationPreferenceWhereInput> | null
@@ -251,6 +252,8 @@ export type UserWhereInput = {
   rewardLedger?: Prisma.RewardLedgerListRelationFilter
   subscriptions?: Prisma.SubscriptionListRelationFilter
   invoices?: Prisma.InvoiceListRelationFilter
+  aiConversations?: Prisma.AiConversationListRelationFilter
+  aiFeedback?: Prisma.AiFeedbackListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -271,6 +274,7 @@ export type UserOrderByWithRelationInput = {
   adminProfile?: Prisma.AdminProfileOrderByWithRelationInput
   devices?: Prisma.LoginDeviceOrderByRelationAggregateInput
   resumes?: Prisma.ResumeOrderByRelationAggregateInput
+  ownedTemplates?: Prisma.ResumeTemplateOrderByRelationAggregateInput
   otps?: Prisma.OtpCodeOrderByRelationAggregateInput
   limits?: Prisma.UserLimitOrderByWithRelationInput
   notificationPreference?: Prisma.NotificationPreferenceOrderByWithRelationInput
@@ -286,6 +290,8 @@ export type UserOrderByWithRelationInput = {
   rewardLedger?: Prisma.RewardLedgerOrderByRelationAggregateInput
   subscriptions?: Prisma.SubscriptionOrderByRelationAggregateInput
   invoices?: Prisma.InvoiceOrderByRelationAggregateInput
+  aiConversations?: Prisma.AiConversationOrderByRelationAggregateInput
+  aiFeedback?: Prisma.AiFeedbackOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -309,6 +315,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   adminProfile?: Prisma.XOR<Prisma.AdminProfileNullableScalarRelationFilter, Prisma.AdminProfileWhereInput> | null
   devices?: Prisma.LoginDeviceListRelationFilter
   resumes?: Prisma.ResumeListRelationFilter
+  ownedTemplates?: Prisma.ResumeTemplateListRelationFilter
   otps?: Prisma.OtpCodeListRelationFilter
   limits?: Prisma.XOR<Prisma.UserLimitNullableScalarRelationFilter, Prisma.UserLimitWhereInput> | null
   notificationPreference?: Prisma.XOR<Prisma.NotificationPreferenceNullableScalarRelationFilter, Prisma.NotificationPreferenceWhereInput> | null
@@ -324,6 +331,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   rewardLedger?: Prisma.RewardLedgerListRelationFilter
   subscriptions?: Prisma.SubscriptionListRelationFilter
   invoices?: Prisma.InvoiceListRelationFilter
+  aiConversations?: Prisma.AiConversationListRelationFilter
+  aiFeedback?: Prisma.AiFeedbackListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -378,6 +387,7 @@ export type UserCreateInput = {
   adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
@@ -393,6 +403,8 @@ export type UserCreateInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -413,6 +425,7 @@ export type UserUncheckedCreateInput = {
   adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -428,6 +441,8 @@ export type UserUncheckedCreateInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -448,6 +463,7 @@ export type UserUpdateInput = {
   adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
@@ -463,6 +479,8 @@ export type UserUpdateInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -483,6 +501,7 @@ export type UserUncheckedUpdateInput = {
   adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -498,6 +517,8 @@ export type UserUncheckedUpdateInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -540,6 +561,11 @@ export type UserUncheckedUpdateManyInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type UserNullableScalarRelationFilter = {
+  is?: Prisma.UserWhereInput | null
+  isNot?: Prisma.UserWhereInput | null
 }
 
 export type UserScalarRelationFilter = {
@@ -587,6 +613,38 @@ export type UserMinOrderByAggregateInput = {
   isActive?: Prisma.SortOrder
   twoFactorEnabled?: Prisma.SortOrder
   twoFactorSecret?: Prisma.SortOrder
+}
+
+export type UserCreateNestedOneWithoutAiConversationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAiConversationsInput, Prisma.UserUncheckedCreateWithoutAiConversationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAiConversationsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutAiConversationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAiConversationsInput, Prisma.UserUncheckedCreateWithoutAiConversationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAiConversationsInput
+  upsert?: Prisma.UserUpsertWithoutAiConversationsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAiConversationsInput, Prisma.UserUpdateWithoutAiConversationsInput>, Prisma.UserUncheckedUpdateWithoutAiConversationsInput>
+}
+
+export type UserCreateNestedOneWithoutAiFeedbackInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAiFeedbackInput, Prisma.UserUncheckedCreateWithoutAiFeedbackInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAiFeedbackInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutAiFeedbackNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAiFeedbackInput, Prisma.UserUncheckedCreateWithoutAiFeedbackInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAiFeedbackInput
+  upsert?: Prisma.UserUpsertWithoutAiFeedbackInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAiFeedbackInput, Prisma.UserUpdateWithoutAiFeedbackInput>, Prisma.UserUncheckedUpdateWithoutAiFeedbackInput>
 }
 
 export type UserCreateNestedOneWithoutJobApplicationsInput = {
@@ -877,6 +935,22 @@ export type UserUpdateOneRequiredWithoutRewardLedgerNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRewardLedgerInput, Prisma.UserUpdateWithoutRewardLedgerInput>, Prisma.UserUncheckedUpdateWithoutRewardLedgerInput>
 }
 
+export type UserCreateNestedOneWithoutOwnedTemplatesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOwnedTemplatesInput, Prisma.UserUncheckedCreateWithoutOwnedTemplatesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOwnedTemplatesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutOwnedTemplatesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOwnedTemplatesInput, Prisma.UserUncheckedCreateWithoutOwnedTemplatesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOwnedTemplatesInput
+  upsert?: Prisma.UserUpsertWithoutOwnedTemplatesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOwnedTemplatesInput, Prisma.UserUpdateWithoutOwnedTemplatesInput>, Prisma.UserUncheckedUpdateWithoutOwnedTemplatesInput>
+}
+
 export type UserCreateNestedOneWithoutResumesInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutResumesInput, Prisma.UserUncheckedCreateWithoutResumesInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutResumesInput
@@ -889,6 +963,334 @@ export type UserUpdateOneRequiredWithoutResumesNestedInput = {
   upsert?: Prisma.UserUpsertWithoutResumesInput
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutResumesInput, Prisma.UserUpdateWithoutResumesInput>, Prisma.UserUncheckedUpdateWithoutResumesInput>
+}
+
+export type UserCreateWithoutAiConversationsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
+  otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutAiConversationsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
+  otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceUncheckedCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobUncheckedCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralUncheckedCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralUncheckedCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutAiConversationsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAiConversationsInput, Prisma.UserUncheckedCreateWithoutAiConversationsInput>
+}
+
+export type UserUpsertWithoutAiConversationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAiConversationsInput, Prisma.UserUncheckedUpdateWithoutAiConversationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAiConversationsInput, Prisma.UserUncheckedCreateWithoutAiConversationsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAiConversationsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAiConversationsInput, Prisma.UserUncheckedUpdateWithoutAiConversationsInput>
+}
+
+export type UserUpdateWithoutAiConversationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
+  otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAiConversationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
+  otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUncheckedUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUncheckedUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUncheckedUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUncheckedUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutAiFeedbackInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
+  otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutAiFeedbackInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
+  otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceUncheckedCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobUncheckedCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralUncheckedCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralUncheckedCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutAiFeedbackInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAiFeedbackInput, Prisma.UserUncheckedCreateWithoutAiFeedbackInput>
+}
+
+export type UserUpsertWithoutAiFeedbackInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAiFeedbackInput, Prisma.UserUncheckedUpdateWithoutAiFeedbackInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAiFeedbackInput, Prisma.UserUncheckedCreateWithoutAiFeedbackInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAiFeedbackInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAiFeedbackInput, Prisma.UserUncheckedUpdateWithoutAiFeedbackInput>
+}
+
+export type UserUpdateWithoutAiFeedbackInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
+  otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAiFeedbackInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
+  otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUncheckedUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUncheckedUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUncheckedUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUncheckedUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutJobApplicationsInput = {
@@ -909,6 +1311,7 @@ export type UserCreateWithoutJobApplicationsInput = {
   adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
@@ -923,6 +1326,8 @@ export type UserCreateWithoutJobApplicationsInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutJobApplicationsInput = {
@@ -943,6 +1348,7 @@ export type UserUncheckedCreateWithoutJobApplicationsInput = {
   adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -957,6 +1363,8 @@ export type UserUncheckedCreateWithoutJobApplicationsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutJobApplicationsInput = {
@@ -993,6 +1401,7 @@ export type UserUpdateWithoutJobApplicationsInput = {
   adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
@@ -1007,6 +1416,8 @@ export type UserUpdateWithoutJobApplicationsInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutJobApplicationsInput = {
@@ -1027,6 +1438,7 @@ export type UserUncheckedUpdateWithoutJobApplicationsInput = {
   adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -1041,6 +1453,8 @@ export type UserUncheckedUpdateWithoutJobApplicationsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutApplicationEventsInput = {
@@ -1061,6 +1475,7 @@ export type UserCreateWithoutApplicationEventsInput = {
   adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
@@ -1075,6 +1490,8 @@ export type UserCreateWithoutApplicationEventsInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutApplicationEventsInput = {
@@ -1095,6 +1512,7 @@ export type UserUncheckedCreateWithoutApplicationEventsInput = {
   adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -1109,6 +1527,8 @@ export type UserUncheckedCreateWithoutApplicationEventsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutApplicationEventsInput = {
@@ -1145,6 +1565,7 @@ export type UserUpdateWithoutApplicationEventsInput = {
   adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
@@ -1159,6 +1580,8 @@ export type UserUpdateWithoutApplicationEventsInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApplicationEventsInput = {
@@ -1179,6 +1602,7 @@ export type UserUncheckedUpdateWithoutApplicationEventsInput = {
   adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -1193,6 +1617,8 @@ export type UserUncheckedUpdateWithoutApplicationEventsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -1212,6 +1638,7 @@ export type UserCreateWithoutSessionsInput = {
   adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
@@ -1227,6 +1654,8 @@ export type UserCreateWithoutSessionsInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -1246,6 +1675,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -1261,6 +1691,8 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -1296,6 +1728,7 @@ export type UserUpdateWithoutSessionsInput = {
   adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
@@ -1311,6 +1744,8 @@ export type UserUpdateWithoutSessionsInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -1330,6 +1765,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -1345,6 +1781,8 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAccountsInput = {
@@ -1364,6 +1802,7 @@ export type UserCreateWithoutAccountsInput = {
   adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
@@ -1379,6 +1818,8 @@ export type UserCreateWithoutAccountsInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAccountsInput = {
@@ -1398,6 +1839,7 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -1413,6 +1855,8 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAccountsInput = {
@@ -1448,6 +1892,7 @@ export type UserUpdateWithoutAccountsInput = {
   adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
@@ -1463,6 +1908,8 @@ export type UserUpdateWithoutAccountsInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -1482,6 +1929,7 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -1497,6 +1945,8 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSubscriptionsInput = {
@@ -1517,6 +1967,7 @@ export type UserCreateWithoutSubscriptionsInput = {
   adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
@@ -1531,6 +1982,8 @@ export type UserCreateWithoutSubscriptionsInput = {
   referralReceived?: Prisma.ReferralCreateNestedOneWithoutRefereeInput
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSubscriptionsInput = {
@@ -1551,6 +2004,7 @@ export type UserUncheckedCreateWithoutSubscriptionsInput = {
   adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -1565,6 +2019,8 @@ export type UserUncheckedCreateWithoutSubscriptionsInput = {
   referralReceived?: Prisma.ReferralUncheckedCreateNestedOneWithoutRefereeInput
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSubscriptionsInput = {
@@ -1601,6 +2057,7 @@ export type UserUpdateWithoutSubscriptionsInput = {
   adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
@@ -1615,6 +2072,8 @@ export type UserUpdateWithoutSubscriptionsInput = {
   referralReceived?: Prisma.ReferralUpdateOneWithoutRefereeNestedInput
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSubscriptionsInput = {
@@ -1635,6 +2094,7 @@ export type UserUncheckedUpdateWithoutSubscriptionsInput = {
   adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -1649,6 +2109,8 @@ export type UserUncheckedUpdateWithoutSubscriptionsInput = {
   referralReceived?: Prisma.ReferralUncheckedUpdateOneWithoutRefereeNestedInput
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutInvoicesInput = {
@@ -1669,6 +2131,7 @@ export type UserCreateWithoutInvoicesInput = {
   adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
@@ -1683,6 +2146,8 @@ export type UserCreateWithoutInvoicesInput = {
   referralReceived?: Prisma.ReferralCreateNestedOneWithoutRefereeInput
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutInvoicesInput = {
@@ -1703,6 +2168,7 @@ export type UserUncheckedCreateWithoutInvoicesInput = {
   adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -1717,6 +2183,8 @@ export type UserUncheckedCreateWithoutInvoicesInput = {
   referralReceived?: Prisma.ReferralUncheckedCreateNestedOneWithoutRefereeInput
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutInvoicesInput = {
@@ -1753,6 +2221,7 @@ export type UserUpdateWithoutInvoicesInput = {
   adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
@@ -1767,6 +2236,8 @@ export type UserUpdateWithoutInvoicesInput = {
   referralReceived?: Prisma.ReferralUpdateOneWithoutRefereeNestedInput
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInvoicesInput = {
@@ -1787,6 +2258,7 @@ export type UserUncheckedUpdateWithoutInvoicesInput = {
   adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -1801,6 +2273,8 @@ export type UserUncheckedUpdateWithoutInvoicesInput = {
   referralReceived?: Prisma.ReferralUncheckedUpdateOneWithoutRefereeNestedInput
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCoverLettersInput = {
@@ -1821,6 +2295,7 @@ export type UserCreateWithoutCoverLettersInput = {
   adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
@@ -1835,6 +2310,8 @@ export type UserCreateWithoutCoverLettersInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCoverLettersInput = {
@@ -1855,6 +2332,7 @@ export type UserUncheckedCreateWithoutCoverLettersInput = {
   adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -1869,6 +2347,8 @@ export type UserUncheckedCreateWithoutCoverLettersInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCoverLettersInput = {
@@ -1905,6 +2385,7 @@ export type UserUpdateWithoutCoverLettersInput = {
   adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
@@ -1919,6 +2400,8 @@ export type UserUpdateWithoutCoverLettersInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCoverLettersInput = {
@@ -1939,6 +2422,7 @@ export type UserUncheckedUpdateWithoutCoverLettersInput = {
   adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -1953,6 +2437,8 @@ export type UserUncheckedUpdateWithoutCoverLettersInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutExportJobsInput = {
@@ -1973,6 +2459,7 @@ export type UserCreateWithoutExportJobsInput = {
   adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
@@ -1987,6 +2474,8 @@ export type UserCreateWithoutExportJobsInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutExportJobsInput = {
@@ -2007,6 +2496,7 @@ export type UserUncheckedCreateWithoutExportJobsInput = {
   adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -2021,6 +2511,8 @@ export type UserUncheckedCreateWithoutExportJobsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutExportJobsInput = {
@@ -2057,6 +2549,7 @@ export type UserUpdateWithoutExportJobsInput = {
   adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
@@ -2071,6 +2564,8 @@ export type UserUpdateWithoutExportJobsInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutExportJobsInput = {
@@ -2091,6 +2586,7 @@ export type UserUncheckedUpdateWithoutExportJobsInput = {
   adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -2105,6 +2601,8 @@ export type UserUncheckedUpdateWithoutExportJobsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -2125,6 +2623,7 @@ export type UserCreateWithoutNotificationsInput = {
   adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
@@ -2139,6 +2638,8 @@ export type UserCreateWithoutNotificationsInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -2159,6 +2660,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -2173,6 +2675,8 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -2209,6 +2713,7 @@ export type UserUpdateWithoutNotificationsInput = {
   adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
@@ -2223,6 +2728,8 @@ export type UserUpdateWithoutNotificationsInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -2243,6 +2750,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -2257,6 +2765,8 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutNotificationPreferenceInput = {
@@ -2277,6 +2787,7 @@ export type UserCreateWithoutNotificationPreferenceInput = {
   adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -2291,6 +2802,8 @@ export type UserCreateWithoutNotificationPreferenceInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutNotificationPreferenceInput = {
@@ -2311,6 +2824,7 @@ export type UserUncheckedCreateWithoutNotificationPreferenceInput = {
   adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -2325,6 +2839,8 @@ export type UserUncheckedCreateWithoutNotificationPreferenceInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutNotificationPreferenceInput = {
@@ -2361,6 +2877,7 @@ export type UserUpdateWithoutNotificationPreferenceInput = {
   adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -2375,6 +2892,8 @@ export type UserUpdateWithoutNotificationPreferenceInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationPreferenceInput = {
@@ -2395,6 +2914,7 @@ export type UserUncheckedUpdateWithoutNotificationPreferenceInput = {
   adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -2409,6 +2929,8 @@ export type UserUncheckedUpdateWithoutNotificationPreferenceInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLimitsInput = {
@@ -2429,6 +2951,7 @@ export type UserCreateWithoutLimitsInput = {
   adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -2443,6 +2966,8 @@ export type UserCreateWithoutLimitsInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLimitsInput = {
@@ -2463,6 +2988,7 @@ export type UserUncheckedCreateWithoutLimitsInput = {
   adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -2477,6 +3003,8 @@ export type UserUncheckedCreateWithoutLimitsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLimitsInput = {
@@ -2513,6 +3041,7 @@ export type UserUpdateWithoutLimitsInput = {
   adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -2527,6 +3056,8 @@ export type UserUpdateWithoutLimitsInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLimitsInput = {
@@ -2547,6 +3078,7 @@ export type UserUncheckedUpdateWithoutLimitsInput = {
   adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -2561,6 +3093,8 @@ export type UserUncheckedUpdateWithoutLimitsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutOtpsInput = {
@@ -2581,6 +3115,7 @@ export type UserCreateWithoutOtpsInput = {
   adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
   limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
@@ -2595,6 +3130,8 @@ export type UserCreateWithoutOtpsInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutOtpsInput = {
@@ -2615,6 +3152,7 @@ export type UserUncheckedCreateWithoutOtpsInput = {
   adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
   limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -2629,6 +3167,8 @@ export type UserUncheckedCreateWithoutOtpsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutOtpsInput = {
@@ -2665,6 +3205,7 @@ export type UserUpdateWithoutOtpsInput = {
   adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
   limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
@@ -2679,6 +3220,8 @@ export type UserUpdateWithoutOtpsInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOtpsInput = {
@@ -2699,6 +3242,7 @@ export type UserUncheckedUpdateWithoutOtpsInput = {
   adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
   limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -2713,6 +3257,8 @@ export type UserUncheckedUpdateWithoutOtpsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutDevicesInput = {
@@ -2732,6 +3278,7 @@ export type UserCreateWithoutDevicesInput = {
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
   adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
@@ -2747,6 +3294,8 @@ export type UserCreateWithoutDevicesInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDevicesInput = {
@@ -2766,6 +3315,7 @@ export type UserUncheckedCreateWithoutDevicesInput = {
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
   adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -2781,6 +3331,8 @@ export type UserUncheckedCreateWithoutDevicesInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDevicesInput = {
@@ -2816,6 +3368,7 @@ export type UserUpdateWithoutDevicesInput = {
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
   adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
@@ -2831,6 +3384,8 @@ export type UserUpdateWithoutDevicesInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDevicesInput = {
@@ -2850,6 +3405,7 @@ export type UserUncheckedUpdateWithoutDevicesInput = {
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
   adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -2865,6 +3421,8 @@ export type UserUncheckedUpdateWithoutDevicesInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutProfileInput = {
@@ -2884,6 +3442,7 @@ export type UserCreateWithoutProfileInput = {
   adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
@@ -2899,6 +3458,8 @@ export type UserCreateWithoutProfileInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProfileInput = {
@@ -2918,6 +3479,7 @@ export type UserUncheckedCreateWithoutProfileInput = {
   adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -2933,6 +3495,8 @@ export type UserUncheckedCreateWithoutProfileInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProfileInput = {
@@ -2968,6 +3532,7 @@ export type UserUpdateWithoutProfileInput = {
   adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
@@ -2983,6 +3548,8 @@ export type UserUpdateWithoutProfileInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProfileInput = {
@@ -3002,6 +3569,7 @@ export type UserUncheckedUpdateWithoutProfileInput = {
   adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -3017,6 +3585,8 @@ export type UserUncheckedUpdateWithoutProfileInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAdminProfileInput = {
@@ -3036,6 +3606,7 @@ export type UserCreateWithoutAdminProfileInput = {
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
@@ -3051,6 +3622,8 @@ export type UserCreateWithoutAdminProfileInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAdminProfileInput = {
@@ -3070,6 +3643,7 @@ export type UserUncheckedCreateWithoutAdminProfileInput = {
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -3085,6 +3659,8 @@ export type UserUncheckedCreateWithoutAdminProfileInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAdminProfileInput = {
@@ -3120,6 +3696,7 @@ export type UserUpdateWithoutAdminProfileInput = {
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
@@ -3135,6 +3712,8 @@ export type UserUpdateWithoutAdminProfileInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAdminProfileInput = {
@@ -3154,6 +3733,7 @@ export type UserUncheckedUpdateWithoutAdminProfileInput = {
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -3169,6 +3749,8 @@ export type UserUncheckedUpdateWithoutAdminProfileInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutProjectsInput = {
@@ -3189,6 +3771,7 @@ export type UserCreateWithoutProjectsInput = {
   adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
@@ -3203,6 +3786,8 @@ export type UserCreateWithoutProjectsInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProjectsInput = {
@@ -3223,6 +3808,7 @@ export type UserUncheckedCreateWithoutProjectsInput = {
   adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -3237,6 +3823,8 @@ export type UserUncheckedCreateWithoutProjectsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProjectsInput = {
@@ -3273,6 +3861,7 @@ export type UserUpdateWithoutProjectsInput = {
   adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
@@ -3287,6 +3876,8 @@ export type UserUpdateWithoutProjectsInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProjectsInput = {
@@ -3307,6 +3898,7 @@ export type UserUncheckedUpdateWithoutProjectsInput = {
   adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -3321,6 +3913,8 @@ export type UserUncheckedUpdateWithoutProjectsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutReferencesInput = {
@@ -3341,6 +3935,7 @@ export type UserCreateWithoutReferencesInput = {
   adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
@@ -3355,6 +3950,8 @@ export type UserCreateWithoutReferencesInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReferencesInput = {
@@ -3375,6 +3972,7 @@ export type UserUncheckedCreateWithoutReferencesInput = {
   adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -3389,6 +3987,8 @@ export type UserUncheckedCreateWithoutReferencesInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReferencesInput = {
@@ -3425,6 +4025,7 @@ export type UserUpdateWithoutReferencesInput = {
   adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
@@ -3439,6 +4040,8 @@ export type UserUpdateWithoutReferencesInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReferencesInput = {
@@ -3459,6 +4062,7 @@ export type UserUncheckedUpdateWithoutReferencesInput = {
   adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -3473,6 +4077,8 @@ export type UserUncheckedUpdateWithoutReferencesInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutReferralsGivenInput = {
@@ -3493,6 +4099,7 @@ export type UserCreateWithoutReferralsGivenInput = {
   adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
@@ -3507,6 +4114,8 @@ export type UserCreateWithoutReferralsGivenInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReferralsGivenInput = {
@@ -3527,6 +4136,7 @@ export type UserUncheckedCreateWithoutReferralsGivenInput = {
   adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -3541,6 +4151,8 @@ export type UserUncheckedCreateWithoutReferralsGivenInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReferralsGivenInput = {
@@ -3566,6 +4178,7 @@ export type UserCreateWithoutReferralReceivedInput = {
   adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
@@ -3580,6 +4193,8 @@ export type UserCreateWithoutReferralReceivedInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReferralReceivedInput = {
@@ -3600,6 +4215,7 @@ export type UserUncheckedCreateWithoutReferralReceivedInput = {
   adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -3614,6 +4230,8 @@ export type UserUncheckedCreateWithoutReferralReceivedInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReferralReceivedInput = {
@@ -3650,6 +4268,7 @@ export type UserUpdateWithoutReferralsGivenInput = {
   adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
@@ -3664,6 +4283,8 @@ export type UserUpdateWithoutReferralsGivenInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReferralsGivenInput = {
@@ -3684,6 +4305,7 @@ export type UserUncheckedUpdateWithoutReferralsGivenInput = {
   adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -3698,6 +4320,8 @@ export type UserUncheckedUpdateWithoutReferralsGivenInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutReferralReceivedInput = {
@@ -3729,6 +4353,7 @@ export type UserUpdateWithoutReferralReceivedInput = {
   adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
@@ -3743,6 +4368,8 @@ export type UserUpdateWithoutReferralReceivedInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReferralReceivedInput = {
@@ -3763,6 +4390,7 @@ export type UserUncheckedUpdateWithoutReferralReceivedInput = {
   adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -3777,6 +4405,8 @@ export type UserUncheckedUpdateWithoutReferralReceivedInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRewardLedgerInput = {
@@ -3797,6 +4427,7 @@ export type UserCreateWithoutRewardLedgerInput = {
   adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
@@ -3811,6 +4442,8 @@ export type UserCreateWithoutRewardLedgerInput = {
   referralReceived?: Prisma.ReferralCreateNestedOneWithoutRefereeInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRewardLedgerInput = {
@@ -3831,6 +4464,7 @@ export type UserUncheckedCreateWithoutRewardLedgerInput = {
   adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -3845,6 +4479,8 @@ export type UserUncheckedCreateWithoutRewardLedgerInput = {
   referralReceived?: Prisma.ReferralUncheckedCreateNestedOneWithoutRefereeInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRewardLedgerInput = {
@@ -3881,6 +4517,7 @@ export type UserUpdateWithoutRewardLedgerInput = {
   adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
@@ -3895,9 +4532,175 @@ export type UserUpdateWithoutRewardLedgerInput = {
   referralReceived?: Prisma.ReferralUpdateOneWithoutRefereeNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRewardLedgerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
+  otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUncheckedUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUncheckedUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUncheckedUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUncheckedUpdateOneWithoutRefereeNestedInput
+  subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutOwnedTemplatesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutOwnedTemplatesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceUncheckedCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobUncheckedCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralUncheckedCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralUncheckedCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutOwnedTemplatesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutOwnedTemplatesInput, Prisma.UserUncheckedCreateWithoutOwnedTemplatesInput>
+}
+
+export type UserUpsertWithoutOwnedTemplatesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutOwnedTemplatesInput, Prisma.UserUncheckedUpdateWithoutOwnedTemplatesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutOwnedTemplatesInput, Prisma.UserUncheckedCreateWithoutOwnedTemplatesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutOwnedTemplatesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutOwnedTemplatesInput, Prisma.UserUncheckedUpdateWithoutOwnedTemplatesInput>
+}
+
+export type UserUpdateWithoutOwnedTemplatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutOwnedTemplatesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3927,8 +4730,11 @@ export type UserUncheckedUpdateWithoutRewardLedgerInput = {
   exportJobs?: Prisma.ExportJobUncheckedUpdateManyWithoutUserNestedInput
   referralsGiven?: Prisma.ReferralUncheckedUpdateManyWithoutReferrerNestedInput
   referralReceived?: Prisma.ReferralUncheckedUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutResumesInput = {
@@ -3948,6 +4754,7 @@ export type UserCreateWithoutResumesInput = {
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
   adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
@@ -3963,6 +4770,8 @@ export type UserCreateWithoutResumesInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutResumesInput = {
@@ -3982,6 +4791,7 @@ export type UserUncheckedCreateWithoutResumesInput = {
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
   adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
   devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
   otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
   limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
@@ -3997,6 +4807,8 @@ export type UserUncheckedCreateWithoutResumesInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutResumesInput = {
@@ -4032,6 +4844,7 @@ export type UserUpdateWithoutResumesInput = {
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
   adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
@@ -4047,6 +4860,8 @@ export type UserUpdateWithoutResumesInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutResumesInput = {
@@ -4066,6 +4881,7 @@ export type UserUncheckedUpdateWithoutResumesInput = {
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
   adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
   otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
   limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
@@ -4081,6 +4897,8 @@ export type UserUncheckedUpdateWithoutResumesInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -4093,6 +4911,7 @@ export type UserCountOutputType = {
   accounts: number
   devices: number
   resumes: number
+  ownedTemplates: number
   otps: number
   notifications: number
   jobApplications: number
@@ -4105,6 +4924,8 @@ export type UserCountOutputType = {
   rewardLedger: number
   subscriptions: number
   invoices: number
+  aiConversations: number
+  aiFeedback: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -4112,6 +4933,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   accounts?: boolean | UserCountOutputTypeCountAccountsArgs
   devices?: boolean | UserCountOutputTypeCountDevicesArgs
   resumes?: boolean | UserCountOutputTypeCountResumesArgs
+  ownedTemplates?: boolean | UserCountOutputTypeCountOwnedTemplatesArgs
   otps?: boolean | UserCountOutputTypeCountOtpsArgs
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
   jobApplications?: boolean | UserCountOutputTypeCountJobApplicationsArgs
@@ -4124,6 +4946,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   rewardLedger?: boolean | UserCountOutputTypeCountRewardLedgerArgs
   subscriptions?: boolean | UserCountOutputTypeCountSubscriptionsArgs
   invoices?: boolean | UserCountOutputTypeCountInvoicesArgs
+  aiConversations?: boolean | UserCountOutputTypeCountAiConversationsArgs
+  aiFeedback?: boolean | UserCountOutputTypeCountAiFeedbackArgs
 }
 
 /**
@@ -4162,6 +4986,13 @@ export type UserCountOutputTypeCountDevicesArgs<ExtArgs extends runtime.Types.Ex
  */
 export type UserCountOutputTypeCountResumesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ResumeWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountOwnedTemplatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ResumeTemplateWhereInput
 }
 
 /**
@@ -4248,6 +5079,20 @@ export type UserCountOutputTypeCountInvoicesArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.InvoiceWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAiConversationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AiConversationWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAiFeedbackArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AiFeedbackWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -4267,6 +5112,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   adminProfile?: boolean | Prisma.User$adminProfileArgs<ExtArgs>
   devices?: boolean | Prisma.User$devicesArgs<ExtArgs>
   resumes?: boolean | Prisma.User$resumesArgs<ExtArgs>
+  ownedTemplates?: boolean | Prisma.User$ownedTemplatesArgs<ExtArgs>
   otps?: boolean | Prisma.User$otpsArgs<ExtArgs>
   limits?: boolean | Prisma.User$limitsArgs<ExtArgs>
   notificationPreference?: boolean | Prisma.User$notificationPreferenceArgs<ExtArgs>
@@ -4282,6 +5128,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   rewardLedger?: boolean | Prisma.User$rewardLedgerArgs<ExtArgs>
   subscriptions?: boolean | Prisma.User$subscriptionsArgs<ExtArgs>
   invoices?: boolean | Prisma.User$invoicesArgs<ExtArgs>
+  aiConversations?: boolean | Prisma.User$aiConversationsArgs<ExtArgs>
+  aiFeedback?: boolean | Prisma.User$aiFeedbackArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -4335,6 +5183,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   adminProfile?: boolean | Prisma.User$adminProfileArgs<ExtArgs>
   devices?: boolean | Prisma.User$devicesArgs<ExtArgs>
   resumes?: boolean | Prisma.User$resumesArgs<ExtArgs>
+  ownedTemplates?: boolean | Prisma.User$ownedTemplatesArgs<ExtArgs>
   otps?: boolean | Prisma.User$otpsArgs<ExtArgs>
   limits?: boolean | Prisma.User$limitsArgs<ExtArgs>
   notificationPreference?: boolean | Prisma.User$notificationPreferenceArgs<ExtArgs>
@@ -4350,6 +5199,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   rewardLedger?: boolean | Prisma.User$rewardLedgerArgs<ExtArgs>
   subscriptions?: boolean | Prisma.User$subscriptionsArgs<ExtArgs>
   invoices?: boolean | Prisma.User$invoicesArgs<ExtArgs>
+  aiConversations?: boolean | Prisma.User$aiConversationsArgs<ExtArgs>
+  aiFeedback?: boolean | Prisma.User$aiFeedbackArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -4364,6 +5215,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     adminProfile: Prisma.$AdminProfilePayload<ExtArgs> | null
     devices: Prisma.$LoginDevicePayload<ExtArgs>[]
     resumes: Prisma.$ResumePayload<ExtArgs>[]
+    ownedTemplates: Prisma.$ResumeTemplatePayload<ExtArgs>[]
     otps: Prisma.$OtpCodePayload<ExtArgs>[]
     limits: Prisma.$UserLimitPayload<ExtArgs> | null
     notificationPreference: Prisma.$NotificationPreferencePayload<ExtArgs> | null
@@ -4379,6 +5231,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     rewardLedger: Prisma.$RewardLedgerPayload<ExtArgs>[]
     subscriptions: Prisma.$SubscriptionPayload<ExtArgs>[]
     invoices: Prisma.$InvoicePayload<ExtArgs>[]
+    aiConversations: Prisma.$AiConversationPayload<ExtArgs>[]
+    aiFeedback: Prisma.$AiFeedbackPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -4792,6 +5646,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   adminProfile<T extends Prisma.User$adminProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$adminProfileArgs<ExtArgs>>): Prisma.Prisma__AdminProfileClient<runtime.Types.Result.GetResult<Prisma.$AdminProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   devices<T extends Prisma.User$devicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$devicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LoginDevicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   resumes<T extends Prisma.User$resumesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$resumesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ownedTemplates<T extends Prisma.User$ownedTemplatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ownedTemplatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ResumeTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   otps<T extends Prisma.User$otpsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$otpsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OtpCodePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   limits<T extends Prisma.User$limitsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$limitsArgs<ExtArgs>>): Prisma.Prisma__UserLimitClient<runtime.Types.Result.GetResult<Prisma.$UserLimitPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   notificationPreference<T extends Prisma.User$notificationPreferenceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationPreferenceArgs<ExtArgs>>): Prisma.Prisma__NotificationPreferenceClient<runtime.Types.Result.GetResult<Prisma.$NotificationPreferencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -4807,6 +5662,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   rewardLedger<T extends Prisma.User$rewardLedgerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$rewardLedgerArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RewardLedgerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   subscriptions<T extends Prisma.User$subscriptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$subscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   invoices<T extends Prisma.User$invoicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  aiConversations<T extends Prisma.User$aiConversationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$aiConversationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AiConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  aiFeedback<T extends Prisma.User$aiFeedbackArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$aiFeedbackArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AiFeedbackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5374,6 +6231,30 @@ export type User$resumesArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 }
 
 /**
+ * User.ownedTemplates
+ */
+export type User$ownedTemplatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ResumeTemplate
+   */
+  select?: Prisma.ResumeTemplateSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ResumeTemplate
+   */
+  omit?: Prisma.ResumeTemplateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ResumeTemplateInclude<ExtArgs> | null
+  where?: Prisma.ResumeTemplateWhereInput
+  orderBy?: Prisma.ResumeTemplateOrderByWithRelationInput | Prisma.ResumeTemplateOrderByWithRelationInput[]
+  cursor?: Prisma.ResumeTemplateWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ResumeTemplateScalarFieldEnum | Prisma.ResumeTemplateScalarFieldEnum[]
+}
+
+/**
  * User.otps
  */
 export type User$otpsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -5716,6 +6597,54 @@ export type User$invoicesArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.InvoiceScalarFieldEnum | Prisma.InvoiceScalarFieldEnum[]
+}
+
+/**
+ * User.aiConversations
+ */
+export type User$aiConversationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AiConversation
+   */
+  select?: Prisma.AiConversationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AiConversation
+   */
+  omit?: Prisma.AiConversationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AiConversationInclude<ExtArgs> | null
+  where?: Prisma.AiConversationWhereInput
+  orderBy?: Prisma.AiConversationOrderByWithRelationInput | Prisma.AiConversationOrderByWithRelationInput[]
+  cursor?: Prisma.AiConversationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AiConversationScalarFieldEnum | Prisma.AiConversationScalarFieldEnum[]
+}
+
+/**
+ * User.aiFeedback
+ */
+export type User$aiFeedbackArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AiFeedback
+   */
+  select?: Prisma.AiFeedbackSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AiFeedback
+   */
+  omit?: Prisma.AiFeedbackOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AiFeedbackInclude<ExtArgs> | null
+  where?: Prisma.AiFeedbackWhereInput
+  orderBy?: Prisma.AiFeedbackOrderByWithRelationInput | Prisma.AiFeedbackOrderByWithRelationInput[]
+  cursor?: Prisma.AiFeedbackWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AiFeedbackScalarFieldEnum | Prisma.AiFeedbackScalarFieldEnum[]
 }
 
 /**

@@ -15,3 +15,47 @@ model AnalyticsEvent {
   @@index([sessionId])
   @@map("analytics_event")
 }
+
+model AiUsageEvent {
+  id        String   @id @default(cuid())
+  userId    String
+  feature   String
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([userId, createdAt])
+  @@map("ai_usage_event")
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  actorEmail String?
+  action     String
+  entityType String?
+  entityId   String?
+  metadata   Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([actorId, createdAt])
+  @@index([action, createdAt])
+  @@map("audit_log")
+}
+
+model SecurityAlert {
+  id         String                @id @default(cuid())
+  severity   SecurityAlertSeverity @default(WARNING)
+  status     SecurityAlertStatus   @default(OPEN)
+  title      String
+  body       String?
+  source     String?
+  metadata   Json?
+  createdAt  DateTime              @default(now())
+  resolvedAt DateTime?
+
+  @@index([status, severity, createdAt])
+  @@map("security_alert")
+}

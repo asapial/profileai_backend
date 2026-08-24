@@ -22,6 +22,7 @@ model User {
   adminProfile           AdminProfile?
   devices                LoginDevice[]
   resumes                Resume[]
+  ownedTemplates         ResumeTemplate[]        @relation("TemplateOwner")
   otps                   OtpCode[]
   limits                 UserLimit?
   notificationPreference NotificationPreference?
@@ -29,14 +30,16 @@ model User {
   jobApplications        JobApplication[]
   coverLetters           CoverLetter[]
   applicationEvents      ApplicationEvent[]
-  projects               Project[]  
+  projects               Project[]
   references             Reference[]
   exportJobs             ExportJob[]
-  referralsGiven         Referral[]   @relation("ReferralsGiven")
-  referralReceived       Referral?    @relation("ReferralReceived")
+  referralsGiven         Referral[]              @relation("ReferralsGiven")
+  referralReceived       Referral?               @relation("ReferralReceived")
   rewardLedger           RewardLedger[]
   subscriptions          Subscription[]
   invoices               Invoice[]
+  aiConversations        AiConversation[]
+  aiFeedback             AiFeedback[]
 
   // DB table is lowercase `"user"` (matches init migration); without this
   // directive the Prisma client resolves the table as `"User"` and every
@@ -45,15 +48,16 @@ model User {
 }
 
 model Session {
-  id        String   @id @default(uuid())
-  expiresAt DateTime
-  token     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  ipAddress String?
-  userAgent String?
-  userId    String
-  deviceId  String?
+  id                  String    @id @default(uuid())
+  expiresAt           DateTime
+  token               String
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  ipAddress           String?
+  userAgent           String?
+  userId              String
+  deviceId            String?
+  twoFactorVerifiedAt DateTime?
 
   user   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   device LoginDevice? @relation(fields: [deviceId], references: [id])

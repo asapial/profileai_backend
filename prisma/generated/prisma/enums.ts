@@ -9,6 +9,52 @@
 * 🟢 You can import this file directly.
 */
 
+export const AiConversationStatus = {
+  ACTIVE: 'ACTIVE',
+  CLOSED: 'CLOSED'
+} as const
+
+export type AiConversationStatus = (typeof AiConversationStatus)[keyof typeof AiConversationStatus]
+
+
+export const AiMessageSender = {
+  USER: 'USER',
+  ASSISTANT: 'ASSISTANT',
+  SYSTEM: 'SYSTEM',
+  TOOL: 'TOOL'
+} as const
+
+export type AiMessageSender = (typeof AiMessageSender)[keyof typeof AiMessageSender]
+
+
+export const AiToolOperation = {
+  READ: 'READ',
+  WRITE: 'WRITE'
+} as const
+
+export type AiToolOperation = (typeof AiToolOperation)[keyof typeof AiToolOperation]
+
+
+export const AiToolExecutionStatus = {
+  PROPOSED: 'PROPOSED',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type AiToolExecutionStatus = (typeof AiToolExecutionStatus)[keyof typeof AiToolExecutionStatus]
+
+
+export const AiPendingActionStatus = {
+  PENDING: 'PENDING',
+  CONFIRMED: 'CONFIRMED',
+  CANCELLED: 'CANCELLED',
+  EXPIRED: 'EXPIRED'
+} as const
+
+export type AiPendingActionStatus = (typeof AiPendingActionStatus)[keyof typeof AiPendingActionStatus]
+
+
 export const ApplicationStatus = {
   APPLIED: 'APPLIED',
   INTERVIEW: 'INTERVIEW',
@@ -124,6 +170,33 @@ export const TemplateCategory = {
 } as const
 
 export type TemplateCategory = (typeof TemplateCategory)[keyof typeof TemplateCategory]
+
+
+export const TemplateReviewStatus = {
+  DRAFT: 'DRAFT',
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type TemplateReviewStatus = (typeof TemplateReviewStatus)[keyof typeof TemplateReviewStatus]
+
+
+export const SecurityAlertSeverity = {
+  INFO: 'INFO',
+  WARNING: 'WARNING',
+  CRITICAL: 'CRITICAL'
+} as const
+
+export type SecurityAlertSeverity = (typeof SecurityAlertSeverity)[keyof typeof SecurityAlertSeverity]
+
+
+export const SecurityAlertStatus = {
+  OPEN: 'OPEN',
+  RESOLVED: 'RESOLVED'
+} as const
+
+export type SecurityAlertStatus = (typeof SecurityAlertStatus)[keyof typeof SecurityAlertStatus]
 
 
 export const ExportKind = {

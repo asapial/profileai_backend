@@ -1,0 +1,130 @@
+enum AiConversationStatus {
+  ACTIVE
+  CLOSED
+}
+
+enum AiMessageSender {
+  USER
+  ASSISTANT
+  SYSTEM
+  TOOL
+}
+
+enum AiToolOperation {
+  READ
+  WRITE
+}
+
+enum AiToolExecutionStatus {
+  PROPOSED
+  SUCCEEDED
+  FAILED
+  CANCELLED
+}
+
+enum AiPendingActionStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  EXPIRED
+}
+
+model AiConversation {
+  id               String               @id @default(uuid())
+  userId           String?
+  visitorSessionId String?
+  role             String
+  title            String?
+  currentRoute     String?
+  status           AiConversationStatus @default(ACTIVE)
+  summary          String?
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  closedAt         DateTime?
+
+  user           User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages       AiMessage[]
+  toolExecutions AiToolExecution[]
+  pendingActions AiPendingAction[]
+
+  @@index([userId, updatedAt])
+  @@index([visitorSessionId, updatedAt])
+  @@map("ai_conversation")
+}
+
+model AiMessage {
+  id               String          @id @default(uuid())
+  conversationId   String
+  sender           AiMessageSender
+  content          String
+  structuredData   Json?
+  route            String?
+  resourceType     String?
+  resourceId       String?
+  clientRequestId  String?         @unique
+  replyToMessageId String?         @unique
+  modelName        String?
+  inputTokens      Int?
+  outputTokens     Int?
+  latencyMs        Int?
+  createdAt        DateTime        @default(now())
+
+  conversation AiConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  feedback     AiFeedback?
+
+  @@index([conversationId, createdAt])
+  @@map("ai_message")
+}
+
+model AiToolExecution {
+  id             String                @id @default(uuid())
+  conversationId String
+  toolName       String
+  operation      AiToolOperation
+  status         AiToolExecutionStatus
+  input          Json?
+  output         Json?
+  errorCode      String?
+  createdAt      DateTime              @default(now())
+  completedAt    DateTime?
+
+  conversation AiConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
+  @@index([toolName, status, createdAt])
+  @@map("ai_tool_execution")
+}
+
+model AiPendingAction {
+  id                    String                @id @default(uuid())
+  conversationId        String
+  actorUserId           String
+  actionType            String
+  confirmationTokenHash String                @unique
+  payload               Json
+  stateFingerprint      String?
+  status                AiPendingActionStatus @default(PENDING)
+  expiresAt             DateTime
+  consumedAt            DateTime?
+  createdAt             DateTime              @default(now())
+
+  conversation AiConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([actorUserId, status, expiresAt])
+  @@map("ai_pending_action")
+}
+
+model AiFeedback {
+  id        String   @id @default(uuid())
+  messageId String   @unique
+  userId    String?
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+
+  message AiMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user    User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@map("ai_feedback")
+}

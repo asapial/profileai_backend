@@ -16,23 +16,23 @@
 // ─────────────────────────────────────────────────────────────────────────
 
 model Referral {
-  id            String           @id @default(cuid())
-  referrerId    String
-  refereeId     String           @unique
-  referralCode  String
+  id           String          @id @default(cuid())
+  referrerId   String
+  refereeId    String          @unique
+  referralCode String
   // The referee action that unlocked the reward — at present we only
   // support EMAIL_VERIFIED but the enum leaves room for SUBSCRIBED.
-  trigger       ReferralTrigger  @default(EMAIL_VERIFIED)
-  status        ReferralStatus   @default(PENDING)
-  ipAddress     String?
-  userAgent     String?
-  rewardId      String?          @unique
-  createdAt     DateTime         @default(now())
-  rewardedAt    DateTime?
+  trigger      ReferralTrigger @default(EMAIL_VERIFIED)
+  status       ReferralStatus  @default(PENDING)
+  ipAddress    String?
+  userAgent    String?
+  rewardId     String?         @unique
+  createdAt    DateTime        @default(now())
+  rewardedAt   DateTime?
 
-  referrer User          @relation("ReferralsGiven",    fields: [referrerId], references: [id], onDelete: Cascade)
-  referee  User          @relation("ReferralReceived",  fields: [refereeId],  references: [id], onDelete: Cascade)
-  reward   RewardLedger? @relation(fields: [rewardId],   references: [id])
+  referrer User          @relation("ReferralsGiven", fields: [referrerId], references: [id], onDelete: Cascade)
+  referee  User          @relation("ReferralReceived", fields: [refereeId], references: [id], onDelete: Cascade)
+  reward   RewardLedger? @relation(fields: [rewardId], references: [id])
 
   @@index([referrerId, status])
   @@index([referralCode])
@@ -40,20 +40,20 @@ model Referral {
 }
 
 model RewardLedger {
-  id            String        @id @default(cuid())
-  userId        String
-  type          RewardType
+  id        String       @id @default(cuid())
+  userId    String
+  type      RewardType
   // Positive = credits added, Negative = clawback. Stored as Int so we
   // can switch to cents/credits without a schema change.
-  amount        Int
+  amount    Int
   // Free-form reason for audit ("REFERRAL_BONUS", "ADMIN_ADJUSTMENT").
-  reason        String
-  status        RewardStatus  @default(GRANTED)
-  metadata      Json?
-  createdAt     DateTime      @default(now())
+  reason    String
+  status    RewardStatus @default(GRANTED)
+  metadata  Json?
+  createdAt DateTime     @default(now())
 
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  referral  Referral?
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  referral Referral?
 
   @@index([userId, type, createdAt])
   @@map("reward_ledger")

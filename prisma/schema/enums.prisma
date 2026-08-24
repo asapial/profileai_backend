@@ -27,3 +27,21 @@ enum TemplateCategory {
   CREATIVE
   ATS
 }
+
+enum TemplateReviewStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum SecurityAlertSeverity {
+  INFO
+  WARNING
+  CRITICAL
+}
+
+enum SecurityAlertStatus {
+  OPEN
+  RESOLVED
+}

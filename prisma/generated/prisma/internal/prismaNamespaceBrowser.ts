@@ -51,7 +51,15 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  AiConversation: 'AiConversation',
+  AiMessage: 'AiMessage',
+  AiToolExecution: 'AiToolExecution',
+  AiPendingAction: 'AiPendingAction',
+  AiFeedback: 'AiFeedback',
   AnalyticsEvent: 'AnalyticsEvent',
+  AiUsageEvent: 'AiUsageEvent',
+  AuditLog: 'AuditLog',
+  SecurityAlert: 'SecurityAlert',
   JobApplication: 'JobApplication',
   ApplicationEvent: 'ApplicationEvent',
   User: 'User',
@@ -63,6 +71,9 @@ export const ModelName = {
   Invoice: 'Invoice',
   Coupon: 'Coupon',
   PaymentEvent: 'PaymentEvent',
+  HomepageContent: 'HomepageContent',
+  ContentPage: 'ContentPage',
+  AdminResource: 'AdminResource',
   CoverLetter: 'CoverLetter',
   ExportJob: 'ExportJob',
   Notification: 'Notification',
@@ -100,6 +111,89 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const AiConversationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  visitorSessionId: 'visitorSessionId',
+  role: 'role',
+  title: 'title',
+  currentRoute: 'currentRoute',
+  status: 'status',
+  summary: 'summary',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  closedAt: 'closedAt'
+} as const
+
+export type AiConversationScalarFieldEnum = (typeof AiConversationScalarFieldEnum)[keyof typeof AiConversationScalarFieldEnum]
+
+
+export const AiMessageScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  sender: 'sender',
+  content: 'content',
+  structuredData: 'structuredData',
+  route: 'route',
+  resourceType: 'resourceType',
+  resourceId: 'resourceId',
+  clientRequestId: 'clientRequestId',
+  replyToMessageId: 'replyToMessageId',
+  modelName: 'modelName',
+  inputTokens: 'inputTokens',
+  outputTokens: 'outputTokens',
+  latencyMs: 'latencyMs',
+  createdAt: 'createdAt'
+} as const
+
+export type AiMessageScalarFieldEnum = (typeof AiMessageScalarFieldEnum)[keyof typeof AiMessageScalarFieldEnum]
+
+
+export const AiToolExecutionScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  toolName: 'toolName',
+  operation: 'operation',
+  status: 'status',
+  input: 'input',
+  output: 'output',
+  errorCode: 'errorCode',
+  createdAt: 'createdAt',
+  completedAt: 'completedAt'
+} as const
+
+export type AiToolExecutionScalarFieldEnum = (typeof AiToolExecutionScalarFieldEnum)[keyof typeof AiToolExecutionScalarFieldEnum]
+
+
+export const AiPendingActionScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  actorUserId: 'actorUserId',
+  actionType: 'actionType',
+  confirmationTokenHash: 'confirmationTokenHash',
+  payload: 'payload',
+  stateFingerprint: 'stateFingerprint',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  consumedAt: 'consumedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type AiPendingActionScalarFieldEnum = (typeof AiPendingActionScalarFieldEnum)[keyof typeof AiPendingActionScalarFieldEnum]
+
+
+export const AiFeedbackScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  userId: 'userId',
+  rating: 'rating',
+  comment: 'comment',
+  createdAt: 'createdAt'
+} as const
+
+export type AiFeedbackScalarFieldEnum = (typeof AiFeedbackScalarFieldEnum)[keyof typeof AiFeedbackScalarFieldEnum]
+
+
 export const AnalyticsEventScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -111,6 +205,47 @@ export const AnalyticsEventScalarFieldEnum = {
 } as const
 
 export type AnalyticsEventScalarFieldEnum = (typeof AnalyticsEventScalarFieldEnum)[keyof typeof AnalyticsEventScalarFieldEnum]
+
+
+export const AiUsageEventScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  feature: 'feature',
+  createdAt: 'createdAt'
+} as const
+
+export type AiUsageEventScalarFieldEnum = (typeof AiUsageEventScalarFieldEnum)[keyof typeof AiUsageEventScalarFieldEnum]
+
+
+export const AuditLogScalarFieldEnum = {
+  id: 'id',
+  actorId: 'actorId',
+  actorEmail: 'actorEmail',
+  action: 'action',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  metadata: 'metadata',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt'
+} as const
+
+export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
+
+
+export const SecurityAlertScalarFieldEnum = {
+  id: 'id',
+  severity: 'severity',
+  status: 'status',
+  title: 'title',
+  body: 'body',
+  source: 'source',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  resolvedAt: 'resolvedAt'
+} as const
+
+export type SecurityAlertScalarFieldEnum = (typeof SecurityAlertScalarFieldEnum)[keyof typeof SecurityAlertScalarFieldEnum]
 
 
 export const JobApplicationScalarFieldEnum = {
@@ -171,7 +306,8 @@ export const SessionScalarFieldEnum = {
   ipAddress: 'ipAddress',
   userAgent: 'userAgent',
   userId: 'userId',
-  deviceId: 'deviceId'
+  deviceId: 'deviceId',
+  twoFactorVerifiedAt: 'twoFactorVerifiedAt'
 } as const
 
 export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
@@ -296,6 +432,46 @@ export const PaymentEventScalarFieldEnum = {
 } as const
 
 export type PaymentEventScalarFieldEnum = (typeof PaymentEventScalarFieldEnum)[keyof typeof PaymentEventScalarFieldEnum]
+
+
+export const HomepageContentScalarFieldEnum = {
+  id: 'id',
+  draft: 'draft',
+  published: 'published',
+  version: 'version',
+  updatedBy: 'updatedBy',
+  updatedAt: 'updatedAt',
+  publishedAt: 'publishedAt'
+} as const
+
+export type HomepageContentScalarFieldEnum = (typeof HomepageContentScalarFieldEnum)[keyof typeof HomepageContentScalarFieldEnum]
+
+
+export const ContentPageScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  title: 'title',
+  description: 'description',
+  body: 'body',
+  published: 'published',
+  updatedBy: 'updatedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ContentPageScalarFieldEnum = (typeof ContentPageScalarFieldEnum)[keyof typeof ContentPageScalarFieldEnum]
+
+
+export const AdminResourceScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  key: 'key',
+  data: 'data',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AdminResourceScalarFieldEnum = (typeof AdminResourceScalarFieldEnum)[keyof typeof AdminResourceScalarFieldEnum]
 
 
 export const CoverLetterScalarFieldEnum = {
@@ -554,6 +730,16 @@ export const ResumeTemplateScalarFieldEnum = {
   htmlLayout: 'htmlLayout',
   cssStyles: 'cssStyles',
   category: 'category',
+  documentType: 'documentType',
+  reviewStatus: 'reviewStatus',
+  ownerId: 'ownerId',
+  sourceTemplateId: 'sourceTemplateId',
+  customization: 'customization',
+  rejectionReason: 'rejectionReason',
+  submittedAt: 'submittedAt',
+  reviewedAt: 'reviewedAt',
+  reviewedBy: 'reviewedBy',
+  isCommunity: 'isCommunity',
   isActive: 'isActive',
   isDefault: 'isDefault',
   isFeatured: 'isFeatured',

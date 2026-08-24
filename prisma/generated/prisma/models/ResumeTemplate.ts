@@ -42,6 +42,15 @@ export type ResumeTemplateMinAggregateOutputType = {
   htmlLayout: string | null
   cssStyles: string | null
   category: $Enums.TemplateCategory | null
+  documentType: $Enums.ResumeType | null
+  reviewStatus: $Enums.TemplateReviewStatus | null
+  ownerId: string | null
+  sourceTemplateId: string | null
+  rejectionReason: string | null
+  submittedAt: Date | null
+  reviewedAt: Date | null
+  reviewedBy: string | null
+  isCommunity: boolean | null
   isActive: boolean | null
   isDefault: boolean | null
   isFeatured: boolean | null
@@ -59,6 +68,15 @@ export type ResumeTemplateMaxAggregateOutputType = {
   htmlLayout: string | null
   cssStyles: string | null
   category: $Enums.TemplateCategory | null
+  documentType: $Enums.ResumeType | null
+  reviewStatus: $Enums.TemplateReviewStatus | null
+  ownerId: string | null
+  sourceTemplateId: string | null
+  rejectionReason: string | null
+  submittedAt: Date | null
+  reviewedAt: Date | null
+  reviewedBy: string | null
+  isCommunity: boolean | null
   isActive: boolean | null
   isDefault: boolean | null
   isFeatured: boolean | null
@@ -76,6 +94,16 @@ export type ResumeTemplateCountAggregateOutputType = {
   htmlLayout: number
   cssStyles: number
   category: number
+  documentType: number
+  reviewStatus: number
+  ownerId: number
+  sourceTemplateId: number
+  customization: number
+  rejectionReason: number
+  submittedAt: number
+  reviewedAt: number
+  reviewedBy: number
+  isCommunity: number
   isActive: number
   isDefault: number
   isFeatured: number
@@ -103,6 +131,15 @@ export type ResumeTemplateMinAggregateInputType = {
   htmlLayout?: true
   cssStyles?: true
   category?: true
+  documentType?: true
+  reviewStatus?: true
+  ownerId?: true
+  sourceTemplateId?: true
+  rejectionReason?: true
+  submittedAt?: true
+  reviewedAt?: true
+  reviewedBy?: true
+  isCommunity?: true
   isActive?: true
   isDefault?: true
   isFeatured?: true
@@ -120,6 +157,15 @@ export type ResumeTemplateMaxAggregateInputType = {
   htmlLayout?: true
   cssStyles?: true
   category?: true
+  documentType?: true
+  reviewStatus?: true
+  ownerId?: true
+  sourceTemplateId?: true
+  rejectionReason?: true
+  submittedAt?: true
+  reviewedAt?: true
+  reviewedBy?: true
+  isCommunity?: true
   isActive?: true
   isDefault?: true
   isFeatured?: true
@@ -137,6 +183,16 @@ export type ResumeTemplateCountAggregateInputType = {
   htmlLayout?: true
   cssStyles?: true
   category?: true
+  documentType?: true
+  reviewStatus?: true
+  ownerId?: true
+  sourceTemplateId?: true
+  customization?: true
+  rejectionReason?: true
+  submittedAt?: true
+  reviewedAt?: true
+  reviewedBy?: true
+  isCommunity?: true
   isActive?: true
   isDefault?: true
   isFeatured?: true
@@ -241,6 +297,16 @@ export type ResumeTemplateGroupByOutputType = {
   htmlLayout: string
   cssStyles: string
   category: $Enums.TemplateCategory
+  documentType: $Enums.ResumeType
+  reviewStatus: $Enums.TemplateReviewStatus
+  ownerId: string | null
+  sourceTemplateId: string | null
+  customization: runtime.JsonValue | null
+  rejectionReason: string | null
+  submittedAt: Date | null
+  reviewedAt: Date | null
+  reviewedBy: string | null
+  isCommunity: boolean
   isActive: boolean
   isDefault: boolean
   isFeatured: boolean
@@ -281,6 +347,16 @@ export type ResumeTemplateWhereInput = {
   htmlLayout?: Prisma.StringFilter<"ResumeTemplate"> | string
   cssStyles?: Prisma.StringFilter<"ResumeTemplate"> | string
   category?: Prisma.EnumTemplateCategoryFilter<"ResumeTemplate"> | $Enums.TemplateCategory
+  documentType?: Prisma.EnumResumeTypeFilter<"ResumeTemplate"> | $Enums.ResumeType
+  reviewStatus?: Prisma.EnumTemplateReviewStatusFilter<"ResumeTemplate"> | $Enums.TemplateReviewStatus
+  ownerId?: Prisma.StringNullableFilter<"ResumeTemplate"> | string | null
+  sourceTemplateId?: Prisma.StringNullableFilter<"ResumeTemplate"> | string | null
+  customization?: Prisma.JsonNullableFilter<"ResumeTemplate">
+  rejectionReason?: Prisma.StringNullableFilter<"ResumeTemplate"> | string | null
+  submittedAt?: Prisma.DateTimeNullableFilter<"ResumeTemplate"> | Date | string | null
+  reviewedAt?: Prisma.DateTimeNullableFilter<"ResumeTemplate"> | Date | string | null
+  reviewedBy?: Prisma.StringNullableFilter<"ResumeTemplate"> | string | null
+  isCommunity?: Prisma.BoolFilter<"ResumeTemplate"> | boolean
   isActive?: Prisma.BoolFilter<"ResumeTemplate"> | boolean
   isDefault?: Prisma.BoolFilter<"ResumeTemplate"> | boolean
   isFeatured?: Prisma.BoolFilter<"ResumeTemplate"> | boolean
@@ -289,6 +365,7 @@ export type ResumeTemplateWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"ResumeTemplate"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ResumeTemplate"> | Date | string
   resumes?: Prisma.ResumeListRelationFilter
+  owner?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }
 
 export type ResumeTemplateOrderByWithRelationInput = {
@@ -299,6 +376,16 @@ export type ResumeTemplateOrderByWithRelationInput = {
   htmlLayout?: Prisma.SortOrder
   cssStyles?: Prisma.SortOrder
   category?: Prisma.SortOrder
+  documentType?: Prisma.SortOrder
+  reviewStatus?: Prisma.SortOrder
+  ownerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  sourceTemplateId?: Prisma.SortOrderInput | Prisma.SortOrder
+  customization?: Prisma.SortOrderInput | Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  submittedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewedBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  isCommunity?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isDefault?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
@@ -307,6 +394,7 @@ export type ResumeTemplateOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   resumes?: Prisma.ResumeOrderByRelationAggregateInput
+  owner?: Prisma.UserOrderByWithRelationInput
 }
 
 export type ResumeTemplateWhereUniqueInput = Prisma.AtLeast<{
@@ -320,6 +408,16 @@ export type ResumeTemplateWhereUniqueInput = Prisma.AtLeast<{
   htmlLayout?: Prisma.StringFilter<"ResumeTemplate"> | string
   cssStyles?: Prisma.StringFilter<"ResumeTemplate"> | string
   category?: Prisma.EnumTemplateCategoryFilter<"ResumeTemplate"> | $Enums.TemplateCategory
+  documentType?: Prisma.EnumResumeTypeFilter<"ResumeTemplate"> | $Enums.ResumeType
+  reviewStatus?: Prisma.EnumTemplateReviewStatusFilter<"ResumeTemplate"> | $Enums.TemplateReviewStatus
+  ownerId?: Prisma.StringNullableFilter<"ResumeTemplate"> | string | null
+  sourceTemplateId?: Prisma.StringNullableFilter<"ResumeTemplate"> | string | null
+  customization?: Prisma.JsonNullableFilter<"ResumeTemplate">
+  rejectionReason?: Prisma.StringNullableFilter<"ResumeTemplate"> | string | null
+  submittedAt?: Prisma.DateTimeNullableFilter<"ResumeTemplate"> | Date | string | null
+  reviewedAt?: Prisma.DateTimeNullableFilter<"ResumeTemplate"> | Date | string | null
+  reviewedBy?: Prisma.StringNullableFilter<"ResumeTemplate"> | string | null
+  isCommunity?: Prisma.BoolFilter<"ResumeTemplate"> | boolean
   isActive?: Prisma.BoolFilter<"ResumeTemplate"> | boolean
   isDefault?: Prisma.BoolFilter<"ResumeTemplate"> | boolean
   isFeatured?: Prisma.BoolFilter<"ResumeTemplate"> | boolean
@@ -328,6 +426,7 @@ export type ResumeTemplateWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"ResumeTemplate"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ResumeTemplate"> | Date | string
   resumes?: Prisma.ResumeListRelationFilter
+  owner?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }, "id">
 
 export type ResumeTemplateOrderByWithAggregationInput = {
@@ -338,6 +437,16 @@ export type ResumeTemplateOrderByWithAggregationInput = {
   htmlLayout?: Prisma.SortOrder
   cssStyles?: Prisma.SortOrder
   category?: Prisma.SortOrder
+  documentType?: Prisma.SortOrder
+  reviewStatus?: Prisma.SortOrder
+  ownerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  sourceTemplateId?: Prisma.SortOrderInput | Prisma.SortOrder
+  customization?: Prisma.SortOrderInput | Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  submittedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewedBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  isCommunity?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isDefault?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
@@ -363,6 +472,16 @@ export type ResumeTemplateScalarWhereWithAggregatesInput = {
   htmlLayout?: Prisma.StringWithAggregatesFilter<"ResumeTemplate"> | string
   cssStyles?: Prisma.StringWithAggregatesFilter<"ResumeTemplate"> | string
   category?: Prisma.EnumTemplateCategoryWithAggregatesFilter<"ResumeTemplate"> | $Enums.TemplateCategory
+  documentType?: Prisma.EnumResumeTypeWithAggregatesFilter<"ResumeTemplate"> | $Enums.ResumeType
+  reviewStatus?: Prisma.EnumTemplateReviewStatusWithAggregatesFilter<"ResumeTemplate"> | $Enums.TemplateReviewStatus
+  ownerId?: Prisma.StringNullableWithAggregatesFilter<"ResumeTemplate"> | string | null
+  sourceTemplateId?: Prisma.StringNullableWithAggregatesFilter<"ResumeTemplate"> | string | null
+  customization?: Prisma.JsonNullableWithAggregatesFilter<"ResumeTemplate">
+  rejectionReason?: Prisma.StringNullableWithAggregatesFilter<"ResumeTemplate"> | string | null
+  submittedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ResumeTemplate"> | Date | string | null
+  reviewedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ResumeTemplate"> | Date | string | null
+  reviewedBy?: Prisma.StringNullableWithAggregatesFilter<"ResumeTemplate"> | string | null
+  isCommunity?: Prisma.BoolWithAggregatesFilter<"ResumeTemplate"> | boolean
   isActive?: Prisma.BoolWithAggregatesFilter<"ResumeTemplate"> | boolean
   isDefault?: Prisma.BoolWithAggregatesFilter<"ResumeTemplate"> | boolean
   isFeatured?: Prisma.BoolWithAggregatesFilter<"ResumeTemplate"> | boolean
@@ -380,6 +499,15 @@ export type ResumeTemplateCreateInput = {
   htmlLayout: string
   cssStyles: string
   category: $Enums.TemplateCategory
+  documentType?: $Enums.ResumeType
+  reviewStatus?: $Enums.TemplateReviewStatus
+  sourceTemplateId?: string | null
+  customization?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  rejectionReason?: string | null
+  submittedAt?: Date | string | null
+  reviewedAt?: Date | string | null
+  reviewedBy?: string | null
+  isCommunity?: boolean
   isActive?: boolean
   isDefault?: boolean
   isFeatured?: boolean
@@ -388,6 +516,7 @@ export type ResumeTemplateCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   resumes?: Prisma.ResumeCreateNestedManyWithoutTemplateInput
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedTemplatesInput
 }
 
 export type ResumeTemplateUncheckedCreateInput = {
@@ -398,6 +527,16 @@ export type ResumeTemplateUncheckedCreateInput = {
   htmlLayout: string
   cssStyles: string
   category: $Enums.TemplateCategory
+  documentType?: $Enums.ResumeType
+  reviewStatus?: $Enums.TemplateReviewStatus
+  ownerId?: string | null
+  sourceTemplateId?: string | null
+  customization?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  rejectionReason?: string | null
+  submittedAt?: Date | string | null
+  reviewedAt?: Date | string | null
+  reviewedBy?: string | null
+  isCommunity?: boolean
   isActive?: boolean
   isDefault?: boolean
   isFeatured?: boolean
@@ -416,6 +555,15 @@ export type ResumeTemplateUpdateInput = {
   htmlLayout?: Prisma.StringFieldUpdateOperationsInput | string
   cssStyles?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumTemplateCategoryFieldUpdateOperationsInput | $Enums.TemplateCategory
+  documentType?: Prisma.EnumResumeTypeFieldUpdateOperationsInput | $Enums.ResumeType
+  reviewStatus?: Prisma.EnumTemplateReviewStatusFieldUpdateOperationsInput | $Enums.TemplateReviewStatus
+  sourceTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customization?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCommunity?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -424,6 +572,7 @@ export type ResumeTemplateUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resumes?: Prisma.ResumeUpdateManyWithoutTemplateNestedInput
+  owner?: Prisma.UserUpdateOneWithoutOwnedTemplatesNestedInput
 }
 
 export type ResumeTemplateUncheckedUpdateInput = {
@@ -434,6 +583,16 @@ export type ResumeTemplateUncheckedUpdateInput = {
   htmlLayout?: Prisma.StringFieldUpdateOperationsInput | string
   cssStyles?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumTemplateCategoryFieldUpdateOperationsInput | $Enums.TemplateCategory
+  documentType?: Prisma.EnumResumeTypeFieldUpdateOperationsInput | $Enums.ResumeType
+  reviewStatus?: Prisma.EnumTemplateReviewStatusFieldUpdateOperationsInput | $Enums.TemplateReviewStatus
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customization?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCommunity?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -452,6 +611,16 @@ export type ResumeTemplateCreateManyInput = {
   htmlLayout: string
   cssStyles: string
   category: $Enums.TemplateCategory
+  documentType?: $Enums.ResumeType
+  reviewStatus?: $Enums.TemplateReviewStatus
+  ownerId?: string | null
+  sourceTemplateId?: string | null
+  customization?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  rejectionReason?: string | null
+  submittedAt?: Date | string | null
+  reviewedAt?: Date | string | null
+  reviewedBy?: string | null
+  isCommunity?: boolean
   isActive?: boolean
   isDefault?: boolean
   isFeatured?: boolean
@@ -469,6 +638,15 @@ export type ResumeTemplateUpdateManyMutationInput = {
   htmlLayout?: Prisma.StringFieldUpdateOperationsInput | string
   cssStyles?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumTemplateCategoryFieldUpdateOperationsInput | $Enums.TemplateCategory
+  documentType?: Prisma.EnumResumeTypeFieldUpdateOperationsInput | $Enums.ResumeType
+  reviewStatus?: Prisma.EnumTemplateReviewStatusFieldUpdateOperationsInput | $Enums.TemplateReviewStatus
+  sourceTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customization?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCommunity?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -486,6 +664,16 @@ export type ResumeTemplateUncheckedUpdateManyInput = {
   htmlLayout?: Prisma.StringFieldUpdateOperationsInput | string
   cssStyles?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumTemplateCategoryFieldUpdateOperationsInput | $Enums.TemplateCategory
+  documentType?: Prisma.EnumResumeTypeFieldUpdateOperationsInput | $Enums.ResumeType
+  reviewStatus?: Prisma.EnumTemplateReviewStatusFieldUpdateOperationsInput | $Enums.TemplateReviewStatus
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customization?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCommunity?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -493,6 +681,16 @@ export type ResumeTemplateUncheckedUpdateManyInput = {
   createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ResumeTemplateListRelationFilter = {
+  every?: Prisma.ResumeTemplateWhereInput
+  some?: Prisma.ResumeTemplateWhereInput
+  none?: Prisma.ResumeTemplateWhereInput
+}
+
+export type ResumeTemplateOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type ResumeTemplateCountOrderByAggregateInput = {
@@ -503,6 +701,16 @@ export type ResumeTemplateCountOrderByAggregateInput = {
   htmlLayout?: Prisma.SortOrder
   cssStyles?: Prisma.SortOrder
   category?: Prisma.SortOrder
+  documentType?: Prisma.SortOrder
+  reviewStatus?: Prisma.SortOrder
+  ownerId?: Prisma.SortOrder
+  sourceTemplateId?: Prisma.SortOrder
+  customization?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
+  submittedAt?: Prisma.SortOrder
+  reviewedAt?: Prisma.SortOrder
+  reviewedBy?: Prisma.SortOrder
+  isCommunity?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isDefault?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
@@ -524,6 +732,15 @@ export type ResumeTemplateMaxOrderByAggregateInput = {
   htmlLayout?: Prisma.SortOrder
   cssStyles?: Prisma.SortOrder
   category?: Prisma.SortOrder
+  documentType?: Prisma.SortOrder
+  reviewStatus?: Prisma.SortOrder
+  ownerId?: Prisma.SortOrder
+  sourceTemplateId?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
+  submittedAt?: Prisma.SortOrder
+  reviewedAt?: Prisma.SortOrder
+  reviewedBy?: Prisma.SortOrder
+  isCommunity?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isDefault?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
@@ -541,6 +758,15 @@ export type ResumeTemplateMinOrderByAggregateInput = {
   htmlLayout?: Prisma.SortOrder
   cssStyles?: Prisma.SortOrder
   category?: Prisma.SortOrder
+  documentType?: Prisma.SortOrder
+  reviewStatus?: Prisma.SortOrder
+  ownerId?: Prisma.SortOrder
+  sourceTemplateId?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
+  submittedAt?: Prisma.SortOrder
+  reviewedAt?: Prisma.SortOrder
+  reviewedBy?: Prisma.SortOrder
+  isCommunity?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isDefault?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
@@ -559,8 +785,58 @@ export type ResumeTemplateScalarRelationFilter = {
   isNot?: Prisma.ResumeTemplateWhereInput
 }
 
+export type ResumeTemplateCreateNestedManyWithoutOwnerInput = {
+  create?: Prisma.XOR<Prisma.ResumeTemplateCreateWithoutOwnerInput, Prisma.ResumeTemplateUncheckedCreateWithoutOwnerInput> | Prisma.ResumeTemplateCreateWithoutOwnerInput[] | Prisma.ResumeTemplateUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.ResumeTemplateCreateOrConnectWithoutOwnerInput | Prisma.ResumeTemplateCreateOrConnectWithoutOwnerInput[]
+  createMany?: Prisma.ResumeTemplateCreateManyOwnerInputEnvelope
+  connect?: Prisma.ResumeTemplateWhereUniqueInput | Prisma.ResumeTemplateWhereUniqueInput[]
+}
+
+export type ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput = {
+  create?: Prisma.XOR<Prisma.ResumeTemplateCreateWithoutOwnerInput, Prisma.ResumeTemplateUncheckedCreateWithoutOwnerInput> | Prisma.ResumeTemplateCreateWithoutOwnerInput[] | Prisma.ResumeTemplateUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.ResumeTemplateCreateOrConnectWithoutOwnerInput | Prisma.ResumeTemplateCreateOrConnectWithoutOwnerInput[]
+  createMany?: Prisma.ResumeTemplateCreateManyOwnerInputEnvelope
+  connect?: Prisma.ResumeTemplateWhereUniqueInput | Prisma.ResumeTemplateWhereUniqueInput[]
+}
+
+export type ResumeTemplateUpdateManyWithoutOwnerNestedInput = {
+  create?: Prisma.XOR<Prisma.ResumeTemplateCreateWithoutOwnerInput, Prisma.ResumeTemplateUncheckedCreateWithoutOwnerInput> | Prisma.ResumeTemplateCreateWithoutOwnerInput[] | Prisma.ResumeTemplateUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.ResumeTemplateCreateOrConnectWithoutOwnerInput | Prisma.ResumeTemplateCreateOrConnectWithoutOwnerInput[]
+  upsert?: Prisma.ResumeTemplateUpsertWithWhereUniqueWithoutOwnerInput | Prisma.ResumeTemplateUpsertWithWhereUniqueWithoutOwnerInput[]
+  createMany?: Prisma.ResumeTemplateCreateManyOwnerInputEnvelope
+  set?: Prisma.ResumeTemplateWhereUniqueInput | Prisma.ResumeTemplateWhereUniqueInput[]
+  disconnect?: Prisma.ResumeTemplateWhereUniqueInput | Prisma.ResumeTemplateWhereUniqueInput[]
+  delete?: Prisma.ResumeTemplateWhereUniqueInput | Prisma.ResumeTemplateWhereUniqueInput[]
+  connect?: Prisma.ResumeTemplateWhereUniqueInput | Prisma.ResumeTemplateWhereUniqueInput[]
+  update?: Prisma.ResumeTemplateUpdateWithWhereUniqueWithoutOwnerInput | Prisma.ResumeTemplateUpdateWithWhereUniqueWithoutOwnerInput[]
+  updateMany?: Prisma.ResumeTemplateUpdateManyWithWhereWithoutOwnerInput | Prisma.ResumeTemplateUpdateManyWithWhereWithoutOwnerInput[]
+  deleteMany?: Prisma.ResumeTemplateScalarWhereInput | Prisma.ResumeTemplateScalarWhereInput[]
+}
+
+export type ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput = {
+  create?: Prisma.XOR<Prisma.ResumeTemplateCreateWithoutOwnerInput, Prisma.ResumeTemplateUncheckedCreateWithoutOwnerInput> | Prisma.ResumeTemplateCreateWithoutOwnerInput[] | Prisma.ResumeTemplateUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.ResumeTemplateCreateOrConnectWithoutOwnerInput | Prisma.ResumeTemplateCreateOrConnectWithoutOwnerInput[]
+  upsert?: Prisma.ResumeTemplateUpsertWithWhereUniqueWithoutOwnerInput | Prisma.ResumeTemplateUpsertWithWhereUniqueWithoutOwnerInput[]
+  createMany?: Prisma.ResumeTemplateCreateManyOwnerInputEnvelope
+  set?: Prisma.ResumeTemplateWhereUniqueInput | Prisma.ResumeTemplateWhereUniqueInput[]
+  disconnect?: Prisma.ResumeTemplateWhereUniqueInput | Prisma.ResumeTemplateWhereUniqueInput[]
+  delete?: Prisma.ResumeTemplateWhereUniqueInput | Prisma.ResumeTemplateWhereUniqueInput[]
+  connect?: Prisma.ResumeTemplateWhereUniqueInput | Prisma.ResumeTemplateWhereUniqueInput[]
+  update?: Prisma.ResumeTemplateUpdateWithWhereUniqueWithoutOwnerInput | Prisma.ResumeTemplateUpdateWithWhereUniqueWithoutOwnerInput[]
+  updateMany?: Prisma.ResumeTemplateUpdateManyWithWhereWithoutOwnerInput | Prisma.ResumeTemplateUpdateManyWithWhereWithoutOwnerInput[]
+  deleteMany?: Prisma.ResumeTemplateScalarWhereInput | Prisma.ResumeTemplateScalarWhereInput[]
+}
+
 export type EnumTemplateCategoryFieldUpdateOperationsInput = {
   set?: $Enums.TemplateCategory
+}
+
+export type EnumResumeTypeFieldUpdateOperationsInput = {
+  set?: $Enums.ResumeType
+}
+
+export type EnumTemplateReviewStatusFieldUpdateOperationsInput = {
+  set?: $Enums.TemplateReviewStatus
 }
 
 export type ResumeTemplateCreateNestedOneWithoutResumesInput = {
@@ -577,6 +853,116 @@ export type ResumeTemplateUpdateOneRequiredWithoutResumesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ResumeTemplateUpdateToOneWithWhereWithoutResumesInput, Prisma.ResumeTemplateUpdateWithoutResumesInput>, Prisma.ResumeTemplateUncheckedUpdateWithoutResumesInput>
 }
 
+export type ResumeTemplateCreateWithoutOwnerInput = {
+  id?: string
+  name: string
+  description?: string | null
+  thumbnailUrl: string
+  htmlLayout: string
+  cssStyles: string
+  category: $Enums.TemplateCategory
+  documentType?: $Enums.ResumeType
+  reviewStatus?: $Enums.TemplateReviewStatus
+  sourceTemplateId?: string | null
+  customization?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  rejectionReason?: string | null
+  submittedAt?: Date | string | null
+  reviewedAt?: Date | string | null
+  reviewedBy?: string | null
+  isCommunity?: boolean
+  isActive?: boolean
+  isDefault?: boolean
+  isFeatured?: boolean
+  displayOrder?: number
+  createdBy: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  resumes?: Prisma.ResumeCreateNestedManyWithoutTemplateInput
+}
+
+export type ResumeTemplateUncheckedCreateWithoutOwnerInput = {
+  id?: string
+  name: string
+  description?: string | null
+  thumbnailUrl: string
+  htmlLayout: string
+  cssStyles: string
+  category: $Enums.TemplateCategory
+  documentType?: $Enums.ResumeType
+  reviewStatus?: $Enums.TemplateReviewStatus
+  sourceTemplateId?: string | null
+  customization?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  rejectionReason?: string | null
+  submittedAt?: Date | string | null
+  reviewedAt?: Date | string | null
+  reviewedBy?: string | null
+  isCommunity?: boolean
+  isActive?: boolean
+  isDefault?: boolean
+  isFeatured?: boolean
+  displayOrder?: number
+  createdBy: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutTemplateInput
+}
+
+export type ResumeTemplateCreateOrConnectWithoutOwnerInput = {
+  where: Prisma.ResumeTemplateWhereUniqueInput
+  create: Prisma.XOR<Prisma.ResumeTemplateCreateWithoutOwnerInput, Prisma.ResumeTemplateUncheckedCreateWithoutOwnerInput>
+}
+
+export type ResumeTemplateCreateManyOwnerInputEnvelope = {
+  data: Prisma.ResumeTemplateCreateManyOwnerInput | Prisma.ResumeTemplateCreateManyOwnerInput[]
+  skipDuplicates?: boolean
+}
+
+export type ResumeTemplateUpsertWithWhereUniqueWithoutOwnerInput = {
+  where: Prisma.ResumeTemplateWhereUniqueInput
+  update: Prisma.XOR<Prisma.ResumeTemplateUpdateWithoutOwnerInput, Prisma.ResumeTemplateUncheckedUpdateWithoutOwnerInput>
+  create: Prisma.XOR<Prisma.ResumeTemplateCreateWithoutOwnerInput, Prisma.ResumeTemplateUncheckedCreateWithoutOwnerInput>
+}
+
+export type ResumeTemplateUpdateWithWhereUniqueWithoutOwnerInput = {
+  where: Prisma.ResumeTemplateWhereUniqueInput
+  data: Prisma.XOR<Prisma.ResumeTemplateUpdateWithoutOwnerInput, Prisma.ResumeTemplateUncheckedUpdateWithoutOwnerInput>
+}
+
+export type ResumeTemplateUpdateManyWithWhereWithoutOwnerInput = {
+  where: Prisma.ResumeTemplateScalarWhereInput
+  data: Prisma.XOR<Prisma.ResumeTemplateUpdateManyMutationInput, Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerInput>
+}
+
+export type ResumeTemplateScalarWhereInput = {
+  AND?: Prisma.ResumeTemplateScalarWhereInput | Prisma.ResumeTemplateScalarWhereInput[]
+  OR?: Prisma.ResumeTemplateScalarWhereInput[]
+  NOT?: Prisma.ResumeTemplateScalarWhereInput | Prisma.ResumeTemplateScalarWhereInput[]
+  id?: Prisma.StringFilter<"ResumeTemplate"> | string
+  name?: Prisma.StringFilter<"ResumeTemplate"> | string
+  description?: Prisma.StringNullableFilter<"ResumeTemplate"> | string | null
+  thumbnailUrl?: Prisma.StringFilter<"ResumeTemplate"> | string
+  htmlLayout?: Prisma.StringFilter<"ResumeTemplate"> | string
+  cssStyles?: Prisma.StringFilter<"ResumeTemplate"> | string
+  category?: Prisma.EnumTemplateCategoryFilter<"ResumeTemplate"> | $Enums.TemplateCategory
+  documentType?: Prisma.EnumResumeTypeFilter<"ResumeTemplate"> | $Enums.ResumeType
+  reviewStatus?: Prisma.EnumTemplateReviewStatusFilter<"ResumeTemplate"> | $Enums.TemplateReviewStatus
+  ownerId?: Prisma.StringNullableFilter<"ResumeTemplate"> | string | null
+  sourceTemplateId?: Prisma.StringNullableFilter<"ResumeTemplate"> | string | null
+  customization?: Prisma.JsonNullableFilter<"ResumeTemplate">
+  rejectionReason?: Prisma.StringNullableFilter<"ResumeTemplate"> | string | null
+  submittedAt?: Prisma.DateTimeNullableFilter<"ResumeTemplate"> | Date | string | null
+  reviewedAt?: Prisma.DateTimeNullableFilter<"ResumeTemplate"> | Date | string | null
+  reviewedBy?: Prisma.StringNullableFilter<"ResumeTemplate"> | string | null
+  isCommunity?: Prisma.BoolFilter<"ResumeTemplate"> | boolean
+  isActive?: Prisma.BoolFilter<"ResumeTemplate"> | boolean
+  isDefault?: Prisma.BoolFilter<"ResumeTemplate"> | boolean
+  isFeatured?: Prisma.BoolFilter<"ResumeTemplate"> | boolean
+  displayOrder?: Prisma.IntFilter<"ResumeTemplate"> | number
+  createdBy?: Prisma.StringFilter<"ResumeTemplate"> | string
+  createdAt?: Prisma.DateTimeFilter<"ResumeTemplate"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"ResumeTemplate"> | Date | string
+}
+
 export type ResumeTemplateCreateWithoutResumesInput = {
   id?: string
   name: string
@@ -585,6 +971,15 @@ export type ResumeTemplateCreateWithoutResumesInput = {
   htmlLayout: string
   cssStyles: string
   category: $Enums.TemplateCategory
+  documentType?: $Enums.ResumeType
+  reviewStatus?: $Enums.TemplateReviewStatus
+  sourceTemplateId?: string | null
+  customization?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  rejectionReason?: string | null
+  submittedAt?: Date | string | null
+  reviewedAt?: Date | string | null
+  reviewedBy?: string | null
+  isCommunity?: boolean
   isActive?: boolean
   isDefault?: boolean
   isFeatured?: boolean
@@ -592,6 +987,7 @@ export type ResumeTemplateCreateWithoutResumesInput = {
   createdBy: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedTemplatesInput
 }
 
 export type ResumeTemplateUncheckedCreateWithoutResumesInput = {
@@ -602,6 +998,16 @@ export type ResumeTemplateUncheckedCreateWithoutResumesInput = {
   htmlLayout: string
   cssStyles: string
   category: $Enums.TemplateCategory
+  documentType?: $Enums.ResumeType
+  reviewStatus?: $Enums.TemplateReviewStatus
+  ownerId?: string | null
+  sourceTemplateId?: string | null
+  customization?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  rejectionReason?: string | null
+  submittedAt?: Date | string | null
+  reviewedAt?: Date | string | null
+  reviewedBy?: string | null
+  isCommunity?: boolean
   isActive?: boolean
   isDefault?: boolean
   isFeatured?: boolean
@@ -635,6 +1041,15 @@ export type ResumeTemplateUpdateWithoutResumesInput = {
   htmlLayout?: Prisma.StringFieldUpdateOperationsInput | string
   cssStyles?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumTemplateCategoryFieldUpdateOperationsInput | $Enums.TemplateCategory
+  documentType?: Prisma.EnumResumeTypeFieldUpdateOperationsInput | $Enums.ResumeType
+  reviewStatus?: Prisma.EnumTemplateReviewStatusFieldUpdateOperationsInput | $Enums.TemplateReviewStatus
+  sourceTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customization?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCommunity?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -642,6 +1057,7 @@ export type ResumeTemplateUpdateWithoutResumesInput = {
   createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneWithoutOwnedTemplatesNestedInput
 }
 
 export type ResumeTemplateUncheckedUpdateWithoutResumesInput = {
@@ -652,6 +1068,122 @@ export type ResumeTemplateUncheckedUpdateWithoutResumesInput = {
   htmlLayout?: Prisma.StringFieldUpdateOperationsInput | string
   cssStyles?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumTemplateCategoryFieldUpdateOperationsInput | $Enums.TemplateCategory
+  documentType?: Prisma.EnumResumeTypeFieldUpdateOperationsInput | $Enums.ResumeType
+  reviewStatus?: Prisma.EnumTemplateReviewStatusFieldUpdateOperationsInput | $Enums.TemplateReviewStatus
+  ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customization?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCommunity?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ResumeTemplateCreateManyOwnerInput = {
+  id?: string
+  name: string
+  description?: string | null
+  thumbnailUrl: string
+  htmlLayout: string
+  cssStyles: string
+  category: $Enums.TemplateCategory
+  documentType?: $Enums.ResumeType
+  reviewStatus?: $Enums.TemplateReviewStatus
+  sourceTemplateId?: string | null
+  customization?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  rejectionReason?: string | null
+  submittedAt?: Date | string | null
+  reviewedAt?: Date | string | null
+  reviewedBy?: string | null
+  isCommunity?: boolean
+  isActive?: boolean
+  isDefault?: boolean
+  isFeatured?: boolean
+  displayOrder?: number
+  createdBy: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ResumeTemplateUpdateWithoutOwnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnailUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  htmlLayout?: Prisma.StringFieldUpdateOperationsInput | string
+  cssStyles?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumTemplateCategoryFieldUpdateOperationsInput | $Enums.TemplateCategory
+  documentType?: Prisma.EnumResumeTypeFieldUpdateOperationsInput | $Enums.ResumeType
+  reviewStatus?: Prisma.EnumTemplateReviewStatusFieldUpdateOperationsInput | $Enums.TemplateReviewStatus
+  sourceTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customization?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCommunity?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resumes?: Prisma.ResumeUpdateManyWithoutTemplateNestedInput
+}
+
+export type ResumeTemplateUncheckedUpdateWithoutOwnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnailUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  htmlLayout?: Prisma.StringFieldUpdateOperationsInput | string
+  cssStyles?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumTemplateCategoryFieldUpdateOperationsInput | $Enums.TemplateCategory
+  documentType?: Prisma.EnumResumeTypeFieldUpdateOperationsInput | $Enums.ResumeType
+  reviewStatus?: Prisma.EnumTemplateReviewStatusFieldUpdateOperationsInput | $Enums.TemplateReviewStatus
+  sourceTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customization?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCommunity?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  displayOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutTemplateNestedInput
+}
+
+export type ResumeTemplateUncheckedUpdateManyWithoutOwnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnailUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  htmlLayout?: Prisma.StringFieldUpdateOperationsInput | string
+  cssStyles?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumTemplateCategoryFieldUpdateOperationsInput | $Enums.TemplateCategory
+  documentType?: Prisma.EnumResumeTypeFieldUpdateOperationsInput | $Enums.ResumeType
+  reviewStatus?: Prisma.EnumTemplateReviewStatusFieldUpdateOperationsInput | $Enums.TemplateReviewStatus
+  sourceTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customization?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCommunity?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -700,6 +1232,16 @@ export type ResumeTemplateSelect<ExtArgs extends runtime.Types.Extensions.Intern
   htmlLayout?: boolean
   cssStyles?: boolean
   category?: boolean
+  documentType?: boolean
+  reviewStatus?: boolean
+  ownerId?: boolean
+  sourceTemplateId?: boolean
+  customization?: boolean
+  rejectionReason?: boolean
+  submittedAt?: boolean
+  reviewedAt?: boolean
+  reviewedBy?: boolean
+  isCommunity?: boolean
   isActive?: boolean
   isDefault?: boolean
   isFeatured?: boolean
@@ -708,6 +1250,7 @@ export type ResumeTemplateSelect<ExtArgs extends runtime.Types.Extensions.Intern
   createdAt?: boolean
   updatedAt?: boolean
   resumes?: boolean | Prisma.ResumeTemplate$resumesArgs<ExtArgs>
+  owner?: boolean | Prisma.ResumeTemplate$ownerArgs<ExtArgs>
   _count?: boolean | Prisma.ResumeTemplateCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["resumeTemplate"]>
 
@@ -719,6 +1262,16 @@ export type ResumeTemplateSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   htmlLayout?: boolean
   cssStyles?: boolean
   category?: boolean
+  documentType?: boolean
+  reviewStatus?: boolean
+  ownerId?: boolean
+  sourceTemplateId?: boolean
+  customization?: boolean
+  rejectionReason?: boolean
+  submittedAt?: boolean
+  reviewedAt?: boolean
+  reviewedBy?: boolean
+  isCommunity?: boolean
   isActive?: boolean
   isDefault?: boolean
   isFeatured?: boolean
@@ -726,6 +1279,7 @@ export type ResumeTemplateSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   createdBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  owner?: boolean | Prisma.ResumeTemplate$ownerArgs<ExtArgs>
 }, ExtArgs["result"]["resumeTemplate"]>
 
 export type ResumeTemplateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -736,6 +1290,16 @@ export type ResumeTemplateSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   htmlLayout?: boolean
   cssStyles?: boolean
   category?: boolean
+  documentType?: boolean
+  reviewStatus?: boolean
+  ownerId?: boolean
+  sourceTemplateId?: boolean
+  customization?: boolean
+  rejectionReason?: boolean
+  submittedAt?: boolean
+  reviewedAt?: boolean
+  reviewedBy?: boolean
+  isCommunity?: boolean
   isActive?: boolean
   isDefault?: boolean
   isFeatured?: boolean
@@ -743,6 +1307,7 @@ export type ResumeTemplateSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   createdBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  owner?: boolean | Prisma.ResumeTemplate$ownerArgs<ExtArgs>
 }, ExtArgs["result"]["resumeTemplate"]>
 
 export type ResumeTemplateSelectScalar = {
@@ -753,6 +1318,16 @@ export type ResumeTemplateSelectScalar = {
   htmlLayout?: boolean
   cssStyles?: boolean
   category?: boolean
+  documentType?: boolean
+  reviewStatus?: boolean
+  ownerId?: boolean
+  sourceTemplateId?: boolean
+  customization?: boolean
+  rejectionReason?: boolean
+  submittedAt?: boolean
+  reviewedAt?: boolean
+  reviewedBy?: boolean
+  isCommunity?: boolean
   isActive?: boolean
   isDefault?: boolean
   isFeatured?: boolean
@@ -762,18 +1337,24 @@ export type ResumeTemplateSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ResumeTemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "thumbnailUrl" | "htmlLayout" | "cssStyles" | "category" | "isActive" | "isDefault" | "isFeatured" | "displayOrder" | "createdBy" | "createdAt" | "updatedAt", ExtArgs["result"]["resumeTemplate"]>
+export type ResumeTemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "thumbnailUrl" | "htmlLayout" | "cssStyles" | "category" | "documentType" | "reviewStatus" | "ownerId" | "sourceTemplateId" | "customization" | "rejectionReason" | "submittedAt" | "reviewedAt" | "reviewedBy" | "isCommunity" | "isActive" | "isDefault" | "isFeatured" | "displayOrder" | "createdBy" | "createdAt" | "updatedAt", ExtArgs["result"]["resumeTemplate"]>
 export type ResumeTemplateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   resumes?: boolean | Prisma.ResumeTemplate$resumesArgs<ExtArgs>
+  owner?: boolean | Prisma.ResumeTemplate$ownerArgs<ExtArgs>
   _count?: boolean | Prisma.ResumeTemplateCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type ResumeTemplateIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type ResumeTemplateIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type ResumeTemplateIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  owner?: boolean | Prisma.ResumeTemplate$ownerArgs<ExtArgs>
+}
+export type ResumeTemplateIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  owner?: boolean | Prisma.ResumeTemplate$ownerArgs<ExtArgs>
+}
 
 export type $ResumeTemplatePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ResumeTemplate"
   objects: {
     resumes: Prisma.$ResumePayload<ExtArgs>[]
+    owner: Prisma.$UserPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -783,6 +1364,16 @@ export type $ResumeTemplatePayload<ExtArgs extends runtime.Types.Extensions.Inte
     htmlLayout: string
     cssStyles: string
     category: $Enums.TemplateCategory
+    documentType: $Enums.ResumeType
+    reviewStatus: $Enums.TemplateReviewStatus
+    ownerId: string | null
+    sourceTemplateId: string | null
+    customization: runtime.JsonValue | null
+    rejectionReason: string | null
+    submittedAt: Date | null
+    reviewedAt: Date | null
+    reviewedBy: string | null
+    isCommunity: boolean
     isActive: boolean
     isDefault: boolean
     isFeatured: boolean
@@ -1185,6 +1776,7 @@ readonly fields: ResumeTemplateFieldRefs;
 export interface Prisma__ResumeTemplateClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   resumes<T extends Prisma.ResumeTemplate$resumesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ResumeTemplate$resumesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  owner<T extends Prisma.ResumeTemplate$ownerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ResumeTemplate$ownerArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1221,6 +1813,16 @@ export interface ResumeTemplateFieldRefs {
   readonly htmlLayout: Prisma.FieldRef<"ResumeTemplate", 'String'>
   readonly cssStyles: Prisma.FieldRef<"ResumeTemplate", 'String'>
   readonly category: Prisma.FieldRef<"ResumeTemplate", 'TemplateCategory'>
+  readonly documentType: Prisma.FieldRef<"ResumeTemplate", 'ResumeType'>
+  readonly reviewStatus: Prisma.FieldRef<"ResumeTemplate", 'TemplateReviewStatus'>
+  readonly ownerId: Prisma.FieldRef<"ResumeTemplate", 'String'>
+  readonly sourceTemplateId: Prisma.FieldRef<"ResumeTemplate", 'String'>
+  readonly customization: Prisma.FieldRef<"ResumeTemplate", 'Json'>
+  readonly rejectionReason: Prisma.FieldRef<"ResumeTemplate", 'String'>
+  readonly submittedAt: Prisma.FieldRef<"ResumeTemplate", 'DateTime'>
+  readonly reviewedAt: Prisma.FieldRef<"ResumeTemplate", 'DateTime'>
+  readonly reviewedBy: Prisma.FieldRef<"ResumeTemplate", 'String'>
+  readonly isCommunity: Prisma.FieldRef<"ResumeTemplate", 'Boolean'>
   readonly isActive: Prisma.FieldRef<"ResumeTemplate", 'Boolean'>
   readonly isDefault: Prisma.FieldRef<"ResumeTemplate", 'Boolean'>
   readonly isFeatured: Prisma.FieldRef<"ResumeTemplate", 'Boolean'>
@@ -1482,6 +2084,10 @@ export type ResumeTemplateCreateManyAndReturnArgs<ExtArgs extends runtime.Types.
    */
   data: Prisma.ResumeTemplateCreateManyInput | Prisma.ResumeTemplateCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ResumeTemplateIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1552,6 +2158,10 @@ export type ResumeTemplateUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.
    * Limit how many ResumeTemplates to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ResumeTemplateIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1642,6 +2252,25 @@ export type ResumeTemplate$resumesArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.ResumeScalarFieldEnum | Prisma.ResumeScalarFieldEnum[]
+}
+
+/**
+ * ResumeTemplate.owner
+ */
+export type ResumeTemplate$ownerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

@@ -18,10 +18,50 @@ export { Prisma }
 export * as $Enums from './enums'
 export * from './enums';
 /**
+ * Model AiConversation
+ * 
+ */
+export type AiConversation = Prisma.AiConversationModel
+/**
+ * Model AiMessage
+ * 
+ */
+export type AiMessage = Prisma.AiMessageModel
+/**
+ * Model AiToolExecution
+ * 
+ */
+export type AiToolExecution = Prisma.AiToolExecutionModel
+/**
+ * Model AiPendingAction
+ * 
+ */
+export type AiPendingAction = Prisma.AiPendingActionModel
+/**
+ * Model AiFeedback
+ * 
+ */
+export type AiFeedback = Prisma.AiFeedbackModel
+/**
  * Model AnalyticsEvent
  * 
  */
 export type AnalyticsEvent = Prisma.AnalyticsEventModel
+/**
+ * Model AiUsageEvent
+ * 
+ */
+export type AiUsageEvent = Prisma.AiUsageEventModel
+/**
+ * Model AuditLog
+ * 
+ */
+export type AuditLog = Prisma.AuditLogModel
+/**
+ * Model SecurityAlert
+ * 
+ */
+export type SecurityAlert = Prisma.SecurityAlertModel
 /**
  * Model JobApplication
  * 
@@ -77,6 +117,21 @@ export type Coupon = Prisma.CouponModel
  * 
  */
 export type PaymentEvent = Prisma.PaymentEventModel
+/**
+ * Model HomepageContent
+ * 
+ */
+export type HomepageContent = Prisma.HomepageContentModel
+/**
+ * Model ContentPage
+ * 
+ */
+export type ContentPage = Prisma.ContentPageModel
+/**
+ * Model AdminResource
+ * 
+ */
+export type AdminResource = Prisma.AdminResourceModel
 /**
  * Model CoverLetter
  * 
