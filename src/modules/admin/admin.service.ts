@@ -1,11 +1,15 @@
 import status from 'http-status';
 import { prisma } from '../../lib/prisma';
 import AppError from '../../errorHelpers/AppError';
-import { forgotPassword } from '../auth/auth.service';
+import { forgotPassword, registerUser } from '../auth/auth.service';
 import { Role } from '../../../prisma/generated/prisma/enums';
+import { envVars } from '../../config/env';
+import { jwtUtils } from '../../utils/jwt';
+
+export { getDashboardStats, recordDashboardAccess } from './admin.dashboard.service';
 
 // ─── Dashboard Stats ────────────────────────────────────────────────────────
-export const getDashboardStats = async () => {
+const getLegacyDashboardStats = async () => {
   const now = new Date();
   const startOfDay = new Date(new Date().setHours(0, 0, 0, 0));
   const last24h = new Date(now.getTime() - 24 * 60 * 60 * 1000);
@@ -230,12 +234,200 @@ export const getUserById = async (userId: string) => {
     include: {
       profile: true,
       limits: true,
-      devices: true,
-      _count: { select: { resumes: true } },
+      sessions: {
+        include: { device: true },
+        orderBy: { updatedAt: 'desc' },
+      },
+      subscriptions: {
+        include: { plan: true },
+        orderBy: { createdAt: 'desc' },
+        take: 1,
+      },
     },
   });
   if (!user) throw new AppError(status.NOT_FOUND, 'User not found.');
-  return user;
+
+  const [resumeCount, exportsThisMonth, invoices, activity] =
+    await Promise.all([
+      prisma.resume.count({ where: { userId } }),
+      prisma.exportJob.count({
+        where: {
+          userId,
+          createdAt: {
+            gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+          },
+        },
+      }),
+      prisma.invoice.findMany({ where: { userId } }),
+      prisma.auditLog.findMany({
+        where: {
+          OR: [
+            { actorId: userId },
+            { entityType: 'User', entityId: userId },
+          ],
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 30,
+      }),
+    ]);
+
+  const subscription = user.subscriptions[0] ?? null;
+  const lastSession = user.sessions[0] ?? null;
+  const activeStatuses = new Set(['ACTIVE', 'TRIALING']);
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    role: user.role,
+    isActive: user.isActive,
+    emailVerified: user.emailVerified,
+    twoFactorEnabled: user.twoFactorEnabled,
+    createdAt: user.createdAt,
+    lastLoginAt: lastSession?.updatedAt ?? null,
+    profile: user.profile
+      ? {
+          firstName: user.profile.firstName,
+          lastName: user.profile.lastName,
+          phone: user.profile.phone,
+          avatarUrl: user.profile.avatarUrl,
+          location: user.profile.location,
+          headline: user.profile.headline,
+        }
+      : null,
+    limits: user.limits
+      ? {
+          resumeLimit: user.limits.resumeLimit,
+          apiLimit: user.limits.apiLimit,
+          overrideByAdmin: user.limits.overrideByAdmin,
+          resetAt: user.limits.resetAt,
+        }
+      : null,
+    plan: subscription
+      ? {
+          id: subscription.plan.id,
+          name: subscription.plan.name,
+          interval:
+            subscription.plan.interval === 'YEAR' ? 'year' : 'month',
+          renewsAt: subscription.currentPeriodEnd,
+          cancelAtPeriodEnd: subscription.cancelAtPeriodEnd,
+        }
+      : null,
+    usage: {
+      resumeCount,
+      aiCallsThisMonth: user.limits?.apiUsed ?? 0,
+      exportsThisMonth,
+    },
+    billing: {
+      totalSpentMinor: invoices.reduce(
+        (sum, invoice) => sum + invoice.amountPaid,
+        0,
+      ),
+      currency: invoices[0]?.currency ?? 'usd',
+      invoicesCount: invoices.length,
+      hasActiveSubscription: subscription
+        ? activeStatuses.has(subscription.status)
+        : false,
+      subscriptionRenewsAt: subscription?.currentPeriodEnd ?? null,
+    },
+    sessions: user.sessions.map((session) => ({
+      id: session.id,
+      ipAddress: session.ipAddress,
+      userAgent: session.userAgent,
+      deviceLabel: session.device?.deviceName ?? null,
+      isCurrent: false,
+      lastActiveAt: session.updatedAt,
+    })),
+    activity: activity.map((entry) => ({
+      id: entry.id,
+      action: entry.action,
+      createdAt: entry.createdAt,
+      meta: entry.metadata,
+    })),
+  };
+};
+
+export const inviteUser = async (input: { name: string; email: string }) => {
+  const name = input.name.trim();
+  const email = input.email.trim().toLowerCase();
+  if (!name || !email.includes('@')) {
+    throw new AppError(status.BAD_REQUEST, 'A valid name and email are required.');
+  }
+  const [firstName, ...rest] = name.split(/\s+/);
+  const lastName = rest.join(' ') || 'User';
+  const temporaryPassword = `Inv!${crypto.randomUUID()}9A`;
+  const created = await registerUser({
+    firstName: firstName ?? 'Invited',
+    lastName,
+    email,
+    password: temporaryPassword,
+    confirmPassword: temporaryPassword,
+    acceptTerms: true,
+  });
+  let passwordSetupEmailSent = false;
+  try {
+    await forgotPassword(email);
+    passwordSetupEmailSent = true;
+  } catch {
+    // The account remains valid and the admin can resend the reset later.
+  }
+  return {
+    ...created,
+    passwordSetupEmailSent,
+    message: passwordSetupEmailSent
+      ? 'Invitation and password setup emails were queued.'
+      : 'User created, but the password setup email could not be sent.',
+  };
+};
+
+export const revokeUserSession = async (
+  userId: string,
+  sessionId: string,
+) => {
+  const result = await prisma.session.deleteMany({
+    where: { id: sessionId, userId },
+  });
+  if (result.count === 0) {
+    throw new AppError(status.NOT_FOUND, 'Session not found.');
+  }
+  return { status: 'revoked' as const, auditLogId: crypto.randomUUID() };
+};
+
+export const impersonateUser = async (
+  adminId: string,
+  userId: string,
+) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, email: true, role: true, isActive: true },
+  });
+  if (!user || user.role !== 'USER' || !user.isActive) {
+    throw new AppError(
+      status.BAD_REQUEST,
+      'Only active user accounts can be impersonated.',
+    );
+  }
+  const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+  const impersonationToken = jwtUtils.createToken(
+    {
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+      impersonatedBy: adminId,
+      purpose: 'ADMIN_IMPERSONATION',
+    },
+    envVars.ACCESS_TOKEN_SECRET,
+    { expiresIn: '15m' },
+  );
+  await prisma.auditLog.create({
+    data: {
+      actorId: adminId,
+      action: 'USER_IMPERSONATION_STARTED',
+      entityType: 'User',
+      entityId: user.id,
+      metadata: { expiresAt: expiresAt.toISOString() },
+    },
+  });
+  return { impersonationToken, expiresAt: expiresAt.toISOString() };
 };
 
 export const updateUserLimits = async (

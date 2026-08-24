@@ -52,7 +52,7 @@ export const checkAuth = (...authRoles: Role[]) =>
       // ── 2. DB user check ──────────────────────────
       const user = await prisma.user.findUnique({
         where: { id: userId },
-        select: { id: true, role: true, email: true, isActive: true },
+        select: { id: true, role: true, email: true, isActive: true, twoFactorEnabled: true },
       });
 
       if (!user) {
@@ -71,12 +71,49 @@ export const checkAuth = (...authRoles: Role[]) =>
         );
       }
 
+      // Admin 2FA is enforced at the API boundary. A frontend role check is
+      // only a UX hint and must never be the security control.
+      if (user.role === 'ADMIN' && authRoles.includes('ADMIN')) {
+        const policy = await prisma.platformConfig.findUnique({
+          where: { key: 'admin_2fa_required' },
+          select: { value: true },
+        });
+        if (policy?.value === 'true') {
+          if (!user.twoFactorEnabled) {
+            throw new AppError(
+              status.FORBIDDEN,
+              'Two-factor authentication setup is required for admin access.',
+              'ADMIN_2FA_SETUP_REQUIRED',
+            );
+          }
+          const session = await prisma.session.findUnique({
+            where: { token: accessToken },
+            select: { twoFactorVerifiedAt: true },
+          });
+          if (!session?.twoFactorVerifiedAt) {
+            throw new AppError(
+              status.FORBIDDEN,
+              'Two-factor verification is required for this admin session.',
+              'ADMIN_2FA_VERIFICATION_REQUIRED',
+            );
+          }
+        }
+      }
+
       // ── 4. Attach user to request ─────────────────
       req.user = {
         userId: user.id,
         role: user.role as Role,
         email: user.email,
       };
+
+      // A session touched within the last 15 minutes already counts as active;
+      // throttle this write so normal authenticated traffic stays inexpensive.
+      const activityCutoff = new Date(Date.now() - 15 * 60 * 1000);
+      void prisma.session.updateMany({
+        where: { token: accessToken, updatedAt: { lt: activityCutoff } },
+        data: { updatedAt: new Date() },
+      }).catch(() => undefined);
 
       next();
     } catch (error: any) {

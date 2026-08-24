@@ -6,6 +6,7 @@ import { Request } from 'express';
 import { Prisma } from '../../../prisma/generated/prisma/client';
 import { prisma } from '../../lib/prisma';
 import { redis } from '../../lib/redis';
+import { invalidate } from '../../lib/cache';
 import { sendOtpEmail, sendPasswordChangedEmail, sendWelcomeEmail } from '../../lib/mailer';
 import { tokenUtils } from '../../utils/token';
 import AppError from '../../errorHelpers/AppError';
@@ -87,6 +88,21 @@ const assertLoginRateLimit = async (
 ): Promise<void> => {
   const count = await bumpLoginRateLimit(email, ip);
   if (count > LOGIN_RATE_LIMIT_MAX) {
+    if (count === LOGIN_RATE_LIMIT_MAX + 1) {
+      await Promise.allSettled([
+        prisma.securityAlert.create({
+          data: {
+            severity: 'CRITICAL',
+            title: 'Repeated login attempts detected',
+            body: `The login rate limit was exceeded from ${ip}.`,
+            source: 'login_rate_limit',
+            metadata: { email },
+          },
+        }),
+        invalidate('admin:dashboard:v2:alerts'),
+        invalidate('admin:dashboard:v2:metrics'),
+      ]);
+    }
     throw new AppError(
       status.TOO_MANY_REQUESTS,
       'Too many login attempts. Please try again in a few minutes.'
@@ -509,6 +525,7 @@ export const verifyTwoFactor = async (data: TwoFactorVerifyInput, req: Request) 
       expiresAt,
       ipAddress,
       userAgent,
+      twoFactorVerifiedAt: new Date(),
     },
   });
 
@@ -656,13 +673,19 @@ export const enable2FA = async (userId: string) => {
   return { message: 'An OTP has been sent to your email to confirm 2FA activation.' };
 };
 
-export const confirm2FA = async (userId: string, otp: string) => {
+export const confirm2FA = async (userId: string, otp: string, accessToken?: string) => {
   await consumeOtp(userId, otp, 'TWO_FACTOR');
 
-  await prisma.user.update({
-    where: { id: userId },
-    data: { twoFactorEnabled: true },
-  });
+  await prisma.$transaction([
+    prisma.user.update({
+      where: { id: userId },
+      data: { twoFactorEnabled: true },
+    }),
+    prisma.session.updateMany({
+      where: { userId, ...(accessToken ? { token: accessToken } : { id: '__none__' }) },
+      data: { twoFactorVerifiedAt: new Date() },
+    }),
+  ]);
 
   return { message: 'Two-factor authentication has been enabled.' };
 };

@@ -3,6 +3,7 @@ import status from 'http-status';
 import { catchAsync } from '../../utils/catchAsync';
 import { sendResponse } from '../../utils/sendResponse';
 import { tokenUtils } from '../../utils/token';
+import { cookieUtils } from '../../utils/cookie';
 import * as authService from './auth.service';
 
 export const register = catchAsync(async (req: Request, res: Response) => {
@@ -132,7 +133,9 @@ export const enable2FA = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const confirm2FA = catchAsync(async (req: Request, res: Response) => {
-  const result = await authService.confirm2FA(req.user.userId, req.body.otp);
+  const accessToken = cookieUtils.getCookie(req, 'accessToken')
+    || req.headers.authorization?.replace('Bearer ', '');
+  const result = await authService.confirm2FA(req.user.userId, req.body.otp, accessToken);
   sendResponse(res, {
     status: status.OK,
     success: true,

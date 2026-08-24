@@ -4,8 +4,14 @@ import { catchAsync } from '../../utils/catchAsync';
 import { sendResponse } from '../../utils/sendResponse';
 import * as adminService from './admin.service';
 
-export const getDashboard = catchAsync(async (_req: Request, res: Response) => {
+export const getDashboard = catchAsync(async (req: Request, res: Response) => {
   const data = await adminService.getDashboardStats();
+  await adminService.recordDashboardAccess({
+    actorId: req.user.userId,
+    actorEmail: req.user.email,
+    ...(req.ip ? { ipAddress: req.ip } : {}),
+    ...(req.headers['user-agent'] ? { userAgent: req.headers['user-agent'] } : {}),
+  });
   sendResponse(res, { status: status.OK, success: true, message: 'Dashboard stats retrieved.', data });
 });
 
@@ -31,6 +37,49 @@ export const getUserById = catchAsync(async (req: Request, res: Response) => {
   const data = await adminService.getUserById(String(req.params.id));
   sendResponse(res, { status: status.OK, success: true, message: 'User retrieved.', data });
 });
+
+export const inviteUser = catchAsync(async (req: Request, res: Response) => {
+  const data = await adminService.inviteUser({
+    name: String(req.body.name ?? ''),
+    email: String(req.body.email ?? ''),
+  });
+  sendResponse(res, {
+    status: status.CREATED,
+    success: true,
+    message: data.message,
+    data,
+  });
+});
+
+export const revokeUserSession = catchAsync(
+  async (req: Request, res: Response) => {
+    const data = await adminService.revokeUserSession(
+      String(req.params.id),
+      String(req.params.sessionId),
+    );
+    sendResponse(res, {
+      status: status.OK,
+      success: true,
+      message: 'Session revoked.',
+      data,
+    });
+  },
+);
+
+export const impersonateUser = catchAsync(
+  async (req: Request, res: Response) => {
+    const data = await adminService.impersonateUser(
+      req.user.userId,
+      String(req.params.id),
+    );
+    sendResponse(res, {
+      status: status.OK,
+      success: true,
+      message: 'Scoped impersonation token created for 15 minutes.',
+      data,
+    });
+  },
+);
 
 export const updateUserLimits = catchAsync(async (req: Request, res: Response) => {
   const { resumeLimit, apiLimit } = req.body;
