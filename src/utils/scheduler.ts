@@ -4,7 +4,7 @@ import { redis } from '../lib/redis';
 
 const QUEUE_NAME = 'profileai-scheduler';
 
-// ─── Queue ────────────────────────────────────────────
+// â”€â”€â”€ Queue â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const schedulerQueue = new Queue(QUEUE_NAME, {
   connection: redis as any,
   defaultJobOptions: {
@@ -13,7 +13,7 @@ export const schedulerQueue = new Queue(QUEUE_NAME, {
   },
 });
 
-// ─── Worker ───────────────────────────────────────────
+// â”€â”€â”€ Worker â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const schedulerWorker = new Worker(
   QUEUE_NAME,
   async (job) => {
@@ -35,7 +35,7 @@ export const schedulerWorker = new Worker(
   { connection: redis as any }
 );
 
-// ─── Schedule Monthly Reset ───────────────────────────
+// â”€â”€â”€ Schedule Monthly Reset â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const scheduleMonthlyReset = async (): Promise<void> => {
   // Remove existing repeatable job if any
   await schedulerQueue.removeRepeatable('monthly-limit-reset', {
@@ -61,11 +61,6 @@ schedulerWorker.on('failed', (job, err) => {
   console.error(`[Scheduler] Job "${job?.name}" failed:`, err.message);
 });
 
-// --- Hot-reload cleanup ---------------------------------
-const RELOAD_SIGNALS: NodeJS.Signals[] = ['SIGINT', 'SIGTERM'];
-for (const signal of RELOAD_SIGNALS) {
-  process.once(signal, () => {
-    console.log(`[Scheduler] ${signal} received, closing queue + worker�`);
-    Promise.allSettled([schedulerWorker.close(), schedulerQueue.close()]).catch(() => undefined);
-  });
-}
+export const closeScheduler = async (): Promise<void> => {
+  await Promise.allSettled([schedulerWorker.close(), schedulerQueue.close()]);
+};

@@ -1,76 +1,133 @@
-import app from './app';
+import { createServer, type Server } from 'node:http';
 import { prisma } from './lib/prisma';
-import { redis } from './lib/redis';
+import { closeRedis, prepareRedisForBullMq } from './lib/redis';
 import { ensureBucketExists } from './lib/minio';
-import { scheduleMonthlyReset } from './utils/scheduler';
-import { exportWorker } from './utils/exportQueue';
+import { notificationGateway } from './modules/notification/notification.gateway';
 
-const PORT = process.env.PORT || 5000;
+const PORT = Number(process.env.PORT || 5000);
+
+let httpServer: Server | undefined;
+let closeBackgroundJobs: () => Promise<void> = async () => undefined;
+let shutdownStarted = false;
+
+const listen = (server: Server, port: number): Promise<void> =>
+  new Promise((resolve, reject) => {
+    const onError = (error: NodeJS.ErrnoException) => {
+      server.off('listening', onListening);
+      reject(error);
+    };
+    const onListening = () => {
+      server.off('error', onError);
+      resolve();
+    };
+
+    server.once('error', onError);
+    server.once('listening', onListening);
+    server.listen(port);
+  });
+
+const assertPortAvailable = (port: number): Promise<void> =>
+  new Promise((resolve, reject) => {
+    const probe = createServer();
+    probe.unref();
+    probe.once('error', reject);
+    probe.listen(port, () => {
+      probe.close((error) => (error ? reject(error) : resolve()));
+    });
+  });
+
+const describeError = (error: unknown): string => {
+  if (error instanceof Error && error.message.trim()) return error.message;
+  if (error && typeof error === 'object') {
+    const details = Object.entries(error)
+      .filter(([, value]) => ['string', 'number'].includes(typeof value))
+      .map(([key, value]) => `${key}=${String(value)}`)
+      .join(', ');
+    if (details) return details;
+  }
+  return 'Unknown error';
+};
+
+const shutdown = async (reason: string, exitCode = 0): Promise<void> => {
+  if (shutdownStarted) return;
+  shutdownStarted = true;
+  console.log(`[Server] Shutting down (${reason})...`);
+
+  notificationGateway.close();
+  const closeHttpServer = new Promise<void>((resolve) => {
+    if (!httpServer?.listening) return resolve();
+    httpServer.close(() => resolve());
+  });
+
+  await Promise.allSettled([closeHttpServer, closeBackgroundJobs()]);
+  await Promise.allSettled([prisma.$disconnect(), closeRedis()]);
+  process.exitCode = exitCode;
+};
 
 async function main() {
   try {
-    // ── Database ────────────────────────────────────
+    // Fail before opening database, Redis, MinIO, or BullMQ connections when
+    // another development server already owns this port.
+    await assertPortAvailable(PORT);
+
     await prisma.$connect();
     console.log('[DB] Connected to PostgreSQL successfully.');
 
-    // ── Redis ────────────────────────────────────────
-    // Note: we don't call redis.connect() here. The BullMQ Queue/Worker
-    // instances in src/utils/scheduler.ts connect the shared ioredis instance
-    // on construction (their pub/sub channels need a live connection the
-    // moment the queue is created). Calling connect() again throws
-    // "Redis is already connecting/connected".
-    //
-    // To confirm the connection is live before serving traffic, we wait for
-    // the first await on a BullMQ operation below (`scheduleMonthlyReset`).
-    console.log('[Redis] Connection owned by BullMQ; readiness verified via scheduler init.');
+    // This must happen before importing app routes because the export service
+    // constructs its BullMQ queue during module initialization.
+    await prepareRedisForBullMq();
 
-    // ── MinIO ─────────────────────────────────────────
-    // Optional: when SKIP_MINIO=true the dev server boots without an S3-compatible
-    // object store. Any code path that actually calls uploadBuffer / getPresignedUrl /
-    // deleteObject will throw a clear "MinIO is disabled" error instead of crashing.
     if (process.env.SKIP_MINIO === 'true') {
       console.log('[MinIO] Skipped (SKIP_MINIO=true). Object storage is disabled.');
     } else {
       try {
         await ensureBucketExists();
       } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
         console.warn(
-          `[MinIO] ensureBucketExists failed: ${message}. ` +
+          `[MinIO] ensureBucketExists failed: ${describeError(error)}. ` +
             `Continuing without MinIO. Set SKIP_MINIO=true in .env to silence this.`
         );
       }
     }
 
-    // ── BullMQ Scheduler ──────────────────────────────
-    await scheduleMonthlyReset();
+    const [{ default: app }, scheduler, exports] = await Promise.all([
+      import('./app'),
+      import('./utils/scheduler'),
+      import('./utils/exportQueue'),
+    ]);
 
-    // Touch the worker so its connection is eagerly opened and
-    // the queue is ready before traffic arrives. BullMQ auto-starts
-    // workers on construction; we just need to keep the import alive.
-    void exportWorker;
+    await scheduler.scheduleMonthlyReset();
+    void exports.exportWorker;
+    closeBackgroundJobs = async () => {
+      await Promise.allSettled([
+        scheduler.closeScheduler(),
+        exports.closeExportQueue(),
+      ]);
+    };
 
-    // ── Start Server ──────────────────────────────────
-    app.listen(PORT, () => {
-      console.log(`[Server] ProFile AI API running on http://localhost:${PORT}`);
-      console.log(`[Server] Environment: ${process.env.NODE_ENV || 'development'}`);
-    });
-  } catch (error) {
-    console.error('[Server] Fatal startup error:', error);
-    await prisma.$disconnect().catch(() => undefined);
-    // Guard: the redis client is shared with BullMQ, which may leave it in
-    // any of {connecting, ready, closed}. `quit()` only succeeds on `ready`.
-    try {
-      if (redis.status === 'ready' || redis.status === 'connecting') {
-        await redis.quit();
-      } else if (redis.status !== 'end') {
-        redis.disconnect();
-      }
-    } catch {
-      /* best-effort cleanup; we're already shutting down */
+    httpServer = createServer(app);
+    notificationGateway.attach(httpServer);
+    await listen(httpServer, PORT);
+
+    console.log(`[Server] ProFile AI API running on http://localhost:${PORT}`);
+    console.log(`[WebSocket] Notifications available at ws://localhost:${PORT}/ws/notifications`);
+    console.log(`[Server] Environment: ${process.env.NODE_ENV || 'development'}`);
+
+    for (const signal of ['SIGINT', 'SIGTERM'] as const) {
+      process.once(signal, () => void shutdown(signal));
     }
-    process.exit(1);
+  } catch (error) {
+    const code = error && typeof error === 'object' && 'code' in error ? error.code : undefined;
+    if (code === 'EADDRINUSE') {
+      console.error(
+        `[Server] Port ${PORT} is already in use. Stop the existing API process ` +
+          `or set PORT to another available port in .env.`
+      );
+    } else {
+      console.error(`[Server] Fatal startup error: ${describeError(error)}`);
+    }
+    await shutdown('startup failure', 1);
   }
 }
 
-main();
+void main();

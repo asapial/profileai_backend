@@ -1,9 +1,9 @@
-// ─────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // BullMQ queue + worker for async exports
 // (USER_DATA / RESUME_PDF). The worker serializes the
 // user's data to JSON, uploads it to MinIO, and writes
 // the resulting presigned URL back to the ExportJob row.
-// ─────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 import { Queue, Worker, Job } from 'bullmq';
 import { prisma } from '../lib/prisma';
 import { redis } from '../lib/redis';
@@ -13,7 +13,7 @@ import status from 'http-status';
 
 const QUEUE_NAME = 'profileai-export';
 
-// ─── Queue ────────────────────────────────────────────
+// â”€â”€â”€ Queue â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // BullMQ ships its own ioredis copy; cast to any to bridge the duplicate-type mismatch.
 export const exportQueue = new Queue(QUEUE_NAME, {
   connection: redis as any,
@@ -30,7 +30,7 @@ export type ExportJobPayload =
   | { kind: 'RESUME_PDF'; userId: string; jobId: string; resumeId: string }
   | { kind: 'COVER_LETTER_PDF'; userId: string; jobId: string; coverLetterId: string };
 
-// ─── Worker ───────────────────────────────────────────
+// â”€â”€â”€ Worker â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const exportWorker = new Worker(
   QUEUE_NAME,
   async (job: Job<ExportJobPayload>) => {
@@ -144,7 +144,7 @@ async function buildUserDataDump(userId: string) {
   };
 }
 
-// ─── Diagnostics ──────────────────────────────────────
+// â”€â”€â”€ Diagnostics â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 exportWorker.on('completed', (job) => {
   console.log(`[Export] Job ${job.id} (${(job.data as ExportJobPayload).kind}) completed.`);
 });
@@ -153,14 +153,6 @@ exportWorker.on('failed', (job, err) => {
   console.error(`[Export] Job ${job?.id} failed:`, err.message);
 });
 
-// --- Hot-reload cleanup ---------------------------------
-// Close the BullMQ Queue + Worker so the per-instance ioredis pub/sub
-// connections are released on every `tsx watch` reload. Without this
-// orphans accumulate and eventually exhaust Redis's `maxclients`.
-const RELOAD_SIGNALS: NodeJS.Signals[] = ['SIGINT', 'SIGTERM'];
-for (const signal of RELOAD_SIGNALS) {
-  process.once(signal, () => {
-    console.log(`[Export] ${signal} received, closing queue + worker�`);
-    Promise.allSettled([exportWorker.close(), exportQueue.close()]).catch(() => undefined);
-  });
-}
+export const closeExportQueue = async (): Promise<void> => {
+  await Promise.allSettled([exportWorker.close(), exportQueue.close()]);
+};

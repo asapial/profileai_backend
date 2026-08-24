@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import status from 'http-status';
 import AppError from '../errorHelpers/AppError';
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
 interface EnvConfig {
   NODE_ENV: string;

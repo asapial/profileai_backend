@@ -4,14 +4,16 @@ import * as exportController from './export.controller';
 
 const router = Router();
 
-router.use(checkAuth());
-
 // User data export
-router.post('/user/export', exportController.requestUserExport);
-router.get('/user/export-jobs', exportController.list);
-router.get('/user/export-jobs/:id', exportController.get);
+router.post('/user/export', checkAuth(), exportController.requestUserExport);
+router.get('/user/export-jobs', checkAuth(), exportController.list);
+router.get('/user/export-jobs/:id', checkAuth(), exportController.get);
 
 // Resume PDF export
-router.post('/resumes/:id/export', exportController.requestResumeExport);
+router.post(
+  '/resumes/:id/export',
+  checkAuth(),
+  exportController.requestResumeExport,
+);
 
 export const exportRouter = router;

@@ -10,10 +10,6 @@ import { TErrorResponse, TErrorSources } from "../interfaces/error.interface";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const globalErrorHandler = async (err: any, req: Request, res: Response, next: NextFunction) => {
-    if (envVars.NODE_ENV === 'development') {
-        console.error("Error from Global Error Handler:", err);
-    }
-
     let errorSources: TErrorSources[] = [];
     let statusCode: number = status.INTERNAL_SERVER_ERROR;
     let message: string = 'Internal Server Error';
@@ -41,13 +37,20 @@ export const globalErrorHandler = async (err: any, req: Request, res: Response, 
         errorSources = [{ path: '', message: err.message }];
     }
 
+    const isServerError = statusCode >= status.INTERNAL_SERVER_ERROR;
+    if (isServerError) {
+        console.error(`[HTTP] ${statusCode} ${req.method} ${req.originalUrl}`, err);
+    }
+
+    const exposeDiagnostics = envVars.NODE_ENV === 'development' && isServerError;
+
     const errorResponse: TErrorResponse & { code?: string } = {
         success: false,
         message,
         errorSources,
-        error: envVars.NODE_ENV === 'development' ? err : undefined,
+        error: exposeDiagnostics ? err : undefined,
         ...(code !== undefined ? { code } : {}),
-        ...(envVars.NODE_ENV === 'development' && stack !== undefined ? { stack } : {}),
+        ...(exposeDiagnostics && stack !== undefined ? { stack } : {}),
     };
 
     res.status(statusCode).json(errorResponse);
