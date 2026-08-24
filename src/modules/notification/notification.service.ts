@@ -2,6 +2,7 @@ import status from 'http-status';
 import { prisma } from '../../lib/prisma';
 import { bustDashboardCache } from '../dashboard/dashboard.service';
 import AppError from '../../errorHelpers/AppError';
+import { notificationGateway } from './notification.gateway';
 
 export interface ListNotificationsInput {
   limit?: number;
@@ -49,6 +50,10 @@ export const markRead = async (userId: string, id: string) => {
     data: { read: true },
   });
   await bustDashboardCache(userId);
+  notificationGateway.toUser(userId, {
+    event: 'notification.changed',
+    data: { id, unreadCount: await prisma.notification.count({ where: { userId, read: false } }) },
+  });
   return updated;
 };
 
@@ -58,6 +63,10 @@ export const markAllRead = async (userId: string) => {
     data: { read: true },
   });
   await bustDashboardCache(userId);
+  notificationGateway.toUser(userId, {
+    event: 'notification.changed',
+    data: { unreadCount: 0 },
+  });
   return { updated: result.count };
 };
 
@@ -67,6 +76,10 @@ export const deleteNotification = async (userId: string, id: string) => {
 
   await prisma.notification.delete({ where: { id } });
   await bustDashboardCache(userId);
+  notificationGateway.toUser(userId, {
+    event: 'notification.changed',
+    data: { id, unreadCount: await prisma.notification.count({ where: { userId, read: false } }) },
+  });
   return { id };
 };
 
@@ -93,7 +106,7 @@ export const createNotification = async (
   input: CreateNotificationInput
 ): Promise<void> => {
   try {
-    await prisma.notification.create({
+    const notification = await prisma.notification.create({
       data: {
         userId: input.userId,
         type: input.type,
@@ -104,6 +117,10 @@ export const createNotification = async (
       },
     });
     await bustDashboardCache(input.userId);
+    notificationGateway.toUser(input.userId, {
+      event: 'notification.created',
+      data: notification as unknown as Record<string, unknown>,
+    });
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error('[notification] createNotification failed:', err);
@@ -111,6 +128,39 @@ export const createNotification = async (
     // state. The parent write should succeed even if this side-effect
     // throws.
   }
+};
+
+export const createRoleNotification = async (
+  role: 'ADMIN' | 'USER',
+  input: Omit<CreateNotificationInput, 'userId'>,
+): Promise<number> => {
+  const users = await prisma.user.findMany({
+    where: { role, isActive: true },
+    select: { id: true },
+  });
+  if (users.length === 0) return 0;
+  await prisma.notification.createMany({
+    data: users.map((user) => ({
+      userId: user.id,
+      type: input.type,
+      title: input.title,
+      body: input.body ?? null,
+      link: input.link ?? null,
+      read: false,
+    })),
+  });
+  notificationGateway.toRole(role, {
+    event: 'notification.created',
+    data: {
+      type: input.type,
+      title: input.title,
+      body: input.body ?? null,
+      link: input.link ?? null,
+      role,
+    },
+  });
+  await Promise.all(users.map((user) => bustDashboardCache(user.id)));
+  return users.length;
 };
 
 export const getUnreadCount = async (
