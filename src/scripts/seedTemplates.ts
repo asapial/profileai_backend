@@ -1,44 +1,35 @@
 /* eslint-disable no-console */
 import "dotenv/config";
-import bcrypt from "bcryptjs";
-import { randomUUID } from "node:crypto";
+import { pathToFileURL } from "node:url";
 import { prisma } from "../lib/prisma";
 
-/**
- * Seed 20 professional resume templates (5 per category: MODERN, CLASSIC,
- * CREATIVE, ATS). Thumbnail SVGs are served as same-origin static files from
- * the Next.js frontend at /templates/<slug>.svg.
- *
- * Idempotent: re-running the script upserts by `name` and preserves IDs, so
- * resume references survive. Creates a dev admin user only if none exists.
- *
- * Usage:  npm run seed:templates
- */
-
 type Category = "MODERN" | "CLASSIC" | "CREATIVE" | "ATS";
+type DocumentType = "RESUME" | "CV";
+type Family = "modern" | "classic" | "creative" | "minimal" | "executive" | "ats";
 
-interface TemplateSeed {
+type TemplateSpec = {
   name: string;
   slug: string;
   category: Category;
+  family: Family;
+  accent: string;
+  surface: string;
   description: string;
-  isFeatured?: boolean;
-  isDefault?: boolean;
-  displayOrder: number;
-  htmlLayout: string;
-  cssStyles: string;
-}
+  documentType: DocumentType;
+};
 
-const FEATURED_SLUGS = new Set(["aurora", "prism", "vanguard", "beacon"]);
+const FEATURED = new Set([
+  "aurora",
+  "vanguard",
+  "prism",
+  "beacon",
+  "academic-atlas",
+  "clinical-clarity",
+  "lab-notes",
+  "executive-vitae",
+]);
 
-// ──────────────────────────────────────────────────────────────────────────────
-// Shared HTML fragments reused across the 20 templates.
-// Keep them small and Handlebars-correct; the renderer spreads personalInfo
-// on top of contentData, so fields like {{firstName}}, {{headline}} etc. work
-// without a `personalInfo.` prefix.
-// ──────────────────────────────────────────────────────────────────────────────
-
-const CONTACT_LINE = `<div class="tpl-contact">
+const CONTACT = `<div class="tpl-contact">
   {{#if email}}<span>{{email}}</span>{{/if}}
   {{#if phone}}<span>{{phone}}</span>{{/if}}
   {{#if location}}<span>{{location}}</span>{{/if}}
@@ -46,395 +37,166 @@ const CONTACT_LINE = `<div class="tpl-contact">
   {{#if linkedIn}}<span>{{linkedIn}}</span>{{/if}}
 </div>`;
 
-const SUMMARY_SECTION = `{{#if bio}}
-<section class="tpl-section">
-  <h2 class="tpl-section-title">Summary</h2>
-  <p class="tpl-bio">{{bio}}</p>
-</section>
-{{/if}}`;
+const SUMMARY = `{{#if bio}}<section class="tpl-section tpl-summary"><h2 class="tpl-section-title">Profile</h2><p>{{bio}}</p></section>{{/if}}`;
+const EXPERIENCE = `{{#if experience}}<section class="tpl-section tpl-experience"><h2 class="tpl-section-title">Experience</h2>{{#each experience}}<article class="tpl-entry"><div class="tpl-entry-head"><div><h3>{{role}}</h3><strong>{{company}}</strong></div><span>{{from}} – {{#if current}}Present{{/if}}{{to}}</span></div>{{#if desc}}<p>{{desc}}</p>{{/if}}{{#if bullets}}<ul>{{#each bullets}}<li>{{this}}</li>{{/each}}</ul>{{/if}}</article>{{/each}}</section>{{/if}}`;
+const EDUCATION = `{{#if education}}<section class="tpl-section tpl-education"><h2 class="tpl-section-title">Education</h2>{{#each education}}<article class="tpl-entry"><div class="tpl-entry-head"><div><h3>{{degree}}{{#if field}}, {{field}}{{/if}}</h3><strong>{{school}}</strong></div><span>{{from}} – {{to}}</span></div>{{#if gpa}}<p>GPA {{gpa}}</p>{{/if}}</article>{{/each}}</section>{{/if}}`;
+const SKILLS = `{{#if skills}}<section class="tpl-section"><h2 class="tpl-section-title">Expertise</h2><ul class="tpl-tags">{{#each skills}}<li>{{this}}</li>{{/each}}</ul></section>{{/if}}`;
+const CERTIFICATIONS = `{{#if certifications}}<section class="tpl-section"><h2 class="tpl-section-title">Credentials</h2><ul class="tpl-list">{{#each certifications}}<li><strong>{{name}}</strong><span>{{issuer}} · {{year}}</span></li>{{/each}}</ul></section>{{/if}}`;
+const LANGUAGES = `{{#if languages}}<section class="tpl-section"><h2 class="tpl-section-title">Languages</h2><ul class="tpl-tags">{{#each languages}}<li>{{this}}</li>{{/each}}</ul></section>{{/if}}`;
 
-const SKILLS_SECTION = `{{#if skills}}
-<section class="tpl-section">
-  <h2 class="tpl-section-title">Skills</h2>
-  <ul class="tpl-skills">{{#each skills}}<li>{{this}}</li>{{/each}}</ul>
-</section>
-{{/if}}`;
-
-const LANGUAGES_SECTION = `{{#if languages}}
-<section class="tpl-section">
-  <h2 class="tpl-section-title">Languages</h2>
-  <ul class="tpl-langs">{{#each languages}}<li>{{this}}</li>{{/each}}</ul>
-</section>
-{{/if}}`;
-
-const EXPERIENCE_SECTION = `{{#if experience}}
-<section class="tpl-section">
-  <h2 class="tpl-section-title">Experience</h2>
-  {{#each experience}}
-  <article class="tpl-job">
-    <header>
-      <h3>{{role}}</h3>
-      <span class="tpl-employer">{{company}}</span>
-      <span class="tpl-dates">{{from}} — {{#if current}}Present{{else}}{{to}}{{/if}}</span>
-    </header>
-    {{#if desc}}<p>{{desc}}</p>{{/if}}
-  </article>
-  {{/each}}
-</section>
-{{/if}}`;
-
-const EDUCATION_SECTION = `{{#if education}}
-<section class="tpl-section">
-  <h2 class="tpl-section-title">Education</h2>
-  {{#each education}}
-  <article class="tpl-edu">
-    <h3>{{school}}</h3>
-    <span>{{degree}}{{#if field}}, {{field}}{{/if}}</span>
-    <span class="tpl-dates">{{from}} — {{to}}{{#if gpa}} · GPA {{gpa}}{{/if}}</span>
-  </article>
-  {{/each}}
-</section>
-{{/if}}`;
-
-const CERTS_SECTION = `{{#if certifications}}
-<section class="tpl-section">
-  <h2 class="tpl-section-title">Certifications</h2>
-  <ul class="tpl-certs">
-    {{#each certifications}}<li><strong>{{name}}</strong> · {{issuer}} ({{year}})</li>{{/each}}
-  </ul>
-</section>
-{{/if}}`;
-
-// ──────────────────────────────────────────────────────────────────────────────
-// Per-template layouts
-// ──────────────────────────────────────────────────────────────────────────────
-
-function modernLayout(slug: string, accent: string): string {
-  return `<article class="tpl tpl-modern tpl-${slug}">
-  <header class="tpl-hero">
-    <h1>{{firstName}} {{lastName}}</h1>
-    {{#if headline}}<p class="tpl-headline">{{headline}}</p>{{/if}}
-    ${CONTACT_LINE}
-  </header>
-  <div class="tpl-grid">
-    <main class="tpl-main">
-      ${SUMMARY_SECTION}
-      ${EXPERIENCE_SECTION}
-      ${EDUCATION_SECTION}
-      ${CERTS_SECTION}
-  </main>
-    <aside class="tpl-aside">
-      ${SKILLS_SECTION}
-      ${LANGUAGES_SECTION}
-    </aside>
-  </div>
-</article>
-<style>:root{--accent:${accent};}</style>`;
-}
-
-function classicLayout(): string {
-  return `<article class="tpl tpl-classic">
-  <header class="tpl-header">
-    <h1>{{firstName}} {{lastName}}</h1>
-    {{#if headline}}<p class="tpl-headline">{{headline}}</p>{{/if}}
-    ${CONTACT_LINE}
-  </header>
-  <hr />
-  ${SUMMARY_SECTION}
-  ${EXPERIENCE_SECTION}
-  ${EDUCATION_SECTION}
-  ${SKILLS_SECTION}
-  ${CERTS_SECTION}
-  ${LANGUAGES_SECTION}
-</article>`;
-}
-
-function creativeLayout(slug: string, accent: string): string {
-  return `<article class="tpl tpl-creative tpl-${slug}">
-  <header class="tpl-banner">
-    <h1>{{firstName}} {{lastName}}</h1>
-    {{#if headline}}<p class="tpl-headline">{{headline}}</p>{{/if}}
-    ${CONTACT_LINE}
-  </header>
-  <div class="tpl-creative-grid">
-    <section class="tpl-creative-left">
-      ${SUMMARY_SECTION}
-      ${EXPERIENCE_SECTION}
-    </section>
-    <section class="tpl-creative-right">
-      ${SKILLS_SECTION}
-      ${EDUCATION_SECTION}
-      ${CERTS_SECTION}
-      ${LANGUAGES_SECTION}
-    </section>
-  </div>
-</article>
-<style>:root{--accent:${accent};}</style>`;
-}
-
-function atsLayout(): string {
-  return `<article class="tpl tpl-ats">
-  <header class="tpl-header">
-    <h1>{{firstName}} {{lastName}}</h1>
-    {{#if headline}}<p class="tpl-headline">{{headline}}</p>{{/if}}
-    ${CONTACT_LINE}
-  </header>
-  ${SUMMARY_SECTION}
-  ${SKILLS_SECTION}
-  ${EXPERIENCE_SECTION}
-  ${EDUCATION_SECTION}
-  ${CERTS_SECTION}
-  ${LANGUAGES_SECTION}
-</article>`;
-}
-
-// ──────────────────────────────────────────────────────────────────────────────
-// CSS (one scoped stylesheet per layout family)
-// ──────────────────────────────────────────────────────────────────────────────
+const layoutFor = (spec: TemplateSpec) => {
+  const kicker = spec.documentType === "CV" ? "Curriculum Vitae" : "Professional Résumé";
+  const header = `<header class="tpl-header"><p class="tpl-kicker">${kicker}</p><h1>{{firstName}} {{lastName}}</h1>{{#if headline}}<p class="tpl-headline">{{headline}}</p>{{/if}}${CONTACT}</header>`;
+  if (spec.family === "classic" || spec.family === "minimal" || spec.family === "ats") {
+    return `<article class="tpl tpl-${spec.family} tpl-${spec.slug}">${header}<main>${SUMMARY}${EXPERIENCE}${EDUCATION}${SKILLS}${CERTIFICATIONS}${LANGUAGES}</main></article>`;
+  }
+  if (spec.family === "executive") {
+    return `<article class="tpl tpl-executive tpl-${spec.slug}"><div class="tpl-rail">${header}${SKILLS}${LANGUAGES}</div><main>${SUMMARY}${EXPERIENCE}${EDUCATION}${CERTIFICATIONS}</main></article>`;
+  }
+  return `<article class="tpl tpl-${spec.family} tpl-${spec.slug}">${header}<div class="tpl-columns"><main>${SUMMARY}${EXPERIENCE}${EDUCATION}</main><aside>${SKILLS}${CERTIFICATIONS}${LANGUAGES}</aside></div></article>`;
+};
 
 const BASE_CSS = `
-.tpl{font-family:Inter,system-ui,sans-serif;color:#1f2937;background:#fff;line-height:1.55;}
-.tpl h1{margin:0;font-weight:700;letter-spacing:-0.02em;}
-.tpl h2{margin:0;font-weight:700;}
-.tpl h3{margin:0;font-weight:600;}
-.tpl p{margin:0 0 .5rem;}
-.tpl ul{margin:0;padding-left:1.1em;}
-.tpl-section{margin-top:1.25rem;}
-.tpl-section-title{font-size:.95rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent,#0f172a);border-bottom:1px solid #e5e7eb;padding-bottom:.35rem;margin-bottom:.6rem;}
-.tpl-skills,.tpl-langs,.tpl-certs{list-style:disc;}
-.tpl-certs li{margin-bottom:.25rem;}
-.tpl-contact{font-size:.85rem;color:#475569;display:flex;flex-wrap:wrap;gap:.75rem;margin-top:.5rem;}
-.tpl-contact span::before{content:"•";margin-right:.5rem;color:#cbd5e1;}
-.tpl-contact span:first-child::before{content:"";margin:0;}
-.tpl-job,.tpl-edu{margin-bottom:.75rem;}
-.tpl-job header,.tpl-edu{display:flex;flex-wrap:wrap;gap:.5rem;align-items:baseline;}
-.tpl-employer,.tpl-dates{font-size:.85rem;color:#64748b;font-style:italic;}
+.tpl{box-sizing:border-box;width:100%;min-height:297mm;padding:42px;background:#fff;color:#172033;font-family:Inter,system-ui,sans-serif;font-size:13px;line-height:1.5}
+.tpl *{box-sizing:border-box}.tpl h1,.tpl h2,.tpl h3,.tpl p,.tpl ul{margin:0}.tpl h1{font-size:34px;line-height:1.08;letter-spacing:-.04em}.tpl h3{font-size:14px}.tpl strong{font-weight:650}.tpl-kicker{margin-bottom:7px!important;color:var(--accent);font-size:9px;font-weight:800;letter-spacing:.22em;text-transform:uppercase}.tpl-headline{margin-top:7px!important;color:#526078;font-size:15px}.tpl-contact{display:flex;flex-wrap:wrap;gap:5px 14px;margin-top:13px;color:#526078;font-size:10px}.tpl-section{margin-top:21px}.tpl-section-title{margin-bottom:9px!important;border-bottom:1px solid #dce2ea;padding-bottom:5px;color:var(--accent);font-size:10px;letter-spacing:.16em;text-transform:uppercase}.tpl-entry{margin-bottom:13px}.tpl-entry-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}.tpl-entry-head>span{flex:none;color:#69768b;font-size:10px}.tpl-entry p,.tpl-entry ul{margin-top:6px}.tpl-entry ul{padding-left:16px}.tpl-tags{display:flex;flex-wrap:wrap;gap:6px;list-style:none;padding:0}.tpl-tags li{border:1px solid color-mix(in srgb,var(--accent) 22%,#dce2ea);border-radius:999px;background:var(--surface);padding:3px 8px;font-size:10px}.tpl-list{display:grid;gap:7px;list-style:none;padding:0}.tpl-list li{display:grid;gap:1px}.tpl-list span{color:#69768b;font-size:10px}
 `;
 
-const MODERN_CSS = `
-${BASE_CSS}
-.tpl-modern .tpl-hero{background:var(--accent,#7c3aed);color:#fff;padding:1.5rem;border-radius:14px;}
-.tpl-modern .tpl-hero h1{font-size:2.2rem;color:#fff;}
-.tpl-modern .tpl-hero .tpl-headline{color:rgba(255,255,255,.85);margin-top:.25rem;}
-.tpl-modern .tpl-hero .tpl-contact{color:rgba(255,255,255,.95);}
-.tpl-modern .tpl-grid{display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;margin-top:1.5rem;}
-.tpl-modern .tpl-aside{background:#f8fafc;padding:1rem;border-radius:12px;}
-.tpl-modern .tpl-aside .tpl-skills,.tpl-modern .tpl-aside .tpl-langs{display:flex;flex-wrap:wrap;gap:.5rem;list-style:none;padding:0;}
-.tpl-modern .tpl-aside .tpl-skills li,.tpl-modern .tpl-aside .tpl-langs li{background:var(--accent,#7c3aed);color:#fff;padding:.3rem .8rem;border-radius:999px;font-size:.8rem;}
-`;
+const FAMILY_CSS: Record<Family, string> = {
+  modern: `.tpl-modern .tpl-header{border-radius:18px;background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 66%,#111827));padding:26px;color:#fff}.tpl-modern .tpl-kicker,.tpl-modern .tpl-headline,.tpl-modern .tpl-contact{color:#fff}.tpl-modern .tpl-columns{display:grid;grid-template-columns:minmax(0,1fr) 185px;gap:28px}.tpl-modern aside{border-left:1px solid #e5eaf0;padding-left:20px}`,
+  classic: `.tpl-classic{border-top:7px double var(--accent);font-family:Georgia,"Times New Roman",serif}.tpl-classic .tpl-header{text-align:center}.tpl-classic .tpl-contact{justify-content:center}.tpl-classic .tpl-section-title{border-bottom:3px double var(--accent);color:#293247}.tpl-classic .tpl-kicker{color:var(--accent)}`,
+  creative: `.tpl-creative{border-radius:4px;background:linear-gradient(90deg,var(--surface) 0 31%,#fff 31%)}.tpl-creative .tpl-header{margin:-42px -42px 0;padding:34px 42px;background:var(--accent);color:#fff}.tpl-creative .tpl-kicker,.tpl-creative .tpl-headline,.tpl-creative .tpl-contact{color:#fff}.tpl-creative .tpl-columns{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(160px,.8fr);gap:34px}.tpl-creative aside{order:-1}`,
+  minimal: `.tpl-minimal{padding:58px 52px}.tpl-minimal .tpl-header{max-width:640px}.tpl-minimal .tpl-section{margin-top:27px}.tpl-minimal .tpl-section-title{border:0;padding:0;color:#748096;font-size:9px}.tpl-minimal .tpl-entry-head h3{font-size:15px}`,
+  executive: `.tpl-executive{display:grid;grid-template-columns:205px minmax(0,1fr);gap:34px;padding:0}.tpl-executive .tpl-rail{min-height:297mm;background:var(--accent);padding:42px 25px;color:#fff}.tpl-executive main{padding:26px 36px 42px 0}.tpl-executive .tpl-rail .tpl-kicker,.tpl-executive .tpl-rail .tpl-headline,.tpl-executive .tpl-rail .tpl-contact,.tpl-executive .tpl-rail .tpl-section-title{color:#fff}.tpl-executive .tpl-contact{display:grid}.tpl-executive .tpl-tags li{border-color:#ffffff55;background:#ffffff14}`,
+  ats: `.tpl-ats{padding:38px;font-family:Arial,"Helvetica Neue",sans-serif;color:#111}.tpl-ats .tpl-header{border-bottom:2px solid #111;padding-bottom:14px}.tpl-ats .tpl-kicker{color:#111}.tpl-ats .tpl-section-title{border-bottom:1px solid #111;color:#111;letter-spacing:.08em}.tpl-ats .tpl-tags li{border:0;border-radius:0;background:transparent;padding:0}.tpl-ats .tpl-tags li:not(:last-child)::after{content:" ·"}`,
+};
 
-const CLASSIC_CSS = `
-${BASE_CSS}
-.tpl-classic{max-width:780px;margin:0 auto;padding:2.5rem;font-family:Georgia,"Times New Roman",serif;}
-.tpl-classic .tpl-header{text-align:center;}
-.tpl-classic .tpl-header h1{font-size:2rem;}
-.tpl-classic .tpl-contact{justify-content:center;color:#475569;}
-.tpl-classic hr{border:none;border-top:2px solid #1f2937;margin:1rem 0;}
-.tpl-classic .tpl-section-title{color:#1f2937;border-color:#cbd5e1;}
-.tpl-classic{background:#fffdf7;}
-`;
+const cssFor = (spec: TemplateSpec, index: number) => {
+  const variants = [
+    `.tpl-${spec.slug}{--accent:${spec.accent};--surface:${spec.surface}}`,
+    `.tpl-${spec.slug}{--accent:${spec.accent};--surface:${spec.surface}}.tpl-${spec.slug} .tpl-header{border-radius:0}.tpl-${spec.slug} .tpl-tags li{border-radius:4px}`,
+    `.tpl-${spec.slug}{--accent:${spec.accent};--surface:${spec.surface}}.tpl-${spec.slug} .tpl-section-title{border-left:3px solid var(--accent);border-bottom-color:transparent;padding-left:8px}`,
+    `.tpl-${spec.slug}{--accent:${spec.accent};--surface:${spec.surface};box-shadow:inset 0 0 0 1px #e5eaf0}.tpl-${spec.slug} .tpl-header{box-shadow:0 12px 28px color-mix(in srgb,var(--accent) 18%,transparent)}`,
+    `.tpl-${spec.slug}{--accent:${spec.accent};--surface:${spec.surface};background:linear-gradient(180deg,#fff,var(--surface))}.tpl-${spec.slug} h1{font-weight:600}`,
+  ];
+  return `${BASE_CSS}\n${FAMILY_CSS[spec.family]}\n${variants[index % variants.length]}`;
+};
 
-const CREATIVE_CSS = `
-${BASE_CSS}
-.tpl-creative .tpl-banner{background:linear-gradient(135deg,var(--accent,#7c3aed) 0%,#1e1b4b 100%);color:#fff;padding:1.75rem;border-radius:18px;}
-.tpl-creative .tpl-banner h1{color:#fff;font-size:2.4rem;}
-.tpl-creative .tpl-banner .tpl-headline{color:rgba(255,255,255,.85);}
-.tpl-creative .tpl-banner .tpl-contact{color:rgba(255,255,255,.9);}
-.tpl-creative-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:1.25rem;margin-top:1.25rem;}
-.tpl-creative-right{background:linear-gradient(180deg,#fff 0%,#f8fafc 100%);padding:1rem;border-radius:14px;border:1px solid #e2e8f0;}
-.tpl-creative .tpl-section-title{color:var(--accent,#7c3aed);}
-`;
+const resumeSpecs: TemplateSpec[] = [
+  ["Aurora","aurora","MODERN","modern","#7357e8","#f1efff","A polished violet two-column résumé for product and technology roles."],
+  ["Cascade","cascade","MODERN","minimal","#0284c7","#eef8ff","A calm, whitespace-led résumé with crisp blue hierarchy."],
+  ["Monolith","monolith","MODERN","executive","#202938","#f1f4f8","A confident dark-rail layout for senior technical leaders."],
+  ["Quanta","quanta","MODERN","modern","#0f766e","#ecfdf9","An engineering-focused résumé with precise visual rhythm."],
+  ["Lumen","lumen","MODERN","modern","#d97706","#fff7e6","A warm and approachable résumé for people-centered roles."],
+  ["Vanguard","vanguard","CLASSIC","classic","#1e3a5f","#f5f7fa","A traditional serif résumé suited to law, finance, and consulting."],
+  ["Sentinel","sentinel","CLASSIC","classic","#334155","#f4f6f8","A restrained, authoritative layout with strong section rules."],
+  ["Heritage","heritage","CLASSIC","classic","#92400e","#fff8e7","Warm editorial typography for established professionals."],
+  ["Lattice","lattice","CLASSIC","executive","#173a63","#edf3f9","A structured executive résumé built for complex careers."],
+  ["Bastion","bastion","CLASSIC","classic","#3f3f46","#f5f5f5","A durable dossier-style design with disciplined spacing."],
+  ["Prism","prism","CREATIVE","creative","#c026d3","#fdf1ff","A bold portfolio-ready résumé for visual and creative work."],
+  ["Mosaic","mosaic","CREATIVE","creative","#e85d04","#fff4ea","An energetic modular layout with a memorable color rail."],
+  ["Spectrum","spectrum","CREATIVE","modern","#7c3aed","#f5f0ff","A vivid modern résumé balanced for creativity and readability."],
+  ["Atelier","atelier","CREATIVE","creative","#9d174d","#fff1f5","An editorial résumé for design, fashion, and brand professionals."],
+  ["Folio","folio","CREATIVE","executive","#4338ca","#eef2ff","A portfolio-inspired split layout with a confident sidebar."],
+  ["Beacon","beacon","ATS","ats","#111827","#f8fafc","A parser-first single-column résumé with maximum compatibility."],
+  ["Compass","compass","ATS","ats","#1d4ed8","#eff6ff","A clean ATS résumé that keeps dates and roles easy to scan."],
+  ["Vector","vector","ATS","ats","#0f766e","#f0fdfa","A technical résumé optimized for keyword-rich experience."],
+  ["Plumb","plumb","ATS","minimal","#374151","#f9fafb","A straightforward résumé for operations, trades, and logistics."],
+  ["Horizon","horizon","ATS","ats","#0369a1","#f0f9ff","A high-clarity résumé designed for fast recruiter review."],
+  ["Meridian","meridian","MODERN","modern","#2563eb","#eff6ff","A versatile blue résumé for cross-functional professionals."],
+  ["Novus","novus","MODERN","minimal","#059669","#ecfdf5","A fresh minimal layout for early and mid-career candidates."],
+  ["Keystone","keystone","CLASSIC","executive","#7c2d12","#fff7ed","An executive résumé that emphasizes leadership progression."],
+  ["Ledger","ledger","CLASSIC","classic","#166534","#f0fdf4","A dependable finance-ready résumé with precise alignment."],
+  ["Studio","studio","CREATIVE","creative","#db2777","#fdf2f8","A refined creative résumé for studios and agencies."],
+  ["Ember","ember","CREATIVE","modern","#ea580c","#fff7ed","A warm modern résumé with energetic but professional contrast."],
+  ["Linear","linear","ATS","minimal","#475569","#f8fafc","A lean résumé with a clear linear reading path."],
+  ["Vertex","vertex","ATS","ats","#4f46e5","#eef2ff","A compact technical résumé built around measurable impact."],
+  ["Northstar","northstar","MODERN","executive","#075985","#f0f9ff","A strategic leadership résumé with a navigational side rail."],
+  ["Signal","signal","CREATIVE","creative","#be123c","#fff1f2","A distinctive résumé for communications and growth roles."],
+].map(([name,slug,category,family,accent,surface,description]) => ({ name,slug,category,family,accent,surface,description,documentType:"RESUME" })) as TemplateSpec[];
 
-const ATS_CSS = `
-${BASE_CSS}
-.tpl-ats{max-width:780px;margin:0 auto;padding:2rem;font-family:Arial,"Helvetica Neue",Helvetica,sans-serif;}
-.tpl-ats .tpl-header h1{font-size:1.6rem;text-transform:uppercase;letter-spacing:.04em;}
-.tpl-ats .tpl-contact{color:#000;}
-.tpl-ats .tpl-section-title{color:#000;border-color:#000;}
-.tpl-ats .tpl-skills,.tpl-ats .tpl-langs,.tpl-ats .tpl-certs{list-style:none;padding-left:0;display:flex;flex-wrap:wrap;gap:.4rem;}
-.tpl-ats .tpl-skills li,.tpl-ats .tpl-langs li{background:#f1f5f9;padding:.25rem .6rem;border-radius:6px;font-size:.85rem;}
-`;
+const cvSpecs: TemplateSpec[] = [
+  ["Academic Atlas","academic-atlas","CLASSIC","classic","#312e81","#f5f3ff","A scholarly CV for faculty applications, grants, and fellowships."],
+  ["Citation","citation","ATS","ats","#1f2937","#f9fafb","A publication-friendly CV with unambiguous academic hierarchy."],
+  ["Faculty","faculty","CLASSIC","classic","#7f1d1d","#fff7f7","A formal faculty CV with an understated institutional character."],
+  ["Thesis","thesis","CLASSIC","minimal","#3730a3","#f4f4ff","A spacious academic CV designed for research-led careers."],
+  ["Tenure","tenure","CLASSIC","executive","#172554","#eff6ff","A senior academic CV that foregrounds sustained contribution."],
+  ["Research Ledger","research-ledger","ATS","ats","#0f766e","#f0fdfa","A rigorous research CV with clean, machine-readable structure."],
+  ["Scholar","scholar","CLASSIC","classic","#713f12","#fffbeb","A warm serif CV for the humanities and social sciences."],
+  ["Collegiate","collegiate","MODERN","modern","#1d4ed8","#eff6ff","A contemporary academic CV balancing tradition and clarity."],
+  ["Fellowship","fellowship","MODERN","minimal","#6d28d9","#f5f3ff","A concise CV for competitive programs and fellowships."],
+  ["Archive","archive","ATS","minimal","#52525b","#fafafa","A long-form CV optimized for dense professional histories."],
+  ["Clinical Clarity","clinical-clarity","ATS","ats","#0369a1","#f0f9ff","A clinical CV for healthcare, residency, and specialist roles."],
+  ["Medica","medica","MODERN","modern","#0f766e","#ecfdf5","A calm healthcare CV with accessible visual hierarchy."],
+  ["Counsel","counsel","CLASSIC","classic","#1e3a8a","#eff6ff","A distinguished legal CV for counsel and policy professionals."],
+  ["Diplomacy","diplomacy","CLASSIC","executive","#7c2d12","#fff7ed","A composed CV for public service and international affairs."],
+  ["Executive Vitae","executive-vitae","MODERN","executive","#111827","#f3f4f6","A premium leadership CV for board and C-suite opportunities."],
+  ["Globalist","globalist","MODERN","modern","#0e7490","#ecfeff","A multilingual international CV with confident structure."],
+  ["Policy Brief","policy-brief","ATS","ats","#334155","#f8fafc","A policy CV with restrained typography and clear chronology."],
+  ["Boardroom","boardroom","CLASSIC","executive","#422006","#fffbeb","A high-trust executive CV with traditional detailing."],
+  ["Registry","registry","ATS","minimal","#155e75","#ecfeff","A compliance-friendly CV for regulated professions."],
+  ["Credence","credence","CLASSIC","classic","#365314","#f7fee7","A credible professional CV with balanced serif typography."],
+  ["Lab Notes","lab-notes","MODERN","modern","#4f46e5","#eef2ff","A modern STEM CV for laboratories, research, and innovation."],
+  ["Data Vitae","data-vitae","ATS","ats","#075985","#f0f9ff","A technical CV optimized for data and engineering careers."],
+  ["Innovator","innovator","CREATIVE","creative","#7c3aed","#f5f3ff","A modern innovation CV for R&D and emerging technology."],
+  ["Architect CV","architect-cv","CREATIVE","creative","#b45309","#fffbeb","A structured visual CV for architecture and spatial design."],
+  ["Product Ledger","product-ledger","MODERN","executive","#0f766e","#ecfdf5","A product leadership CV centered on outcomes and scope."],
+  ["Studio Vitae","studio-vitae","CREATIVE","creative","#be185d","#fdf2f8","A tasteful visual CV for creative directors and makers."],
+  ["Curator","curator","CREATIVE","minimal","#9f1239","#fff1f2","An editorial CV for arts, culture, and museum professionals."],
+  ["Panorama","panorama","CREATIVE","modern","#c2410c","#fff7ed","A broad, expressive CV for multidisciplinary careers."],
+  ["Syllabus","syllabus","CLASSIC","minimal","#4338ca","#eef2ff","An educator CV with generous spacing and clear milestones."],
+  ["Monograph","monograph","CLASSIC","classic","#3f3f46","#fafafa","A polished long-form CV for authors and senior researchers."],
+].map(([name,slug,category,family,accent,surface,description]) => ({ name,slug,category,family,accent,surface,description,documentType:"CV" })) as TemplateSpec[];
 
-// ──────────────────────────────────────────────────────────────────────────────
-// Build the 20-row dataset
-// ──────────────────────────────────────────────────────────────────────────────
+export const TEMPLATE_CATALOG = [...resumeSpecs, ...cvSpecs];
 
-const MODERN: TemplateSeed[] = [
-  { name: "Aurora", slug: "aurora", category: "MODERN",
-    description: "Two-column modern layout with violet accent and pill-style skills.",
-    isDefault: true, isFeatured: true, displayOrder: 0,
-    htmlLayout: modernLayout("aurora", "#7c3aed"), cssStyles: MODERN_CSS },
-  { name: "Cascade", slug: "cascade", category: "MODERN",
-    description: "Clean single-column with sky-blue accent and tag chips for skills.",
-    displayOrder: 1,
-    htmlLayout: modernLayout("cascade", "#0ea5e9"), cssStyles: MODERN_CSS },
-  { name: "Monolith", slug: "monolith", category: "MODERN",
-    description: "Dark dramatic layout with stark typography and minimal lines.",
-    isFeatured: true, displayOrder: 2,
-    htmlLayout: modernLayout("monolith", "#fafafa"), cssStyles: `${BASE_CSS}\n${MODERN_CSS}\n.tpl-modern{background:#0a0a0a;color:#fafafa;}\n.tpl-modern .tpl-hero{background:#000;}\n.tpl-modern .tpl-section-title{color:#fafafa;border-color:#52525b;}\n` },
-  { name: "Quanta", slug: "quanta", category: "MODERN",
-    description: "Engineering-manager style with dark header band and two columns.",
-    displayOrder: 3,
-    htmlLayout: modernLayout("quanta", "#1e293b"), cssStyles: MODERN_CSS },
-  { name: "Lumen", slug: "lumen", category: "MODERN",
-    description: "Soft pastel cards with warm amber palette and gentle typography.",
-    displayOrder: 4,
-    htmlLayout: modernLayout("lumen", "#f59e0b"), cssStyles: MODERN_CSS },
-];
-
-const CLASSIC: TemplateSeed[] = [
-  { name: "Vanguard", slug: "vanguard", category: "CLASSIC",
-    description: "Serif typography with double rules, suited to legal and finance roles.",
-    isFeatured: true, displayOrder: 5,
-    htmlLayout: classicLayout(), cssStyles: CLASSIC_CSS },
-  { name: "Sentinel", slug: "sentinel", category: "CLASSIC",
-    description: "Centered two-column serif layout with navy accent rules.",
-    displayOrder: 6,
-    htmlLayout: classicLayout(), cssStyles: CLASSIC_CSS + `\n.tpl-classic .tpl-section-title{color:#1e3a8a;border-color:#1e3a8a;}` },
-  { name: "Heritage", slug: "heritage", category: "CLASSIC",
-    description: "Old-world italic CV styling with ornamental rule pairs and warm tones.",
-    displayOrder: 7,
-    htmlLayout: classicLayout(), cssStyles: CLASSIC_CSS + `\n.tpl-classic{background:#fffbeb;color:#451a03;}\n.tpl-classic .tpl-section-title{color:#92400e;}` },
-  { name: "Lattice", slug: "lattice", category: "CLASSIC",
-    description: "Consulting-style: dark banner with gold accents and structured sections.",
-    displayOrder: 8,
-    htmlLayout: classicLayout(), cssStyles: CLASSIC_CSS + `\n.tpl-classic{background:#fafafa;}\n.tpl-classic .tpl-header{background:#0f172a;color:#fafafa;padding:1rem;border-radius:8px;}\n.tpl-classic .tpl-header h1{color:#fbbf24;}\n.tpl-classic .tpl-section-title{color:#0f172a;}` },
-  { name: "Bastion", slug: "bastion", category: "CLASSIC",
-    description: "Dossier-style with double-line page borders and tracking-uppercase headers.",
-    displayOrder: 9,
-    htmlLayout: classicLayout(), cssStyles: CLASSIC_CSS + `\n.tpl-classic{border:8px double #1f2937;padding:2rem;}` },
-];
-
-const CREATIVE: TemplateSeed[] = [
-  { name: "Prism", slug: "prism", category: "CREATIVE",
-    description: "Bold dark gradient with neon accents — for designers and filmmakers.",
-    isFeatured: true, displayOrder: 10,
-    htmlLayout: creativeLayout("prism", "#ec4899"), cssStyles: CREATIVE_CSS },
-  { name: "Mosaic", slug: "mosaic", category: "CREATIVE",
-    description: "Tile-based header with multicolor portfolio sections.",
-    displayOrder: 11,
-    htmlLayout: creativeLayout("mosaic", "#f59e0b"), cssStyles: CREATIVE_CSS },
-  { name: "Spectrum", slug: "spectrum", category: "CREATIVE",
-    description: "Rainbow rule header with colored section accents and skill bars.",
-    displayOrder: 12,
-    htmlLayout: creativeLayout("spectrum", "#a855f7"), cssStyles: CREATIVE_CSS },
-  { name: "Atelier", slug: "atelier", category: "CREATIVE",
-    description: "Editorial / magazine spread with pull-quote and columned text.",
-    displayOrder: 13,
-    htmlLayout: creativeLayout("atelier", "#a21caf"), cssStyles: CREATIVE_CSS },
-  { name: "Folio", slug: "folio", category: "CREATIVE",
-    description: "Asymmetric dark folio with side-rail nav and project-card grid.",
-    displayOrder: 14,
-    htmlLayout: creativeLayout("folio", "#fbbf24"), cssStyles: `${CREATIVE_CSS}\n.tpl-creative{background:#0c0a09;color:#fafafa;}\n.tpl-creative .tpl-section-title{color:#fbbf24;}\n` },
-];
-
-const ATS: TemplateSeed[] = [
-  { name: "Beacon", slug: "beacon", category: "ATS",
-    description: "Plain Arial single column — maximum ATS compatibility.",
-    isFeatured: true, displayOrder: 15,
-    htmlLayout: atsLayout(), cssStyles: ATS_CSS },
-  { name: "Compass", slug: "compass", category: "ATS",
-    description: "ATS-safe with strong all-caps name header and spaced sections.",
-    displayOrder: 16,
-    htmlLayout: atsLayout(), cssStyles: ATS_CSS },
-  { name: "Vector", slug: "vector", category: "ATS",
-    description: "Reverse-header black bar layout for engineering resumes.",
-    displayOrder: 17,
-    htmlLayout: atsLayout(), cssStyles: `${ATS_CSS}\n.tpl-ats{background:#fff;}\n.tpl-ats .tpl-header{background:#000;color:#fff;padding:1rem;}\n.tpl-ats .tpl-header h1{color:#fff;}\n.tpl-ats .tpl-contact{color:#fff;}` },
-  { name: "Plumb", slug: "plumb", category: "ATS",
-    description: "Plain-text-friendly resume for trades and technical roles.",
-    displayOrder: 18,
-    htmlLayout: atsLayout(), cssStyles: ATS_CSS },
-  { name: "Horizon", slug: "horizon", category: "ATS",
-    description: "Logistics/operations-friendly single column, very readable.",
-    displayOrder: 19,
-    htmlLayout: atsLayout(), cssStyles: ATS_CSS },
-];
-
-const ALL: TemplateSeed[] = [...MODERN, ...CLASSIC, ...CREATIVE, ...ATS];
-
-// ──────────────────────────────────────────────────────────────────────────────
-// Helpers
-// ──────────────────────────────────────────────────────────────────────────────
-
-async function ensureAdminUserId(): Promise<string> {
-  const existing = await prisma.user.findFirst({ where: { role: "ADMIN" } });
-  if (existing) return existing.id;
-
-  console.log("No admin user found — creating dev admin (admin@profileai.local / AdminPass123!)");
-  const id = randomUUID();
-  const passwordHash = await bcrypt.hash("AdminPass123!", 10);
-  const created = await prisma.user.create({
-    data: {
-      id,
-      name: "ProfileAI Admin",
-      email: "admin@profileai.local",
-      emailVerified: true,
-      role: "ADMIN",
-      isActive: true,
-    },
-  });
-  // BetterAuth Account row holds the credential; use the same id for FK alignment.
-  await prisma.account.create({
-    data: {
-      id: randomUUID(),
-      accountId: created.id,
-      providerId: "credential",
-      userId: created.id,
-      password: passwordHash,
-    },
-  });
-  return created.id;
-}
-
-async function upsertTemplate(seed: TemplateSeed, createdBy: string) {
-  const existing = await prisma.resumeTemplate.findFirst({ where: { name: seed.name } });
-  const thumbnailUrl = `/templates/${seed.slug}.svg`;
+async function upsertTemplate(spec: TemplateSpec, createdBy: string, displayOrder: number) {
+  const existing = await prisma.resumeTemplate.findFirst({ where: { name: spec.name, ownerId: null } });
   const data = {
-    name: seed.name,
-    description: seed.description,
-    thumbnailUrl,
-    htmlLayout: seed.htmlLayout,
-    cssStyles: seed.cssStyles,
-    category: seed.category,
+    name: spec.name,
+    description: spec.description,
+    thumbnailUrl: "/brand/template-fallback.svg",
+    htmlLayout: layoutFor(spec),
+    cssStyles: cssFor(spec, displayOrder),
+    category: spec.category,
+    documentType: spec.documentType,
+    reviewStatus: "APPROVED" as const,
+    ownerId: null,
+    sourceTemplateId: null,
+    rejectionReason: null,
+    submittedAt: null,
+    reviewedAt: null,
+    reviewedBy: null,
+    isCommunity: false,
     isActive: true,
-    isDefault: seed.isDefault ?? false,
-    isFeatured: !!seed.isFeatured || FEATURED_SLUGS.has(seed.slug),
-    displayOrder: seed.displayOrder,
+    isDefault: spec.slug === "aurora",
+    isFeatured: FEATURED.has(spec.slug),
+    displayOrder,
     createdBy,
   };
-
-  if (existing) {
-    return prisma.resumeTemplate.update({ where: { id: existing.id }, data });
-  }
-  return prisma.resumeTemplate.create({ data });
+  return existing
+    ? prisma.resumeTemplate.update({ where: { id: existing.id }, data })
+    : prisma.resumeTemplate.create({ data });
 }
 
-// ──────────────────────────────────────────────────────────────────────────────
-// Main
-// ──────────────────────────────────────────────────────────────────────────────
-
-async function main() {
-  const createdBy = await ensureAdminUserId();
-  console.log(`Upserting ${ALL.length} templates (createdBy=${createdBy})…`);
-
-  // Reset isDefault across the board before honoring the (at most one) seed default.
-  await prisma.resumeTemplate.updateMany({ data: { isDefault: false } });
-
-  for (const t of ALL) {
-    const row = await upsertTemplate(t, createdBy);
-    console.log(`  ✓ ${row.category.padEnd(8)} ${row.name.padEnd(10)} → ${row.thumbnailUrl}`);
+export async function seedTemplates(createdBy = "system") {
+  console.log(`Upserting ${TEMPLATE_CATALOG.length} editable résumé and CV templates.`);
+  await prisma.resumeTemplate.updateMany({ where: { ownerId: null }, data: { isDefault: false } });
+  for (const [index, template] of TEMPLATE_CATALOG.entries()) {
+    await upsertTemplate(template, createdBy, index);
   }
-
-  const total = await prisma.resumeTemplate.count();
-  console.log(`Done. ResumeTemplate rows in DB: ${total}`);
+  const [resumes, cvs] = await Promise.all([
+    prisma.resumeTemplate.count({ where: { ownerId: null, documentType: "RESUME" } }),
+    prisma.resumeTemplate.count({ where: { ownerId: null, documentType: "CV" } }),
+  ]);
+  console.log(`Template catalog ready: ${resumes} résumés and ${cvs} CVs.`);
 }
 
-main()
-  .catch((err) => {
-    console.error("seed:templates failed:", err);
-    process.exitCode = 1;
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+const isCli = Boolean(process.argv[1]) && import.meta.url === pathToFileURL(process.argv[1] as string).href;
+if (isCli) {
+  seedTemplates(process.env.SEED_CREATED_BY ?? "system")
+    .catch((error) => {
+      console.error("seed:templates failed:", error);
+      process.exitCode = 1;
+    })
+    .finally(() => prisma.$disconnect());
+}

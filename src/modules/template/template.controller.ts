@@ -15,11 +15,40 @@ export const listTemplates = catchAsync(async (req: Request, res: Response) => {
     ? featuredRaw === 'true' || featuredRaw === '1'
     : Boolean(featuredRaw);
 
+  const documentTypeRaw = req.query.documentType;
+  const documentType = typeof documentTypeRaw === 'string' ? documentTypeRaw : undefined;
+
   const data = await templateService.listTemplates({
     ...(category !== undefined ? { category } : {}),
+    ...(documentType !== undefined ? { documentType } : {}),
     featured,
   });
   sendResponse(res, { status: status.OK, success: true, message: 'Templates retrieved.', data });
+});
+
+export const listMyTemplates = catchAsync(async (req: Request, res: Response) => {
+  const data = await templateService.listUserTemplates(req.user.userId);
+  sendResponse(res, { status: status.OK, success: true, message: 'Your template gallery was retrieved.', data });
+});
+
+export const forkMyTemplate = catchAsync(async (req: Request, res: Response) => {
+  const data = await templateService.forkUserTemplate(req.user.userId, req.body);
+  sendResponse(res, { status: status.CREATED, success: true, message: 'Editable template saved to your gallery.', data });
+});
+
+export const updateMyTemplate = catchAsync(async (req: Request, res: Response) => {
+  const data = await templateService.updateUserTemplate(req.user.userId, String(req.params.id), req.body);
+  sendResponse(res, { status: status.OK, success: true, message: 'Template changes saved.', data });
+});
+
+export const submitMyTemplate = catchAsync(async (req: Request, res: Response) => {
+  const data = await templateService.submitUserTemplate(req.user.userId, String(req.params.id));
+  sendResponse(res, { status: status.OK, success: true, message: 'Template submitted for admin review.', data });
+});
+
+export const deleteMyTemplate = catchAsync(async (req: Request, res: Response) => {
+  const data = await templateService.deleteUserTemplate(req.user.userId, String(req.params.id));
+  sendResponse(res, { status: status.OK, success: true, message: data.status === 'archived' ? 'Template archived because a resume uses it.' : 'Template deleted.', data });
 });
 
 export const getTemplate = catchAsync(async (req: Request, res: Response) => {
