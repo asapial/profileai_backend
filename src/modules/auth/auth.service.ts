@@ -12,6 +12,7 @@ import { tokenUtils } from '../../utils/token';
 import AppError from '../../errorHelpers/AppError';
 import { envVars } from '../../config/env';
 import {
+  CompleteDeviceRecoveryInput,
   LoginInput,
   RegisterInput,
   ResetPasswordInput,
@@ -26,7 +27,9 @@ import {
 
 // ─── Constants ───────────────────────────────────────
 const OTP_TTL_MINUTES = 10;
-const MAX_DEVICES = 3;
+const MAX_DEVICES = 10;
+const DEVICE_RECOVERY_TTL_SECONDS = 5 * 60;
+const DEVICE_RECOVERY_KEY = (jti: string) => `auth:device-recovery:${jti}`;
 const OTP_RATE_LIMIT_KEY = (email: string, type: string) =>
   `otp:rate:${type}:${email}`;
 const OTP_RATE_LIMIT_MAX = 3;
@@ -37,7 +40,7 @@ const OTP_RATE_LIMIT_WINDOW = 60 * 60; // 1 hour in seconds
 const LOGIN_RATE_LIMIT_KEY = (email: string, ip: string) =>
   `login:rate:${email}:${ip}`;
 const LOGIN_RATE_LIMIT_MAX = 10;
-const LOGIN_RATE_LIMIT_WINDOW = 15 * 60; // 15 minutes in seconds
+const LOGIN_RATE_LIMIT_WINDOW = 12 * 60 * 60; // 12 hours in seconds
 
 // ─── OTP Helpers ─────────────────────────────────────
 
@@ -214,7 +217,7 @@ const registerDevice = async (
   if (deviceCount >= MAX_DEVICES) {
     throw new AppError(
       status.FORBIDDEN,
-      'Device limit reached. Please revoke a device from your Profile → Devices tab.',
+      'Device limit reached.',
       'DEVICE_LIMIT_REACHED'
     );
   }
@@ -235,6 +238,37 @@ const registerDevice = async (
 
   return device.id;
 };
+
+const createDeviceRecoveryGrant = async (
+  userId: string,
+  twoFactorVerified: boolean
+) => {
+  const jti = crypto.randomUUID();
+  await redis.set(DEVICE_RECOVERY_KEY(jti), '1', 'EX', DEVICE_RECOVERY_TTL_SECONDS);
+
+  return {
+    deviceLimitReached: true as const,
+    recoveryToken: tokenUtils.createDeviceRecoveryToken({
+      userId,
+      jti,
+      twoFactorVerified,
+    }),
+  };
+};
+
+const isDeviceLimitError = (error: unknown): boolean =>
+  error instanceof AppError && error.code === 'DEVICE_LIMIT_REACHED';
+
+const createLoginTokens = (user: { id: string; role: string; email: string }) => ({
+  accessToken: tokenUtils.createAccessToken({
+    userId: user.id,
+    role: user.role,
+    email: user.email,
+  }),
+  refreshToken: tokenUtils.createRefreshToken({ userId: user.id }),
+});
+
+const SESSION_DURATION_MS = 12 * 60 * 60 * 1000;
 
 // ─── Auth Services ───────────────────────────────────
 
@@ -459,18 +493,21 @@ export const loginUser = async (data: LoginInput, req: Request) => {
   // Register device (ipAddress was extracted above for the rate limit).
   const userAgent = req.headers['user-agent'] || 'Unknown';
 
-  const deviceId = await registerDevice(user.id, userAgent, ipAddress);
+  let deviceId: string;
+  try {
+    deviceId = await registerDevice(user.id, userAgent, ipAddress);
+  } catch (error) {
+    if (isDeviceLimitError(error)) {
+      return createDeviceRecoveryGrant(user.id, false);
+    }
+    throw error;
+  }
 
   // Issue tokens
-  const accessToken = tokenUtils.createAccessToken({
-    userId: user.id,
-    role: user.role,
-    email: user.email,
-  });
-  const refreshToken = tokenUtils.createRefreshToken({ userId: user.id });
+  const { accessToken, refreshToken } = createLoginTokens(user);
 
   // Keep the database session valid for the refresh-token lifetime.
-  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  const expiresAt = new Date(Date.now() + SESSION_DURATION_MS);
 
   await prisma.session.create({
     data: {
@@ -506,16 +543,21 @@ export const verifyTwoFactor = async (data: TwoFactorVerifyInput, req: Request) 
 
   const userAgent = req.headers['user-agent'] || 'Unknown';
   const ipAddress = (req.headers['x-forwarded-for'] as string)?.split(',')[0] || req.ip || '';
-  const deviceId = await registerDevice(user.id, userAgent, ipAddress);
+  let deviceId: string;
+  try {
+    deviceId = await registerDevice(user.id, userAgent, ipAddress);
+  } catch (error) {
+    if (isDeviceLimitError(error)) {
+      // The OTP has already been consumed. This scoped grant preserves that
+      // proof so the user does not need to request and enter another code.
+      return createDeviceRecoveryGrant(user.id, true);
+    }
+    throw error;
+  }
 
-  const accessToken = tokenUtils.createAccessToken({
-    userId: user.id,
-    role: user.role,
-    email: user.email,
-  });
-  const refreshToken = tokenUtils.createRefreshToken({ userId: user.id });
+  const { accessToken, refreshToken } = createLoginTokens(user);
 
-  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  const expiresAt = new Date(Date.now() + SESSION_DURATION_MS);
 
   await prisma.session.create({
     data: {
@@ -532,6 +574,108 @@ export const verifyTwoFactor = async (data: TwoFactorVerifyInput, req: Request) 
   return {
     accessToken,
     refreshToken,
+    user: { id: user.id, name: user.name, email: user.email, role: user.role },
+  };
+};
+
+export const completeDeviceRecovery = async (
+  data: CompleteDeviceRecoveryInput,
+  req: Request
+) => {
+  const claims = tokenUtils.verifyDeviceRecoveryToken(data.recoveryToken);
+  if (!claims) {
+    throw new AppError(
+      status.UNAUTHORIZED,
+      'This device recovery request is invalid or expired. Please log in again.',
+      'DEVICE_RECOVERY_INVALID'
+    );
+  }
+
+  // GETDEL makes the five-minute grant single-use, including if two requests race.
+  const grant = await redis.getdel(DEVICE_RECOVERY_KEY(claims.jti));
+  if (grant !== '1') {
+    throw new AppError(
+      status.UNAUTHORIZED,
+      'This device recovery request has already been used or expired. Please log in again.',
+      'DEVICE_RECOVERY_INVALID'
+    );
+  }
+
+  const user = await prisma.user.findUnique({ where: { id: claims.userId } });
+  if (!user || !user.isActive) {
+    throw new AppError(status.UNAUTHORIZED, 'This account is no longer available.');
+  }
+
+  // Do not let a password-only grant bypass 2FA if the setting changed while
+  // the recovery prompt was open.
+  if (user.twoFactorEnabled && !claims.twoFactorVerified) {
+    throw new AppError(
+      status.UNAUTHORIZED,
+      'Two-factor verification is required. Please log in again.',
+      'TWO_FACTOR_REQUIRED'
+    );
+  }
+
+  const userAgent = req.headers['user-agent'] || 'Unknown';
+  const ipAddress =
+    (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.ip || 'unknown';
+  const deviceInfo = parseDevice(userAgent, ipAddress);
+  const { accessToken, refreshToken } = createLoginTokens(user);
+  const expiresAt = new Date(Date.now() + SESSION_DURATION_MS);
+
+  const revoked = await prisma.$transaction(async (tx) => {
+    const revokedSessions = await tx.session.deleteMany({ where: { userId: user.id } });
+    const revokedDevices = await tx.loginDevice.deleteMany({ where: { userId: user.id } });
+    const device = await tx.loginDevice.create({
+      data: {
+        userId: user.id,
+        deviceName: deviceInfo.deviceName,
+        deviceType: deviceInfo.deviceType,
+        browser: deviceInfo.browser,
+        os: deviceInfo.os,
+        ipAddress,
+        userAgent,
+        fingerprint: deviceInfo.fingerprint,
+        isTrusted: false,
+      },
+    });
+
+    await tx.session.create({
+      data: {
+        token: accessToken,
+        userId: user.id,
+        deviceId: device.id,
+        expiresAt,
+        ipAddress,
+        userAgent,
+        ...(claims.twoFactorVerified ? { twoFactorVerifiedAt: new Date() } : {}),
+      },
+    });
+
+    await tx.auditLog.create({
+      data: {
+        actorId: user.id,
+        actorEmail: user.email,
+        action: 'ACCOUNT_DEVICE_RECOVERY_COMPLETED',
+        entityType: 'User',
+        entityId: user.id,
+        ipAddress,
+        userAgent,
+        metadata: {
+          revokedSessions: revokedSessions.count,
+          revokedDevices: revokedDevices.count,
+          twoFactorVerified: claims.twoFactorVerified,
+        },
+      },
+    });
+
+    return { sessions: revokedSessions.count, devices: revokedDevices.count };
+  });
+
+  return {
+    accessToken,
+    refreshToken,
+    revoked,
     user: { id: user.id, name: user.name, email: user.email, role: user.role },
   };
 };
@@ -571,8 +715,12 @@ export const resetPassword = async (data: ResetPasswordInput) => {
     data: { password: newPasswordHash },
   });
 
-  // Invalidate all sessions
-  await prisma.session.deleteMany({ where: { userId: user.id } });
+  // A password reset is full account recovery: revoke sessions and clear
+  // saved device slots so stale devices cannot immediately lock the user out.
+  await prisma.$transaction([
+    prisma.session.deleteMany({ where: { userId: user.id } }),
+    prisma.loginDevice.deleteMany({ where: { userId: user.id } }),
+  ]);
 
   // Security notification — fire-and-forget so the response stays snappy.
   // If SMTP is down the reset still succeeds; the user can already log in.

@@ -29,7 +29,16 @@ export const verifyEmail = catchAsync(async (req: Request, res: Response) => {
 export const login = catchAsync(async (req: Request, res: Response) => {
   const result = await authService.loginUser(req.body, req);
 
-  if (result.twoFactorRequired) {
+  if ('recoveryToken' in result) {
+    return sendResponse(res, {
+      status: status.OK,
+      success: true,
+      message: 'Device limit reached. Confirm to sign out existing devices and continue.',
+      data: result,
+    });
+  }
+
+  if ('email' in result) {
     return sendResponse(res, {
       status: status.OK,
       success: true,
@@ -53,6 +62,15 @@ export const login = catchAsync(async (req: Request, res: Response) => {
 export const verifyTwoFactor = catchAsync(async (req: Request, res: Response) => {
   const result = await authService.verifyTwoFactor(req.body, req);
 
+  if ('recoveryToken' in result) {
+    return sendResponse(res, {
+      status: status.OK,
+      success: true,
+      message: 'Device limit reached. Confirm to sign out existing devices and continue.',
+      data: result,
+    });
+  }
+
   tokenUtils.setAccessTokenCookie(res, result.accessToken);
   tokenUtils.setRefreshTokenCookie(res, result.refreshToken);
 
@@ -61,6 +79,24 @@ export const verifyTwoFactor = catchAsync(async (req: Request, res: Response) =>
     success: true,
     message: '2FA verification successful.',
     data: { user: result.user, accessToken: result.accessToken },
+  });
+});
+
+export const completeDeviceRecovery = catchAsync(async (req: Request, res: Response) => {
+  const result = await authService.completeDeviceRecovery(req.body, req);
+
+  tokenUtils.setAccessTokenCookie(res, result.accessToken);
+  tokenUtils.setRefreshTokenCookie(res, result.refreshToken);
+
+  sendResponse(res, {
+    status: status.OK,
+    success: true,
+    message: 'Existing devices were signed out. Login successful.',
+    data: {
+      user: result.user,
+      accessToken: result.accessToken,
+      revoked: result.revoked,
+    },
   });
 });
 

@@ -56,6 +56,14 @@ export const twoFactorVerifySchema = z.object({
   }),
 });
 
+// Returned only after password (and, when enabled, 2FA) verification.
+// This grant can replace devices but cannot authorize ordinary API requests.
+export const completeDeviceRecoverySchema = z.object({
+  body: z.object({
+    recoveryToken: z.string().min(1, 'Recovery authorization is required'),
+  }),
+});
+
 // ─── Forgot Password ─────────────────────────────────
 export const forgotPasswordSchema = z.object({
   body: z.object({
@@ -107,6 +115,7 @@ export type RegisterInput = z.infer<typeof registerSchema>['body'];
 export type VerifyEmailInput = z.infer<typeof verifyEmailSchema>['body'];
 export type LoginInput = z.infer<typeof loginSchema>['body'];
 export type TwoFactorVerifyInput = z.infer<typeof twoFactorVerifySchema>['body'];
+export type CompleteDeviceRecoveryInput = z.infer<typeof completeDeviceRecoverySchema>['body'];
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>['body'];
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>['body'];
 export type ResendOtpInput = z.infer<typeof resendOtpSchema>['body'];

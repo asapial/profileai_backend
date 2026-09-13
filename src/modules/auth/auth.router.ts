@@ -7,6 +7,7 @@ import {
   verifyEmailSchema,
   loginSchema,
   twoFactorVerifySchema,
+  completeDeviceRecoverySchema,
   forgotPasswordSchema,
   resetPasswordSchema,
   resendOtpSchema,
@@ -21,6 +22,11 @@ router.post('/register', validateRequest(registerSchema), authController.registe
 router.post('/verify-email', validateRequest(verifyEmailSchema), authController.verifyEmail);
 router.post('/login', validateRequest(loginSchema), authController.login);
 router.post('/2fa/verify', validateRequest(twoFactorVerifySchema), authController.verifyTwoFactor);
+router.post(
+  '/device-recovery/complete',
+  validateRequest(completeDeviceRecoverySchema),
+  authController.completeDeviceRecovery
+);
 router.post('/forgot-password', validateRequest(forgotPasswordSchema), authController.forgotPassword);
 router.post('/reset-password', validateRequest(resetPasswordSchema), authController.resetPassword);
 router.post('/otp/resend', validateRequest(resendOtpSchema), authController.resendOtp);

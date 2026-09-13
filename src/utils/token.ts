@@ -4,7 +4,15 @@ import { envVars } from "../config/env";
 import { cookieUtils } from "./cookie";
 import { Response } from "express";
 
+type DeviceRecoveryClaims = {
+    userId: string;
+    purpose: "device-recovery";
+    jti: string;
+    twoFactorVerified: boolean;
+};
+
 const isProd = envVars.NODE_ENV === "production";
+const SESSION_MAX_AGE_MS = 12 * 60 * 60 * 1000;
 
 const createAccessToken = (payload: JwtPayload) => {
 
@@ -32,13 +40,43 @@ const createRefreshToken = (payload: JwtPayload) => {
     return refreshToken;
 }
 
+const createDeviceRecoveryToken = (payload: Omit<DeviceRecoveryClaims, "purpose">) => {
+    return jwtUtils.createToken(
+        { ...payload, purpose: "device-recovery" },
+        envVars.REFRESH_TOKEN_SECRET,
+        { expiresIn: "5m" } as SignOptions
+    );
+};
+
+const verifyDeviceRecoveryToken = (token: string): DeviceRecoveryClaims | null => {
+    const verified = jwtUtils.vefifyToken(token, envVars.REFRESH_TOKEN_SECRET);
+    if (!verified.success || !verified.data || typeof verified.data !== "object") return null;
+
+    const claims = verified.data as JwtPayload;
+    if (
+        claims.purpose !== "device-recovery" ||
+        typeof claims.userId !== "string" ||
+        typeof claims.jti !== "string" ||
+        typeof claims.twoFactorVerified !== "boolean"
+    ) {
+        return null;
+    }
+
+    return {
+        userId: claims.userId,
+        purpose: "device-recovery",
+        jti: claims.jti,
+        twoFactorVerified: claims.twoFactorVerified,
+    };
+};
+
 const setAccessTokenCookie = (res: Response, token: string) => {
     cookieUtils.setCookie(res, 'accessToken', token, {
         httpOnly: true,
         secure: isProd,
         sameSite: isProd ? "none" : "lax",
         path: '/',
-        maxAge: 60 * 60 * 24 * 1000, // 1 day
+        maxAge: SESSION_MAX_AGE_MS,
     });
 }
 
@@ -48,7 +86,7 @@ const setRefreshTokenCookie = (res: Response, token: string) => {
         secure: isProd,
         sameSite: isProd ? "none" : "lax",
         path: '/',
-        maxAge: 60 * 60 * 24 * 7 * 1000, // 7 days
+        maxAge: SESSION_MAX_AGE_MS,
     });
 }
 
@@ -58,13 +96,15 @@ const setBetterAuthSessionCookie = (res: Response, token: string) => {
         secure: isProd,
         sameSite: isProd ? "none" : "lax",
         path: '/',
-        maxAge: 60 * 60 * 24 * 1000, // 1 day
+        maxAge: SESSION_MAX_AGE_MS,
     });
 }
 
 export const tokenUtils={
     createAccessToken,
     createRefreshToken,
+    createDeviceRecoveryToken,
+    verifyDeviceRecoveryToken,
     setAccessTokenCookie,
     setRefreshTokenCookie,
     setBetterAuthSessionCookie
