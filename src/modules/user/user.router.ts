@@ -13,6 +13,12 @@ router.use(checkAuth());
 
 router.get('/profile', userController.getProfile);
 router.put('/profile', validateRequest(updateProfileSchema), userController.updateProfile);
+router.get('/experiences', userController.getExperiences);
+router.put('/experiences', userController.updateExperiences);
+router.get('/educations', userController.getEducations);
+router.put('/educations', userController.updateEducations);
+router.get('/skills', userController.getSkills);
+router.put('/skills', userController.updateSkills);
 router.post('/avatar', upload.single('avatar'), userController.uploadAvatar);
 router.put('/change-password', validateRequest(changePasswordSchema), userController.changePassword);
 router.get('/devices', userController.getDevices);

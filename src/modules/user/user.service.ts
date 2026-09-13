@@ -1,3 +1,5 @@
+import { imageExtension, scanUpload } from '../../utils/uploadSafety';
+import { disconnectGoogle } from '../career/career.integrations';
 import bcrypt from 'bcryptjs';
 import status from 'http-status';
 import { Prisma } from '../../../prisma/generated/prisma/client';
@@ -5,6 +7,7 @@ import { prisma } from '../../lib/prisma';
 import { uploadBuffer, getPresignedUrl, deleteObject } from '../../lib/minio';
 import AppError from '../../errorHelpers/AppError';
 import { ChangePasswordInput, UpdateProfileInput } from './user.schema';
+import crypto from 'node:crypto';
 
 // ─── Get Profile ──────────────────────────────────────
 
@@ -86,6 +89,88 @@ export const updateProfile = async (userId: string, data: UpdateProfileInput) =>
   return profile;
 };
 
+type ExperienceItem = {
+  id?: string; company?: string; role?: string; startDate?: string;
+  endDate?: string | null; current?: boolean; description?: string;
+};
+
+type EducationItem = {
+  id?: string; school?: string; degree?: string; field?: string;
+  startYear?: number; endYear?: number | null;
+};
+
+const getRequiredProfile = async (userId: string) => {
+  const profile = await prisma.userProfile.findUnique({ where: { userId } });
+  if (!profile) throw new AppError(status.NOT_FOUND, 'User profile not found.');
+  return profile;
+};
+
+export const getExperiences = async (userId: string) => {
+  const profile = await getRequiredProfile(userId);
+  const items = Array.isArray(profile.experience) ? profile.experience : [];
+  return (items as Record<string, unknown>[]).map((item) => ({
+    id: String(item.id ?? crypto.randomUUID()),
+    company: String(item.company ?? ''),
+    role: String(item.role ?? ''),
+    startDate: String(item.startDate ?? item.from ?? ''),
+    endDate: item.endDate ?? item.to ?? null,
+    current: Boolean(item.current),
+    description: String(item.description ?? item.desc ?? ''),
+  }));
+};
+
+export const updateExperiences = async (userId: string, items: unknown) => {
+  if (!Array.isArray(items)) throw new AppError(status.BAD_REQUEST, 'Items must be an array.');
+  const normalized = (items as ExperienceItem[]).map((item) => ({
+    id: item.id || crypto.randomUUID(), company: item.company?.trim() ?? '',
+    role: item.role?.trim() ?? '', from: item.startDate ?? '',
+    ...(item.endDate ? { to: item.endDate } : {}), current: Boolean(item.current),
+    desc: item.description?.trim() ?? '',
+  }));
+  await prisma.userProfile.update({ where: { userId }, data: { experience: normalized } });
+  return getExperiences(userId);
+};
+
+export const getEducations = async (userId: string) => {
+  const profile = await getRequiredProfile(userId);
+  const items = Array.isArray(profile.education) ? profile.education : [];
+  return (items as Record<string, unknown>[]).map((item) => ({
+    id: String(item.id ?? crypto.randomUUID()), school: String(item.school ?? ''),
+    degree: String(item.degree ?? ''), field: String(item.field ?? ''),
+    startYear: Number(item.startYear ?? item.from ?? new Date().getFullYear()),
+    endYear: item.endYear == null && item.to == null ? null : Number(item.endYear ?? item.to),
+  }));
+};
+
+export const updateEducations = async (userId: string, items: unknown) => {
+  if (!Array.isArray(items)) throw new AppError(status.BAD_REQUEST, 'Items must be an array.');
+  const normalized = (items as EducationItem[]).map((item) => ({
+    id: item.id || crypto.randomUUID(), school: item.school?.trim() ?? '',
+    degree: item.degree?.trim() ?? '', field: item.field?.trim() ?? '',
+    from: String(item.startYear ?? ''),
+    ...(item.endYear == null ? {} : { to: String(item.endYear) }),
+  }));
+  await prisma.userProfile.update({ where: { userId }, data: { education: normalized } });
+  return getEducations(userId);
+};
+
+export const getSkills = async (userId: string) => {
+  const profile = await getRequiredProfile(userId);
+  return profile.skills.map((name) => ({
+    id: crypto.createHash('sha1').update(name.toLowerCase()).digest('hex'),
+    name, level: 'INTERMEDIATE' as const, category: null,
+  }));
+};
+
+export const updateSkills = async (userId: string, items: unknown) => {
+  if (!Array.isArray(items)) throw new AppError(status.BAD_REQUEST, 'Items must be an array.');
+  const skills = [...new Set(items.map((item) =>
+    typeof item === 'string' ? item.trim() : String((item as { name?: unknown })?.name ?? '').trim()
+  ).filter(Boolean))];
+  await prisma.userProfile.update({ where: { userId }, data: { skills } });
+  return getSkills(userId);
+};
+
 // ─── Avatar Upload ────────────────────────────────────
 
 export const uploadAvatar = async (
@@ -94,7 +179,8 @@ export const uploadAvatar = async (
   mimetype: string,
   originalname: string
 ): Promise<string> => {
-  const ext = originalname.split('.').pop() || 'jpg';
+  const ext = imageExtension(buffer, mimetype);
+  await scanUpload(buffer);
   const objectName = `avatars/${userId}/avatar.${ext}`;
 
   const readable: Buffer = buffer;
@@ -247,6 +333,8 @@ export const deleteAccount = async (userId: string, password: string) => {
   const isValid = await bcrypt.compare(password, account.password);
   if (!isValid) throw new AppError(status.UNAUTHORIZED, 'Password is incorrect.');
 
+  const connections = await prisma.careerConnection.findMany({ where: { userId } });
+  if (connections.length) await disconnectGoogle(userId, connections[0]!.provider === 'google-calendar' ? 'calendar' : 'mail');
   // Cascade: notifications, applications, projects, references, export jobs, sessions, devices, otp codes.
   await prisma.$transaction([
     prisma.exportJob.deleteMany({ where: { userId } }),

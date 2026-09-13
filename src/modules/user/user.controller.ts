@@ -14,6 +14,36 @@ export const updateProfile = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, { status: status.OK, success: true, message: 'Profile updated.', data });
 });
 
+export const getExperiences = catchAsync(async (req: Request, res: Response) => {
+  const data = await userService.getExperiences(req.user.userId);
+  sendResponse(res, { status: status.OK, success: true, message: 'Experience retrieved.', data });
+});
+
+export const updateExperiences = catchAsync(async (req: Request, res: Response) => {
+  const data = await userService.updateExperiences(req.user.userId, req.body?.items);
+  sendResponse(res, { status: status.OK, success: true, message: 'Experience updated.', data });
+});
+
+export const getEducations = catchAsync(async (req: Request, res: Response) => {
+  const data = await userService.getEducations(req.user.userId);
+  sendResponse(res, { status: status.OK, success: true, message: 'Education retrieved.', data });
+});
+
+export const updateEducations = catchAsync(async (req: Request, res: Response) => {
+  const data = await userService.updateEducations(req.user.userId, req.body?.items);
+  sendResponse(res, { status: status.OK, success: true, message: 'Education updated.', data });
+});
+
+export const getSkills = catchAsync(async (req: Request, res: Response) => {
+  const data = await userService.getSkills(req.user.userId);
+  sendResponse(res, { status: status.OK, success: true, message: 'Skills retrieved.', data });
+});
+
+export const updateSkills = catchAsync(async (req: Request, res: Response) => {
+  const data = await userService.updateSkills(req.user.userId, req.body?.items);
+  sendResponse(res, { status: status.OK, success: true, message: 'Skills updated.', data });
+});
+
 export const uploadAvatar = catchAsync(async (req: Request, res: Response) => {
   if (!req.file) {
     return sendResponse(res, {

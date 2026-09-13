@@ -12,6 +12,7 @@ export const updateProfileSchema = z.object({
     website: z.string().url('Invalid URL').optional().or(z.literal('')),
     linkedIn: z.string().url('Invalid LinkedIn URL').optional().or(z.literal('')),
     github: z.string().url('Invalid GitHub URL').optional().or(z.literal('')),
+    avatarUrl: z.string().url('Invalid avatar URL').optional().or(z.literal('')),
     skills: z.array(z.string()).optional(),
     languages: z.array(z.string()).optional(),
     education: z.array(z.object({
