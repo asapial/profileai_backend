@@ -33,8 +33,7 @@ app.use(
       if (!origin) return callback(null, true);
 
       const isAllowed =
-        allowedOrigins.includes(origin) ||
-        /^https:\/\/.*\.vercel\.app$/.test(origin);
+        allowedOrigins.includes(origin);
 
       if (isAllowed) {
         callback(null, true);

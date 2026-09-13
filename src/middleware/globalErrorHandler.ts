@@ -32,9 +32,12 @@ export const globalErrorHandler = async (err: any, req: Request, res: Response, 
 
     } else if (err instanceof Error) {
         statusCode = status.INTERNAL_SERVER_ERROR;
-        message = err.message;
+        // Unexpected infrastructure and ORM errors are logged below, but their
+        // implementation details must never become user-facing API copy.
+        message = 'The service is temporarily unavailable. Please try again.';
+        code = 'INTERNAL_SERVER_ERROR';
         stack = err.stack;
-        errorSources = [{ path: '', message: err.message }];
+        errorSources = [{ path: '', message }];
     }
 
     const isServerError = statusCode >= status.INTERNAL_SERVER_ERROR;

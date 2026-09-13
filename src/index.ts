@@ -18,8 +18,12 @@ import { referralRouter } from './modules/referral/referral.router';
 import { billingRouter } from './modules/billing/billing.router';
 import { contentRouter } from './modules/content/content.router';
 import { aiChatRouter } from './modules/aiChat/aiChat.router';
+import { jobRouter } from './modules/job/job.router';
+
+import { careerRouter } from './modules/career/career.router';
 
 const router = Router();
+router.use('/career', careerRouter);
 
 // ─── Module Routers ────────────────────────────────────
 router.use('/auth', authRouter);
@@ -27,6 +31,7 @@ router.use('/user', userRouter);
 router.use('/user/dashboard', dashboardRouter);
 router.use('/notifications', notificationRouter);
 router.use('/applications', applicationRouter);
+router.use('/jobs', jobRouter);
 router.use('/user/projects', projectRouter);
 router.use('/user/references', referenceRouter);
 router.use('/templates', templateRouter);

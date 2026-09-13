@@ -1,6 +1,9 @@
 import status from 'http-status';
 import { randomBytes } from 'node:crypto';
+import { existsSync } from 'node:fs';
 import Handlebars from 'handlebars';
+import HTMLtoDOCX from 'html-to-docx';
+import puppeteer from 'puppeteer-core';
 import { Prisma } from '../../../prisma/generated/prisma/client';
 import { prisma } from '../../lib/prisma';
 import { getAiResponse } from '../../utils/aiResponse';
@@ -16,7 +19,11 @@ import {
   UpdateResumeTemplateInput,
   ShareResumeInput,
 } from './resume.schema';
-import { buildResumeDocx, buildResumePdf } from './resumeDocument';
+import {
+  buildResumeDocx,
+  buildResumePdf,
+  buildTemplateSnapshotDocx,
+} from './resumeDocument';
 
 type JsonObject = Record<string, unknown>;
 
@@ -173,6 +180,113 @@ const toTemplateContext = (value: unknown): JsonObject => {
   };
 };
 
+const renderTemplateHtml = (
+  contentData: unknown,
+  template: { htmlLayout: string; cssStyles: string },
+  pageSize: 'A4' | 'Letter' = 'A4',
+): string => {
+  const compiled = Handlebars.compile(template.htmlLayout);
+  const content = compiled(toTemplateContext(contentData));
+  const dimensions = pageSize === 'Letter' ? '8.5in 11in' : '210mm 297mm';
+  return `<!doctype html>
+<html><head><meta charset="utf-8"><style>
+@page{size:${dimensions};margin:0}
+html,body{margin:0;padding:0;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+*,*::before,*::after{box-sizing:border-box}
+.profileai-template-stage{width:100%;min-height:100vh;background:#fff;overflow:hidden}
+${template.cssStyles}
+</style></head><body><main class="profileai-template-stage">${content}</main></body></html>`;
+};
+
+const browserExecutable = (): string | null => {
+  const configured = process.env.CHROME_EXECUTABLE_PATH?.trim();
+  const candidates = [
+    configured,
+    'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+    'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
+    '/usr/bin/google-chrome',
+    '/usr/bin/chromium',
+    '/usr/bin/chromium-browser',
+  ].filter((path): path is string => Boolean(path));
+  return candidates.find((path) => existsSync(path)) ?? null;
+};
+
+const renderPdfWithLocalBrowser = async (
+  html: string,
+  pageSize: 'A4' | 'Letter',
+): Promise<Buffer> => {
+  const executablePath = browserExecutable();
+  if (!executablePath) throw new Error('No local Chromium browser was found.');
+  const browser = await puppeteer.launch({
+    executablePath,
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
+  try {
+    const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: 'load', timeout: 20_000 });
+    await page.evaluate(() => document.fonts.ready);
+    const bytes = await page.pdf({
+      format: pageSize,
+      printBackground: true,
+      preferCSSPageSize: true,
+      margin: { top: 0, right: 0, bottom: 0, left: 0 },
+    });
+    return Buffer.from(bytes);
+  } finally {
+    await browser.close();
+  }
+};
+
+const renderTemplatePngPages = async (
+  html: string,
+  pageSize: 'A4' | 'Letter' = 'A4',
+): Promise<Buffer[]> => {
+  const executablePath = browserExecutable();
+  if (!executablePath) throw new Error('No local Chromium browser was found.');
+  const dimensions = pageSize === 'Letter'
+    ? { width: 816, height: 1056 }
+    : { width: 794, height: 1123 };
+  const browser = await puppeteer.launch({
+    executablePath,
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
+  try {
+    const page = await browser.newPage();
+    await page.setViewport({ ...dimensions, deviceScaleFactor: 2 });
+    await page.setContent(html, { waitUntil: 'load', timeout: 20_000 });
+    await page.evaluate(() => document.fonts.ready);
+    const contentHeight = await page.evaluate(() => Math.max(
+      document.body.scrollHeight,
+      document.documentElement.scrollHeight,
+    ));
+    const pageCount = Math.max(1, Math.ceil(contentHeight / dimensions.height));
+    await page.evaluate(
+      (height) => { document.body.style.minHeight = `${height}px`; },
+      pageCount * dimensions.height,
+    );
+
+    const pages: Buffer[] = [];
+    for (let index = 0; index < pageCount; index += 1) {
+      const bytes = await page.screenshot({
+        type: 'png',
+        captureBeyondViewport: true,
+        clip: {
+          x: 0,
+          y: index * dimensions.height,
+          width: dimensions.width,
+          height: dimensions.height,
+        },
+      });
+      pages.push(Buffer.from(bytes));
+    }
+    return pages;
+  } finally {
+    await browser.close();
+  }
+};
+
 // ─── AI Resume Generation Prompt ─────────────────────
 
 const buildResumePrompt = (profile: Record<string, unknown>, input: GenerateResumeInput): string => {
@@ -250,7 +364,18 @@ export const listResumes = async (
       skip: (page - 1) * limit,
       take: limit,
       orderBy: { updatedAt: 'desc' },
-      include: { template: { select: { name: true, category: true } } },
+      include: {
+        template: {
+          select: {
+            id: true,
+            name: true,
+            category: true,
+            thumbnailUrl: true,
+            htmlLayout: true,
+            cssStyles: true,
+          },
+        },
+      },
     }),
     prisma.resume.count({ where }),
   ]);
@@ -457,14 +582,7 @@ export const exportPdf = async (userId: string, resumeId: string, format: 'A4' |
   });
   if (!resume) throw new AppError(status.NOT_FOUND, 'Resume not found.');
 
-  // Render HTML using Handlebars
-  const template = Handlebars.compile(resume.template.htmlLayout);
-  const renderedHtml = template({
-    ...toTemplateContext(resume.contentData),
-    cssStyles: resume.template.cssStyles,
-  });
-
-  const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>${resume.template.cssStyles}</style></head><body>${renderedHtml}</body></html>`;
+  const fullHtml = renderTemplateHtml(resume.contentData, resume.template, format);
 
   // Production uses the browser renderer for pixel-perfect HTML/CSS output.
   // Local/self-hosted environments get a template-aware PDFKit fallback, so
@@ -482,21 +600,26 @@ export const exportPdf = async (userId: string, resumeId: string, format: 'A4' |
       if (!response.ok) throw new Error(`Renderer returned ${response.status}`);
       pdfBuffer = Buffer.from(await response.arrayBuffer());
     } catch (error) {
-      console.warn('[Resume export] Browser PDF renderer unavailable; using PDFKit.', error);
-      pdfBuffer = await buildResumePdf(
-        asObject(resume.contentData),
-        resume.template,
-        resume.title,
-        format,
-      );
+      console.warn('[Resume export] Remote browser renderer unavailable; trying local Chromium.', error);
+      try {
+        pdfBuffer = await renderPdfWithLocalBrowser(fullHtml, format);
+      } catch (localError) {
+        console.warn('[Resume export] Local Chromium unavailable; using PDFKit fallback.', localError);
+        pdfBuffer = await buildResumePdf(
+          asObject(resume.contentData),
+          resume.template,
+          resume.title,
+          format,
+        );
+      }
     }
   } else {
-    pdfBuffer = await buildResumePdf(
-      asObject(resume.contentData),
-      resume.template,
-      resume.title,
-      format,
-    );
+    try {
+      pdfBuffer = await renderPdfWithLocalBrowser(fullHtml, format);
+    } catch (error) {
+      console.warn('[Resume export] Local Chromium unavailable; using PDFKit fallback.', error);
+      pdfBuffer = await buildResumePdf(asObject(resume.contentData), resume.template, resume.title, format);
+    }
   }
 
   // Persist when object storage is available, but always return the generated
@@ -536,11 +659,33 @@ export const exportDocx = async (userId: string, resumeId: string) => {
   });
   if (!resume) throw new AppError(status.NOT_FOUND, 'Resume not found.');
 
-  const docxBuffer = await buildResumeDocx(
-    asObject(resume.contentData),
-    resume.template,
-    resume.title,
-  );
+  const fullHtml = renderTemplateHtml(resume.contentData, resume.template);
+  let docxBuffer: Buffer;
+  try {
+    const pages = await renderTemplatePngPages(fullHtml, 'A4');
+    docxBuffer = await buildTemplateSnapshotDocx(
+      pages,
+      resume.title,
+      resume.template.name,
+      'A4',
+    );
+  } catch (error) {
+    console.warn('[Resume export] Fidelity DOCX renderer unavailable; trying editable HTML conversion.', error);
+    try {
+      const generated = await HTMLtoDOCX(fullHtml, null, {
+        title: resume.title,
+        subject: `Resume using the ${resume.template.name} template`,
+        creator: 'ProFile AI',
+        pageSize: { width: 11906, height: 16838 },
+        margins: { top: 0, right: 0, bottom: 0, left: 0 },
+        table: { row: { cantSplit: true } },
+      });
+      docxBuffer = Buffer.from(generated as ArrayBuffer);
+    } catch (conversionError) {
+      console.warn('[Resume export] HTML DOCX conversion failed; using structured fallback.', conversionError);
+      docxBuffer = await buildResumeDocx(asObject(resume.contentData), resume.template, resume.title);
+    }
+  }
   const objectName = `resumes/${userId}/${resumeId}/resume.docx`;
   const contentType =
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
@@ -650,20 +795,43 @@ export const aiModifySection = async (userId: string, resumeId: string, data: Ai
   }
 
   const contentData = resume.contentData as Record<string, unknown>;
-  const sectionContent = contentData[data.section];
+  const currentSection = contentData[data.section];
+  const sectionItems = Array.isArray(currentSection) ? currentSection : null;
+  if (data.itemIndex !== undefined && (!sectionItems || data.itemIndex >= sectionItems.length)) {
+    throw new AppError(status.BAD_REQUEST, 'The selected resume item no longer exists.');
+  }
+  const sectionContent = data.itemIndex === undefined
+    ? currentSection
+    : sectionItems?.[data.itemIndex];
 
   const aiResult = await getAiResponse<{ updatedSection: unknown }>({
-    context: `Section: ${data.section}\nCurrent content: ${JSON.stringify(sectionContent)}\nInstruction: ${data.instruction}`,
-    responseStyle: 'Return JSON: { "updatedSection": <the rewritten section content maintaining the same data structure> }',
-    responseTime: 15000,
-    retryNumber: 2,
+    context: `You are improving one part of a ${resume.type.toLowerCase()} for ${resume.targetJobTitle || 'the target role'}.
+Section: ${data.section}
+Current content: ${JSON.stringify(sectionContent)}
+Job description: ${resume.jobDescription || 'Not supplied'}
+Instruction: ${data.instruction}
+
+Preserve all factual names, employers, schools, dates, credentials, and contact details. Improve wording, clarity, impact, and relevance only. Return the same JSON data type and shape as the current content.`,
+    responseStyle: 'Return exactly one JSON object: { "updatedSection": <rewritten value with the same JSON type and structure as Current content> }',
+    responseTime: 20_000,
+    retryNumber: 1,
+    maxModels: 4,
   });
 
-  if (!aiResult.success || !aiResult.data) {
-    throw new AppError(status.INTERNAL_SERVER_ERROR, 'AI modification failed.');
+  if (!aiResult.success || !aiResult.data || !('updatedSection' in aiResult.data)) {
+    throw new AppError(status.BAD_GATEWAY, 'AI writing is temporarily unavailable. Please try again.');
   }
 
-  const newContentData: Prisma.InputJsonValue = { ...contentData, [data.section]: aiResult.data.updatedSection } as unknown as Prisma.InputJsonValue;
+  let updatedSection = aiResult.data.updatedSection;
+  if (data.itemIndex !== undefined && sectionItems) {
+    const nextItems = [...sectionItems];
+    nextItems[data.itemIndex] = updatedSection;
+    updatedSection = nextItems;
+  }
+  const newContentData: Prisma.InputJsonValue = {
+    ...contentData,
+    [data.section]: updatedSection,
+  } as unknown as Prisma.InputJsonValue;
 
   const updated = await prisma.resume.update({
     where: { id: resumeId },

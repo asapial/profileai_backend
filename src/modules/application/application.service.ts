@@ -1,3 +1,4 @@
+import { checkApplicationQuota, ownerLock } from '../career/career.service';
 import status from 'http-status';
 import { Prisma } from '../../../prisma/generated/prisma/client';
 import { prisma } from '../../lib/prisma';
@@ -22,45 +23,29 @@ const buildCursorWhere = (appliedAt: Date, id: string) => ({
   ],
 });
 
-const APPLICATION_STATUS = ['APPLIED', 'INTERVIEW', 'OFFER', 'REJECTED', 'WITHDRAWN'] as const;
+const APPLICATION_STATUS = [
+  'SAVED', 'PREPARING', 'APPLIED', 'FOLLOW_UP_DUE', 'RECRUITER_SCREEN',
+  'INTERVIEW', 'ASSESSMENT', 'OFFER', 'REJECTED', 'WITHDRAWN',
+] as const;
 type ApplicationStatus = (typeof APPLICATION_STATUS)[number];
 
 const collectDueRemindersAndMarkFired = async (
   userId: string,
   now: Date,
 ): Promise<Array<{ id: string; company: string; role: string; reminderAt: Date }>> => {
-  const due = await prisma.jobApplication.findMany({
-    where: {
-      userId,
-      reminderAt: { lte: now, not: null },
-      events: { none: { type: 'REMINDER_FIRED' } },
-    },
-    select: { id: true, company: true, role: true, reminderAt: true },
-    orderBy: { reminderAt: 'asc' },
-    take: 50,
+  return prisma.$transaction(async tx => {
+    await ownerLock(tx, userId);
+    const rows = await tx.jobApplication.findMany({ where: { userId, reminderAt: { lte: now, not: null }, status: { notIn: ['REJECTED', 'WITHDRAWN', 'OFFER'] } },
+      include: { events: { where: { type: 'REMINDER_FIRED' }, orderBy: { createdAt: 'desc' }, take: 1 } }, orderBy: { reminderAt: 'asc' }, take: 100 });
+    const due = rows.filter(row => (row.events[0]?.payload as { reminderAt?: string } | null)?.reminderAt !== row.reminderAt?.toISOString());
+    for (const row of due) {
+      await tx.applicationEvent.create({ data: { applicationId: row.id, userId, type: 'REMINDER_FIRED', payload: { reminderAt: row.reminderAt!.toISOString() } } });
+    }
+    const ids = rows.map(row => row.id);
+    await tx.jobApplication.updateMany({ where: { userId, id: { in: ids }, status: "APPLIED" }, data: { status: "FOLLOW_UP_DUE" } });
+    await tx.jobApplication.updateMany({ where: { userId, id: { in: ids } }, data: { reminderAt: null } });
+    return due.map(row => ({ id: row.id, company: row.company, role: row.role, reminderAt: row.reminderAt! }));
   });
-
-  if (due.length === 0) return [];
-
-  await prisma.$transaction(
-    due.map((d) =>
-      prisma.applicationEvent.create({
-        data: {
-          applicationId: d.id,
-          userId,
-          type: 'REMINDER_FIRED',
-          payload: { reminderAt: d.reminderAt } as Prisma.InputJsonValue,
-        },
-      }),
-    ),
-  );
-
-  return due.map((d) => ({
-    id: d.id,
-    company: d.company,
-    role: d.role,
-    reminderAt: d.reminderAt as Date,
-  }));
 };
 
 export const listApplications = async (userId: string, input: ListApplicationsInput) => {
@@ -69,8 +54,8 @@ export const listApplications = async (userId: string, input: ListApplicationsIn
 
   let cursorRecord: { appliedAt: Date; id: string } | null = null;
   if (cursor) {
-    cursorRecord = await prisma.jobApplication.findUnique({
-      where: { id: cursor },
+    cursorRecord = await prisma.jobApplication.findFirst({
+      where: { id: cursor, userId },
       select: { appliedAt: true, id: true },
     });
     if (!cursorRecord) {
@@ -78,6 +63,7 @@ export const listApplications = async (userId: string, input: ListApplicationsIn
     }
   }
 
+  const dueReminders = await collectDueRemindersAndMarkFired(userId, new Date());
   const items = await prisma.jobApplication.findMany({
     where: {
       userId,
@@ -93,8 +79,8 @@ export const listApplications = async (userId: string, input: ListApplicationsIn
 
   let nextCursor: string | null = null;
   if (items.length > take) {
-    const next = items.pop()!;
-    nextCursor = next.id;
+    items.pop();
+    nextCursor = items[items.length - 1]!.id;
   }
 
   const counts = await prisma.jobApplication.groupBy({
@@ -103,7 +89,6 @@ export const listApplications = async (userId: string, input: ListApplicationsIn
     _count: { _all: true },
   });
 
-  const dueReminders = await collectDueRemindersAndMarkFired(userId, new Date());
 
   return { items, nextCursor, counts, dueReminders };
 };
@@ -161,6 +146,7 @@ export const createApplication = async (userId: string, input: CreateApplication
   if (input.resumeId !== undefined) data.resumeId = input.resumeId ?? null;
 
   const created = await prisma.$transaction(async (tx) => {
+    await checkApplicationQuota(tx, userId);
     const row = await tx.jobApplication.create({ data });
     await tx.applicationEvent.create({
       data: {
@@ -185,6 +171,7 @@ export const updateApplication = async (
   if (!existing) throw new AppError(status.NOT_FOUND, 'Application not found.');
 
   if (input.resumeId) await verifyResumeOwnership(userId, input.resumeId);
+  if (input.coverLetterId && !await prisma.coverLetter.findFirst({ where: { id: input.coverLetterId, userId, deletedAt: null } })) throw new AppError(status.BAD_REQUEST, 'Attached cover letter not found.');
 
   const data: {
     company?: string;
@@ -197,6 +184,10 @@ export const updateApplication = async (
     resumeId?: string | null;
     coverLetterId?: string | null;
     reminderAt?: Date | null;
+    nextAction?: string | null;
+    contactName?: string | null;
+    contactEmail?: string | null;
+    deadlineAt?: Date | null;
   } = {};
 
   if (input.company !== undefined) data.company = input.company;
@@ -216,11 +207,17 @@ export const updateApplication = async (
     data.reminderAt = input.reminderAt === null ? null : new Date(input.reminderAt);
   }
 
+  if (input.nextAction !== undefined) data.nextAction = input.nextAction;
+  if (input.contactName !== undefined) data.contactName = input.contactName;
+  if (input.contactEmail !== undefined) data.contactEmail = input.contactEmail;
+  if (input.deadlineAt !== undefined) data.deadlineAt = input.deadlineAt ? new Date(input.deadlineAt) : null;
+
   const priorReminderAt = existing.reminderAt;
   const priorNotes = existing.notes;
   const priorStatus = existing.status;
 
   const updated = await prisma.$transaction(async (tx) => {
+    await ownerLock(tx, userId);
     const row = await tx.jobApplication.update({ where: { id }, data });
 
     const events: Array<{
@@ -289,6 +286,7 @@ export const patchStatus = async (
   if (next === existing.status) return existing;
 
   const updated = await prisma.$transaction(async (tx) => {
+    await ownerLock(tx, userId);
     const row = await tx.jobApplication.update({
       where: { id },
       data: { status: next },

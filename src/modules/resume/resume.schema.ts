@@ -31,8 +31,9 @@ export const atsCheckSchema = z.object({
 // ─── AI Modify Section ────────────────────────────────
 export const aiModifySchema = z.object({
   body: z.object({
-    section: z.string().min(1, 'Section name is required'),
+    section: z.enum(['summary', 'experience', 'education', 'skills', 'languages', 'certifications']),
     instruction: z.string().min(1, 'Instruction is required').max(500),
+    itemIndex: z.number().int().min(0).optional(),
   }),
 });
 

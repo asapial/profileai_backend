@@ -88,7 +88,7 @@ export const exportWorker = new Worker(
       }
 
       await uploadBuffer(objectName, buffer, 'application/octet-stream');
-      const resultUrl = await getPresignedUrl(objectName, 7 * 24 * 3600);
+      const resultUrl = await getPresignedUrl(objectName, 900);
 
       await prisma.exportJob.update({
         where: { id: jobId },

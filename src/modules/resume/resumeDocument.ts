@@ -2,6 +2,7 @@ import {
   AlignmentType,
   BorderStyle,
   Document,
+  ImageRun,
   Packer,
   Paragraph,
   ShadingType,
@@ -326,6 +327,56 @@ export async function buildResumeDocx(
         children: [...headerChildren(contentData, template, accent), ...body],
       },
     ],
+  });
+
+  return Packer.toBuffer(document);
+}
+
+/**
+ * Builds a fidelity-first Word document from browser-rendered template pages.
+ *
+ * HTML-to-DOCX converters cannot represent modern template CSS such as grid,
+ * flexbox, CSS variables, or full-height colour rails. A full-page image keeps
+ * the Word export visually identical to the editor/PDF while the structured
+ * DOCX builder above remains available as a compatibility fallback.
+ */
+export async function buildTemplateSnapshotDocx(
+  pages: Buffer[],
+  title: string,
+  templateName: string,
+  pageSize: 'A4' | 'Letter' = 'A4',
+): Promise<Buffer> {
+  if (!pages.length) throw new Error('No rendered template pages were supplied.');
+
+  const isLetter = pageSize === 'Letter';
+  const page = isLetter
+    ? { widthTwips: 12240, heightTwips: 15840, widthPx: 814, heightPx: 1054 }
+    : { widthTwips: 11906, heightTwips: 16838, widthPx: 792, heightPx: 1120 };
+
+  const document = new Document({
+    title,
+    subject: `Resume using the ${templateName} template`,
+    creator: 'ProFile AI',
+    sections: pages.map((image) => ({
+      properties: {
+        page: {
+          size: { width: page.widthTwips, height: page.heightTwips },
+          margin: { top: 0, right: 0, bottom: 0, left: 0, header: 0, footer: 0, gutter: 0 },
+        },
+      },
+      children: [
+        new Paragraph({
+          spacing: { before: 0, after: 0, line: 1 },
+          children: [
+            new ImageRun({
+              data: image,
+              type: 'png',
+              transformation: { width: page.widthPx, height: page.heightPx },
+            }),
+          ],
+        }),
+      ],
+    })),
   });
 
   return Packer.toBuffer(document);
