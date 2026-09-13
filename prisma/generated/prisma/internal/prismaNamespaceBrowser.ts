@@ -61,6 +61,8 @@ export const ModelName = {
   AuditLog: 'AuditLog',
   SecurityAlert: 'SecurityAlert',
   JobApplication: 'JobApplication',
+  Job: 'Job',
+  JobSourceListing: 'JobSourceListing',
   ApplicationEvent: 'ApplicationEvent',
   User: 'User',
   Session: 'Session',
@@ -71,6 +73,15 @@ export const ModelName = {
   Invoice: 'Invoice',
   Coupon: 'Coupon',
   PaymentEvent: 'PaymentEvent',
+  CareerEvidence: 'CareerEvidence',
+  CareerDocument: 'CareerDocument',
+  CareerAnalysis: 'CareerAnalysis',
+  CareerPreference: 'CareerPreference',
+  CareerUsage: 'CareerUsage',
+  CareerSource: 'CareerSource',
+  CareerConnection: 'CareerConnection',
+  CareerOAuthState: 'CareerOAuthState',
+  CareerDelivery: 'CareerDelivery',
   HomepageContent: 'HomepageContent',
   ContentPage: 'ContentPage',
   AdminResource: 'AdminResource',
@@ -261,11 +272,67 @@ export const JobApplicationScalarFieldEnum = {
   notes: 'notes',
   resumeId: 'resumeId',
   coverLetterId: 'coverLetterId',
+  jobId: 'jobId',
+  nextAction: 'nextAction',
+  contactName: 'contactName',
+  contactEmail: 'contactEmail',
+  deadlineAt: 'deadlineAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type JobApplicationScalarFieldEnum = (typeof JobApplicationScalarFieldEnum)[keyof typeof JobApplicationScalarFieldEnum]
+
+
+export const JobScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  company: 'company',
+  description: 'description',
+  location: 'location',
+  workplaceType: 'workplaceType',
+  employmentType: 'employmentType',
+  salaryMin: 'salaryMin',
+  salaryMax: 'salaryMax',
+  salaryCurrency: 'salaryCurrency',
+  salaryPeriod: 'salaryPeriod',
+  salaryIsEstimated: 'salaryIsEstimated',
+  canonicalUrl: 'canonicalUrl',
+  sourceName: 'sourceName',
+  sourceType: 'sourceType',
+  lifecycle: 'lifecycle',
+  publishedAt: 'publishedAt',
+  expiresAt: 'expiresAt',
+  lastVerifiedAt: 'lastVerifiedAt',
+  contentHash: 'contentHash',
+  isPrivate: 'isPrivate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type JobScalarFieldEnum = (typeof JobScalarFieldEnum)[keyof typeof JobScalarFieldEnum]
+
+
+export const JobSourceListingScalarFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  sourceName: 'sourceName',
+  sourceType: 'sourceType',
+  externalId: 'externalId',
+  sourceUrl: 'sourceUrl',
+  canonicalUrl: 'canonicalUrl',
+  attribution: 'attribution',
+  publishedAt: 'publishedAt',
+  expiresAt: 'expiresAt',
+  lastSeenAt: 'lastSeenAt',
+  lastVerifiedAt: 'lastVerifiedAt',
+  rawHash: 'rawHash',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type JobSourceListingScalarFieldEnum = (typeof JobSourceListingScalarFieldEnum)[keyof typeof JobSourceListingScalarFieldEnum]
 
 
 export const ApplicationEventScalarFieldEnum = {
@@ -432,6 +499,135 @@ export const PaymentEventScalarFieldEnum = {
 } as const
 
 export type PaymentEventScalarFieldEnum = (typeof PaymentEventScalarFieldEnum)[keyof typeof PaymentEventScalarFieldEnum]
+
+
+export const CareerEvidenceScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  statement: 'statement',
+  technologies: 'technologies',
+  status: 'status',
+  source: 'source',
+  details: 'details',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CareerEvidenceScalarFieldEnum = (typeof CareerEvidenceScalarFieldEnum)[keyof typeof CareerEvidenceScalarFieldEnum]
+
+
+export const CareerDocumentScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  jobId: 'jobId',
+  resumeId: 'resumeId',
+  kind: 'kind',
+  title: 'title',
+  subject: 'subject',
+  body: 'body',
+  recipient: 'recipient',
+  evidence: 'evidence',
+  versions: 'versions',
+  reviewedAt: 'reviewedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CareerDocumentScalarFieldEnum = (typeof CareerDocumentScalarFieldEnum)[keyof typeof CareerDocumentScalarFieldEnum]
+
+
+export const CareerAnalysisScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  cacheKey: 'cacheKey',
+  jobId: 'jobId',
+  resumeId: 'resumeId',
+  result: 'result',
+  createdAt: 'createdAt'
+} as const
+
+export type CareerAnalysisScalarFieldEnum = (typeof CareerAnalysisScalarFieldEnum)[keyof typeof CareerAnalysisScalarFieldEnum]
+
+
+export const CareerPreferenceScalarFieldEnum = {
+  userId: 'userId',
+  preferences: 'preferences',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CareerPreferenceScalarFieldEnum = (typeof CareerPreferenceScalarFieldEnum)[keyof typeof CareerPreferenceScalarFieldEnum]
+
+
+export const CareerUsageScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  feature: 'feature',
+  period: 'period',
+  used: 'used'
+} as const
+
+export type CareerUsageScalarFieldEnum = (typeof CareerUsageScalarFieldEnum)[keyof typeof CareerUsageScalarFieldEnum]
+
+
+export const CareerSourceScalarFieldEnum = {
+  id: 'id',
+  provider: 'provider',
+  board: 'board',
+  company: 'company',
+  policy: 'policy',
+  enabled: 'enabled',
+  failures: 'failures',
+  lastCheckedAt: 'lastCheckedAt',
+  nextCheckAt: 'nextCheckAt',
+  lastError: 'lastError',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CareerSourceScalarFieldEnum = (typeof CareerSourceScalarFieldEnum)[keyof typeof CareerSourceScalarFieldEnum]
+
+
+export const CareerConnectionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  provider: 'provider',
+  tokens: 'tokens',
+  scopes: 'scopes',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type CareerConnectionScalarFieldEnum = (typeof CareerConnectionScalarFieldEnum)[keyof typeof CareerConnectionScalarFieldEnum]
+
+
+export const CareerOAuthStateScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  purpose: 'purpose',
+  verifier: 'verifier',
+  expiresAt: 'expiresAt'
+} as const
+
+export type CareerOAuthStateScalarFieldEnum = (typeof CareerOAuthStateScalarFieldEnum)[keyof typeof CareerOAuthStateScalarFieldEnum]
+
+
+export const CareerDeliveryScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  key: 'key',
+  kind: 'kind',
+  payload: 'payload',
+  state: 'state',
+  attempts: 'attempts',
+  nextAttemptAt: 'nextAttemptAt',
+  providerId: 'providerId',
+  error: 'error',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CareerDeliveryScalarFieldEnum = (typeof CareerDeliveryScalarFieldEnum)[keyof typeof CareerDeliveryScalarFieldEnum]
 
 
 export const HomepageContentScalarFieldEnum = {

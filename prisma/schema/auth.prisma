@@ -15,6 +15,15 @@ model User {
   twoFactorEnabled Boolean @default(false)
   twoFactorSecret  String? // AES-256-GCM encrypted TOTP secret
 
+  careerEvidence    CareerEvidence[]
+  careerDocuments   CareerDocument[]
+  careerAnalyses    CareerAnalysis[]
+  careerPreference  CareerPreference?
+  careerUsage       CareerUsage[]
+  careerConnections CareerConnection[]
+  careerOAuthStates CareerOAuthState[]
+  careerDeliveries  CareerDelivery[]
+
   // Relations
   sessions               Session[]
   accounts               Account[]
@@ -28,6 +37,7 @@ model User {
   notificationPreference NotificationPreference?
   notifications          Notification[]
   jobApplications        JobApplication[]
+  savedJobs              Job[]
   coverLetters           CoverLetter[]
   applicationEvents      ApplicationEvent[]
   projects               Project[]

@@ -15,25 +15,123 @@ model JobApplication {
   notes         String?
   resumeId      String?
   coverLetterId String?
+  jobId         String?
+  nextAction    String?
+  contactName   String?
+  contactEmail  String?
+  deadlineAt    DateTime?
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
 
   user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   resume      Resume?            @relation(fields: [resumeId], references: [id])
   coverLetter CoverLetter?       @relation(fields: [coverLetterId], references: [id])
+  job         Job?               @relation(fields: [jobId], references: [id], onDelete: SetNull)
   events      ApplicationEvent[]
 
   @@index([userId, appliedAt])
   @@index([userId, reminderAt])
+  @@index([userId, status, updatedAt])
+  @@index([jobId])
   @@map("job_application")
 }
 
 enum ApplicationStatus {
+  SAVED
+  PREPARING
   APPLIED
+  FOLLOW_UP_DUE
+  RECRUITER_SCREEN
   INTERVIEW
+  ASSESSMENT
   OFFER
   REJECTED
   WITHDRAWN
+}
+
+model Job {
+  id                String        @id @default(cuid())
+  userId            String
+  title             String
+  company           String
+  description       String
+  location          String?
+  workplaceType     WorkplaceType @default(UNSPECIFIED)
+  employmentType    String?
+  salaryMin         Decimal?      @db.Decimal(12, 2)
+  salaryMax         Decimal?      @db.Decimal(12, 2)
+  salaryCurrency    String?
+  salaryPeriod      String?
+  salaryIsEstimated Boolean       @default(false)
+  canonicalUrl      String?
+  sourceName        String        @default("Manual import")
+  sourceType        JobSourceType @default(MANUAL)
+  lifecycle         JobLifecycle  @default(ACTIVE)
+  publishedAt       DateTime?
+  expiresAt         DateTime?
+  lastVerifiedAt    DateTime?
+  contentHash       String?
+  isPrivate         Boolean       @default(true)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  applications JobApplication[]
+  listings     JobSourceListing[]
+
+  @@index([userId, lifecycle, updatedAt])
+  @@index([userId, company, title])
+  @@index([contentHash])
+  @@map("job")
+}
+
+model JobSourceListing {
+  id             String        @id @default(cuid())
+  jobId          String
+  sourceName     String
+  sourceType     JobSourceType
+  externalId     String?
+  sourceUrl      String
+  canonicalUrl   String?
+  attribution    String?
+  publishedAt    DateTime?
+  expiresAt      DateTime?
+  lastSeenAt     DateTime      @default(now())
+  lastVerifiedAt DateTime?
+  rawHash        String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  job Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, sourceName, externalId])
+  @@index([jobId])
+  @@index([sourceUrl])
+  @@map("job_source_listing")
+}
+
+enum JobLifecycle {
+  ACTIVE
+  POSSIBLY_EXPIRED
+  EXPIRED
+  REMOVED
+  UNKNOWN
+}
+
+enum JobSourceType {
+  MANUAL
+  USER_URL
+  LEVER
+  GREENHOUSE
+  COMPANY_CAREER
+  PARTNER_API
+}
+
+enum WorkplaceType {
+  REMOTE
+  HYBRID
+  ON_SITE
+  UNSPECIFIED
 }
 
 // ─────────────────────────────────────────────────────
@@ -53,7 +151,7 @@ model ApplicationEvent {
   createdAt     DateTime             @default(now())
 
   application JobApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([applicationId, createdAt])
   @@index([userId, applicationId, createdAt])

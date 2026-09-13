@@ -92,6 +92,16 @@ export type SecurityAlert = Prisma.SecurityAlertModel
  */
 export type JobApplication = Prisma.JobApplicationModel
 /**
+ * Model Job
+ * 
+ */
+export type Job = Prisma.JobModel
+/**
+ * Model JobSourceListing
+ * 
+ */
+export type JobSourceListing = Prisma.JobSourceListingModel
+/**
  * Model ApplicationEvent
  * 
  */
@@ -141,6 +151,51 @@ export type Coupon = Prisma.CouponModel
  * 
  */
 export type PaymentEvent = Prisma.PaymentEventModel
+/**
+ * Model CareerEvidence
+ * 
+ */
+export type CareerEvidence = Prisma.CareerEvidenceModel
+/**
+ * Model CareerDocument
+ * 
+ */
+export type CareerDocument = Prisma.CareerDocumentModel
+/**
+ * Model CareerAnalysis
+ * 
+ */
+export type CareerAnalysis = Prisma.CareerAnalysisModel
+/**
+ * Model CareerPreference
+ * 
+ */
+export type CareerPreference = Prisma.CareerPreferenceModel
+/**
+ * Model CareerUsage
+ * 
+ */
+export type CareerUsage = Prisma.CareerUsageModel
+/**
+ * Model CareerSource
+ * 
+ */
+export type CareerSource = Prisma.CareerSourceModel
+/**
+ * Model CareerConnection
+ * 
+ */
+export type CareerConnection = Prisma.CareerConnectionModel
+/**
+ * Model CareerOAuthState
+ * 
+ */
+export type CareerOAuthState = Prisma.CareerOAuthStateModel
+/**
+ * Model CareerDelivery
+ * 
+ */
+export type CareerDelivery = Prisma.CareerDeliveryModel
 /**
  * Model HomepageContent
  * 

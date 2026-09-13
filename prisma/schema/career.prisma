@@ -1,0 +1,135 @@
+model CareerEvidence {
+  id           String   @id @default(cuid())
+  userId       String
+  title        String
+  statement    String
+  technologies String[]
+  status       String   @default("USER_CONFIRMED")
+  source       String
+  details      Json
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, updatedAt])
+  @@map("career_evidence")
+}
+
+model CareerDocument {
+  id         String    @id @default(cuid())
+  userId     String
+  jobId      String?
+  resumeId   String?
+  kind       String
+  title      String
+  subject    String
+  body       String
+  recipient  String?
+  evidence   Json
+  versions   Json
+  reviewedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, updatedAt])
+  @@map("career_document")
+}
+
+model CareerAnalysis {
+  id        String   @id @default(cuid())
+  userId    String
+  cacheKey  String
+  jobId     String
+  resumeId  String
+  result    Json
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, cacheKey])
+  @@map("career_analysis")
+}
+
+model CareerPreference {
+  userId      String   @id
+  preferences Json
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("career_preference")
+}
+
+model CareerUsage {
+  id      String @id @default(cuid())
+  userId  String
+  feature String
+  period  String
+  used    Int    @default(0)
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, feature, period])
+  @@map("career_usage")
+}
+
+model CareerSource {
+  id            String    @id @default(cuid())
+  provider      String
+  board         String
+  company       String
+  policy        Json
+  enabled       Boolean   @default(false)
+  failures      Int       @default(0)
+  lastCheckedAt DateTime?
+  nextCheckAt   DateTime?
+  lastError     String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@unique([provider, board])
+  @@map("career_source")
+}
+
+model CareerConnection {
+  id        String   @id @default(cuid())
+  userId    String
+  provider  String
+  tokens    String
+  scopes    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, provider])
+  @@map("career_connection")
+}
+
+model CareerOAuthState {
+  id        String   @id
+  userId    String
+  purpose   String
+  verifier  String
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("career_oauth_state")
+}
+
+model CareerDelivery {
+  id            String   @id @default(cuid())
+  userId        String
+  key           String
+  kind          String
+  payload       Json
+  state         String   @default("QUEUED")
+  attempts      Int      @default(0)
+  nextAttemptAt DateTime @default(now())
+  providerId    String?
+  error         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, key])
+  @@index([state, nextAttemptAt])
+  @@map("career_delivery")
+}

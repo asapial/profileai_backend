@@ -230,6 +230,14 @@ export type UserWhereInput = {
   isActive?: Prisma.BoolFilter<"User"> | boolean
   twoFactorEnabled?: Prisma.BoolFilter<"User"> | boolean
   twoFactorSecret?: Prisma.StringNullableFilter<"User"> | string | null
+  careerEvidence?: Prisma.CareerEvidenceListRelationFilter
+  careerDocuments?: Prisma.CareerDocumentListRelationFilter
+  careerAnalyses?: Prisma.CareerAnalysisListRelationFilter
+  careerPreference?: Prisma.XOR<Prisma.CareerPreferenceNullableScalarRelationFilter, Prisma.CareerPreferenceWhereInput> | null
+  careerUsage?: Prisma.CareerUsageListRelationFilter
+  careerConnections?: Prisma.CareerConnectionListRelationFilter
+  careerOAuthStates?: Prisma.CareerOAuthStateListRelationFilter
+  careerDeliveries?: Prisma.CareerDeliveryListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
   accounts?: Prisma.AccountListRelationFilter
   profile?: Prisma.XOR<Prisma.UserProfileNullableScalarRelationFilter, Prisma.UserProfileWhereInput> | null
@@ -242,6 +250,7 @@ export type UserWhereInput = {
   notificationPreference?: Prisma.XOR<Prisma.NotificationPreferenceNullableScalarRelationFilter, Prisma.NotificationPreferenceWhereInput> | null
   notifications?: Prisma.NotificationListRelationFilter
   jobApplications?: Prisma.JobApplicationListRelationFilter
+  savedJobs?: Prisma.JobListRelationFilter
   coverLetters?: Prisma.CoverLetterListRelationFilter
   applicationEvents?: Prisma.ApplicationEventListRelationFilter
   projects?: Prisma.ProjectListRelationFilter
@@ -268,6 +277,14 @@ export type UserOrderByWithRelationInput = {
   isActive?: Prisma.SortOrder
   twoFactorEnabled?: Prisma.SortOrder
   twoFactorSecret?: Prisma.SortOrderInput | Prisma.SortOrder
+  careerEvidence?: Prisma.CareerEvidenceOrderByRelationAggregateInput
+  careerDocuments?: Prisma.CareerDocumentOrderByRelationAggregateInput
+  careerAnalyses?: Prisma.CareerAnalysisOrderByRelationAggregateInput
+  careerPreference?: Prisma.CareerPreferenceOrderByWithRelationInput
+  careerUsage?: Prisma.CareerUsageOrderByRelationAggregateInput
+  careerConnections?: Prisma.CareerConnectionOrderByRelationAggregateInput
+  careerOAuthStates?: Prisma.CareerOAuthStateOrderByRelationAggregateInput
+  careerDeliveries?: Prisma.CareerDeliveryOrderByRelationAggregateInput
   sessions?: Prisma.SessionOrderByRelationAggregateInput
   accounts?: Prisma.AccountOrderByRelationAggregateInput
   profile?: Prisma.UserProfileOrderByWithRelationInput
@@ -280,6 +297,7 @@ export type UserOrderByWithRelationInput = {
   notificationPreference?: Prisma.NotificationPreferenceOrderByWithRelationInput
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
   jobApplications?: Prisma.JobApplicationOrderByRelationAggregateInput
+  savedJobs?: Prisma.JobOrderByRelationAggregateInput
   coverLetters?: Prisma.CoverLetterOrderByRelationAggregateInput
   applicationEvents?: Prisma.ApplicationEventOrderByRelationAggregateInput
   projects?: Prisma.ProjectOrderByRelationAggregateInput
@@ -309,6 +327,14 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   isActive?: Prisma.BoolFilter<"User"> | boolean
   twoFactorEnabled?: Prisma.BoolFilter<"User"> | boolean
   twoFactorSecret?: Prisma.StringNullableFilter<"User"> | string | null
+  careerEvidence?: Prisma.CareerEvidenceListRelationFilter
+  careerDocuments?: Prisma.CareerDocumentListRelationFilter
+  careerAnalyses?: Prisma.CareerAnalysisListRelationFilter
+  careerPreference?: Prisma.XOR<Prisma.CareerPreferenceNullableScalarRelationFilter, Prisma.CareerPreferenceWhereInput> | null
+  careerUsage?: Prisma.CareerUsageListRelationFilter
+  careerConnections?: Prisma.CareerConnectionListRelationFilter
+  careerOAuthStates?: Prisma.CareerOAuthStateListRelationFilter
+  careerDeliveries?: Prisma.CareerDeliveryListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
   accounts?: Prisma.AccountListRelationFilter
   profile?: Prisma.XOR<Prisma.UserProfileNullableScalarRelationFilter, Prisma.UserProfileWhereInput> | null
@@ -321,6 +347,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   notificationPreference?: Prisma.XOR<Prisma.NotificationPreferenceNullableScalarRelationFilter, Prisma.NotificationPreferenceWhereInput> | null
   notifications?: Prisma.NotificationListRelationFilter
   jobApplications?: Prisma.JobApplicationListRelationFilter
+  savedJobs?: Prisma.JobListRelationFilter
   coverLetters?: Prisma.CoverLetterListRelationFilter
   applicationEvents?: Prisma.ApplicationEventListRelationFilter
   projects?: Prisma.ProjectListRelationFilter
@@ -381,6 +408,14 @@ export type UserCreateInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -393,6 +428,7 @@ export type UserCreateInput = {
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
@@ -419,6 +455,14 @@ export type UserUncheckedCreateInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -431,6 +475,7 @@ export type UserUncheckedCreateInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
@@ -457,6 +502,14 @@ export type UserUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -469,6 +522,7 @@ export type UserUpdateInput = {
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
@@ -495,6 +549,14 @@ export type UserUncheckedUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -507,6 +569,7 @@ export type UserUncheckedUpdateInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
@@ -661,6 +724,20 @@ export type UserUpdateOneRequiredWithoutJobApplicationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutJobApplicationsInput, Prisma.UserUpdateWithoutJobApplicationsInput>, Prisma.UserUncheckedUpdateWithoutJobApplicationsInput>
 }
 
+export type UserCreateNestedOneWithoutSavedJobsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSavedJobsInput, Prisma.UserUncheckedCreateWithoutSavedJobsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSavedJobsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutSavedJobsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSavedJobsInput, Prisma.UserUncheckedCreateWithoutSavedJobsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSavedJobsInput
+  upsert?: Prisma.UserUpsertWithoutSavedJobsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSavedJobsInput, Prisma.UserUpdateWithoutSavedJobsInput>, Prisma.UserUncheckedUpdateWithoutSavedJobsInput>
+}
+
 export type UserCreateNestedOneWithoutApplicationEventsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutApplicationEventsInput, Prisma.UserUncheckedCreateWithoutApplicationEventsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutApplicationEventsInput
@@ -673,10 +750,6 @@ export type UserUpdateOneRequiredWithoutApplicationEventsNestedInput = {
   upsert?: Prisma.UserUpsertWithoutApplicationEventsInput
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutApplicationEventsInput, Prisma.UserUpdateWithoutApplicationEventsInput>, Prisma.UserUncheckedUpdateWithoutApplicationEventsInput>
-}
-
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
 }
 
 export type EnumRoleFieldUpdateOperationsInput = {
@@ -737,6 +810,118 @@ export type UserUpdateOneRequiredWithoutInvoicesNestedInput = {
   upsert?: Prisma.UserUpsertWithoutInvoicesInput
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutInvoicesInput, Prisma.UserUpdateWithoutInvoicesInput>, Prisma.UserUncheckedUpdateWithoutInvoicesInput>
+}
+
+export type UserCreateNestedOneWithoutCareerEvidenceInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCareerEvidenceInput, Prisma.UserUncheckedCreateWithoutCareerEvidenceInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCareerEvidenceInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCareerEvidenceNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCareerEvidenceInput, Prisma.UserUncheckedCreateWithoutCareerEvidenceInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCareerEvidenceInput
+  upsert?: Prisma.UserUpsertWithoutCareerEvidenceInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCareerEvidenceInput, Prisma.UserUpdateWithoutCareerEvidenceInput>, Prisma.UserUncheckedUpdateWithoutCareerEvidenceInput>
+}
+
+export type UserCreateNestedOneWithoutCareerDocumentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCareerDocumentsInput, Prisma.UserUncheckedCreateWithoutCareerDocumentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCareerDocumentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCareerDocumentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCareerDocumentsInput, Prisma.UserUncheckedCreateWithoutCareerDocumentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCareerDocumentsInput
+  upsert?: Prisma.UserUpsertWithoutCareerDocumentsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCareerDocumentsInput, Prisma.UserUpdateWithoutCareerDocumentsInput>, Prisma.UserUncheckedUpdateWithoutCareerDocumentsInput>
+}
+
+export type UserCreateNestedOneWithoutCareerAnalysesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCareerAnalysesInput, Prisma.UserUncheckedCreateWithoutCareerAnalysesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCareerAnalysesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCareerAnalysesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCareerAnalysesInput, Prisma.UserUncheckedCreateWithoutCareerAnalysesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCareerAnalysesInput
+  upsert?: Prisma.UserUpsertWithoutCareerAnalysesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCareerAnalysesInput, Prisma.UserUpdateWithoutCareerAnalysesInput>, Prisma.UserUncheckedUpdateWithoutCareerAnalysesInput>
+}
+
+export type UserCreateNestedOneWithoutCareerPreferenceInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCareerPreferenceInput, Prisma.UserUncheckedCreateWithoutCareerPreferenceInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCareerPreferenceInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCareerPreferenceNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCareerPreferenceInput, Prisma.UserUncheckedCreateWithoutCareerPreferenceInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCareerPreferenceInput
+  upsert?: Prisma.UserUpsertWithoutCareerPreferenceInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCareerPreferenceInput, Prisma.UserUpdateWithoutCareerPreferenceInput>, Prisma.UserUncheckedUpdateWithoutCareerPreferenceInput>
+}
+
+export type UserCreateNestedOneWithoutCareerUsageInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCareerUsageInput, Prisma.UserUncheckedCreateWithoutCareerUsageInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCareerUsageInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCareerUsageNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCareerUsageInput, Prisma.UserUncheckedCreateWithoutCareerUsageInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCareerUsageInput
+  upsert?: Prisma.UserUpsertWithoutCareerUsageInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCareerUsageInput, Prisma.UserUpdateWithoutCareerUsageInput>, Prisma.UserUncheckedUpdateWithoutCareerUsageInput>
+}
+
+export type UserCreateNestedOneWithoutCareerConnectionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCareerConnectionsInput, Prisma.UserUncheckedCreateWithoutCareerConnectionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCareerConnectionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCareerConnectionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCareerConnectionsInput, Prisma.UserUncheckedCreateWithoutCareerConnectionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCareerConnectionsInput
+  upsert?: Prisma.UserUpsertWithoutCareerConnectionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCareerConnectionsInput, Prisma.UserUpdateWithoutCareerConnectionsInput>, Prisma.UserUncheckedUpdateWithoutCareerConnectionsInput>
+}
+
+export type UserCreateNestedOneWithoutCareerOAuthStatesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCareerOAuthStatesInput, Prisma.UserUncheckedCreateWithoutCareerOAuthStatesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCareerOAuthStatesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCareerOAuthStatesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCareerOAuthStatesInput, Prisma.UserUncheckedCreateWithoutCareerOAuthStatesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCareerOAuthStatesInput
+  upsert?: Prisma.UserUpsertWithoutCareerOAuthStatesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCareerOAuthStatesInput, Prisma.UserUpdateWithoutCareerOAuthStatesInput>, Prisma.UserUncheckedUpdateWithoutCareerOAuthStatesInput>
+}
+
+export type UserCreateNestedOneWithoutCareerDeliveriesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCareerDeliveriesInput, Prisma.UserUncheckedCreateWithoutCareerDeliveriesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCareerDeliveriesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCareerDeliveriesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCareerDeliveriesInput, Prisma.UserUncheckedCreateWithoutCareerDeliveriesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCareerDeliveriesInput
+  upsert?: Prisma.UserUpsertWithoutCareerDeliveriesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCareerDeliveriesInput, Prisma.UserUpdateWithoutCareerDeliveriesInput>, Prisma.UserUncheckedUpdateWithoutCareerDeliveriesInput>
 }
 
 export type UserCreateNestedOneWithoutCoverLettersInput = {
@@ -977,6 +1162,14 @@ export type UserCreateWithoutAiConversationsInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -989,6 +1182,7 @@ export type UserCreateWithoutAiConversationsInput = {
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
@@ -1014,6 +1208,14 @@ export type UserUncheckedCreateWithoutAiConversationsInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -1026,6 +1228,7 @@ export type UserUncheckedCreateWithoutAiConversationsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
@@ -1067,6 +1270,14 @@ export type UserUpdateWithoutAiConversationsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -1079,6 +1290,7 @@ export type UserUpdateWithoutAiConversationsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
@@ -1104,6 +1316,14 @@ export type UserUncheckedUpdateWithoutAiConversationsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -1116,6 +1336,7 @@ export type UserUncheckedUpdateWithoutAiConversationsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
@@ -1141,6 +1362,14 @@ export type UserCreateWithoutAiFeedbackInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -1153,6 +1382,7 @@ export type UserCreateWithoutAiFeedbackInput = {
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
@@ -1178,6 +1408,14 @@ export type UserUncheckedCreateWithoutAiFeedbackInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -1190,6 +1428,7 @@ export type UserUncheckedCreateWithoutAiFeedbackInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
@@ -1231,6 +1470,14 @@ export type UserUpdateWithoutAiFeedbackInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -1243,6 +1490,7 @@ export type UserUpdateWithoutAiFeedbackInput = {
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
@@ -1268,6 +1516,14 @@ export type UserUncheckedUpdateWithoutAiFeedbackInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -1280,6 +1536,7 @@ export type UserUncheckedUpdateWithoutAiFeedbackInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
@@ -1305,6 +1562,14 @@ export type UserCreateWithoutJobApplicationsInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -1316,6 +1581,7 @@ export type UserCreateWithoutJobApplicationsInput = {
   limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
@@ -1342,6 +1608,14 @@ export type UserUncheckedCreateWithoutJobApplicationsInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -1353,6 +1627,7 @@ export type UserUncheckedCreateWithoutJobApplicationsInput = {
   limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
@@ -1395,6 +1670,14 @@ export type UserUpdateWithoutJobApplicationsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -1406,6 +1689,7 @@ export type UserUpdateWithoutJobApplicationsInput = {
   limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
@@ -1432,6 +1716,14 @@ export type UserUncheckedUpdateWithoutJobApplicationsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -1443,6 +1735,207 @@ export type UserUncheckedUpdateWithoutJobApplicationsInput = {
   limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUncheckedUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUncheckedUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUncheckedUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUncheckedUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutSavedJobsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
+  otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutSavedJobsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
+  otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceUncheckedCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobUncheckedCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralUncheckedCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralUncheckedCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutSavedJobsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSavedJobsInput, Prisma.UserUncheckedCreateWithoutSavedJobsInput>
+}
+
+export type UserUpsertWithoutSavedJobsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSavedJobsInput, Prisma.UserUncheckedUpdateWithoutSavedJobsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSavedJobsInput, Prisma.UserUncheckedCreateWithoutSavedJobsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSavedJobsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSavedJobsInput, Prisma.UserUncheckedUpdateWithoutSavedJobsInput>
+}
+
+export type UserUpdateWithoutSavedJobsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
+  otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSavedJobsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
+  otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
@@ -1469,6 +1962,14 @@ export type UserCreateWithoutApplicationEventsInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -1481,6 +1982,7 @@ export type UserCreateWithoutApplicationEventsInput = {
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
   references?: Prisma.ReferenceCreateNestedManyWithoutUserInput
@@ -1506,6 +2008,14 @@ export type UserUncheckedCreateWithoutApplicationEventsInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -1518,6 +2028,7 @@ export type UserUncheckedCreateWithoutApplicationEventsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
   references?: Prisma.ReferenceUncheckedCreateNestedManyWithoutUserInput
@@ -1559,6 +2070,14 @@ export type UserUpdateWithoutApplicationEventsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -1571,6 +2090,7 @@ export type UserUpdateWithoutApplicationEventsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
   references?: Prisma.ReferenceUpdateManyWithoutUserNestedInput
@@ -1596,6 +2116,14 @@ export type UserUncheckedUpdateWithoutApplicationEventsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -1608,6 +2136,7 @@ export type UserUncheckedUpdateWithoutApplicationEventsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
   references?: Prisma.ReferenceUncheckedUpdateManyWithoutUserNestedInput
@@ -1633,6 +2162,14 @@ export type UserCreateWithoutSessionsInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
   adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
@@ -1644,6 +2181,7 @@ export type UserCreateWithoutSessionsInput = {
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
@@ -1670,6 +2208,14 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
   adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
@@ -1681,6 +2227,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
@@ -1723,6 +2270,14 @@ export type UserUpdateWithoutSessionsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
   adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
@@ -1734,6 +2289,7 @@ export type UserUpdateWithoutSessionsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
@@ -1760,6 +2316,14 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
   adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -1771,6 +2335,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
@@ -1797,6 +2362,14 @@ export type UserCreateWithoutAccountsInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
   adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
@@ -1808,6 +2381,7 @@ export type UserCreateWithoutAccountsInput = {
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
@@ -1834,6 +2408,14 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
   adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
@@ -1845,6 +2427,7 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
@@ -1887,6 +2470,14 @@ export type UserUpdateWithoutAccountsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
   adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
@@ -1898,6 +2489,7 @@ export type UserUpdateWithoutAccountsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
@@ -1924,6 +2516,14 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
   adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -1935,6 +2535,7 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
@@ -1961,6 +2562,14 @@ export type UserCreateWithoutSubscriptionsInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -1973,6 +2582,7 @@ export type UserCreateWithoutSubscriptionsInput = {
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
@@ -1998,6 +2608,14 @@ export type UserUncheckedCreateWithoutSubscriptionsInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -2010,6 +2628,7 @@ export type UserUncheckedCreateWithoutSubscriptionsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
@@ -2051,6 +2670,14 @@ export type UserUpdateWithoutSubscriptionsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -2063,6 +2690,7 @@ export type UserUpdateWithoutSubscriptionsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
@@ -2088,6 +2716,14 @@ export type UserUncheckedUpdateWithoutSubscriptionsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -2100,6 +2736,7 @@ export type UserUncheckedUpdateWithoutSubscriptionsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
@@ -2125,6 +2762,14 @@ export type UserCreateWithoutInvoicesInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -2137,6 +2782,7 @@ export type UserCreateWithoutInvoicesInput = {
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
@@ -2162,6 +2808,14 @@ export type UserUncheckedCreateWithoutInvoicesInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -2174,6 +2828,7 @@ export type UserUncheckedCreateWithoutInvoicesInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
@@ -2215,6 +2870,14 @@ export type UserUpdateWithoutInvoicesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -2227,6 +2890,7 @@ export type UserUpdateWithoutInvoicesInput = {
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
@@ -2252,6 +2916,14 @@ export type UserUncheckedUpdateWithoutInvoicesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -2264,6 +2936,7 @@ export type UserUncheckedUpdateWithoutInvoicesInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
@@ -2273,6 +2946,1606 @@ export type UserUncheckedUpdateWithoutInvoicesInput = {
   referralReceived?: Prisma.ReferralUncheckedUpdateOneWithoutRefereeNestedInput
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutCareerEvidenceInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
+  otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCareerEvidenceInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
+  otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceUncheckedCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobUncheckedCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralUncheckedCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralUncheckedCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutCareerEvidenceInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCareerEvidenceInput, Prisma.UserUncheckedCreateWithoutCareerEvidenceInput>
+}
+
+export type UserUpsertWithoutCareerEvidenceInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCareerEvidenceInput, Prisma.UserUncheckedUpdateWithoutCareerEvidenceInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCareerEvidenceInput, Prisma.UserUncheckedCreateWithoutCareerEvidenceInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCareerEvidenceInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCareerEvidenceInput, Prisma.UserUncheckedUpdateWithoutCareerEvidenceInput>
+}
+
+export type UserUpdateWithoutCareerEvidenceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
+  otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCareerEvidenceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
+  otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUncheckedUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUncheckedUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUncheckedUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUncheckedUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutCareerDocumentsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
+  otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCareerDocumentsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
+  otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceUncheckedCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobUncheckedCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralUncheckedCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralUncheckedCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutCareerDocumentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCareerDocumentsInput, Prisma.UserUncheckedCreateWithoutCareerDocumentsInput>
+}
+
+export type UserUpsertWithoutCareerDocumentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCareerDocumentsInput, Prisma.UserUncheckedUpdateWithoutCareerDocumentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCareerDocumentsInput, Prisma.UserUncheckedCreateWithoutCareerDocumentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCareerDocumentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCareerDocumentsInput, Prisma.UserUncheckedUpdateWithoutCareerDocumentsInput>
+}
+
+export type UserUpdateWithoutCareerDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
+  otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCareerDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
+  otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUncheckedUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUncheckedUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUncheckedUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUncheckedUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutCareerAnalysesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
+  otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCareerAnalysesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
+  otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceUncheckedCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobUncheckedCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralUncheckedCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralUncheckedCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutCareerAnalysesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCareerAnalysesInput, Prisma.UserUncheckedCreateWithoutCareerAnalysesInput>
+}
+
+export type UserUpsertWithoutCareerAnalysesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCareerAnalysesInput, Prisma.UserUncheckedUpdateWithoutCareerAnalysesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCareerAnalysesInput, Prisma.UserUncheckedCreateWithoutCareerAnalysesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCareerAnalysesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCareerAnalysesInput, Prisma.UserUncheckedUpdateWithoutCareerAnalysesInput>
+}
+
+export type UserUpdateWithoutCareerAnalysesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
+  otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCareerAnalysesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
+  otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUncheckedUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUncheckedUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUncheckedUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUncheckedUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutCareerPreferenceInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
+  otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCareerPreferenceInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
+  otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceUncheckedCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobUncheckedCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralUncheckedCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralUncheckedCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutCareerPreferenceInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCareerPreferenceInput, Prisma.UserUncheckedCreateWithoutCareerPreferenceInput>
+}
+
+export type UserUpsertWithoutCareerPreferenceInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCareerPreferenceInput, Prisma.UserUncheckedUpdateWithoutCareerPreferenceInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCareerPreferenceInput, Prisma.UserUncheckedCreateWithoutCareerPreferenceInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCareerPreferenceInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCareerPreferenceInput, Prisma.UserUncheckedUpdateWithoutCareerPreferenceInput>
+}
+
+export type UserUpdateWithoutCareerPreferenceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
+  otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCareerPreferenceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
+  otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUncheckedUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUncheckedUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUncheckedUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUncheckedUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutCareerUsageInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
+  otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCareerUsageInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
+  otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceUncheckedCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobUncheckedCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralUncheckedCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralUncheckedCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutCareerUsageInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCareerUsageInput, Prisma.UserUncheckedCreateWithoutCareerUsageInput>
+}
+
+export type UserUpsertWithoutCareerUsageInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCareerUsageInput, Prisma.UserUncheckedUpdateWithoutCareerUsageInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCareerUsageInput, Prisma.UserUncheckedCreateWithoutCareerUsageInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCareerUsageInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCareerUsageInput, Prisma.UserUncheckedUpdateWithoutCareerUsageInput>
+}
+
+export type UserUpdateWithoutCareerUsageInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
+  otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCareerUsageInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
+  otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUncheckedUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUncheckedUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUncheckedUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUncheckedUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutCareerConnectionsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
+  otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCareerConnectionsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
+  otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceUncheckedCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobUncheckedCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralUncheckedCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralUncheckedCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutCareerConnectionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCareerConnectionsInput, Prisma.UserUncheckedCreateWithoutCareerConnectionsInput>
+}
+
+export type UserUpsertWithoutCareerConnectionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCareerConnectionsInput, Prisma.UserUncheckedUpdateWithoutCareerConnectionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCareerConnectionsInput, Prisma.UserUncheckedCreateWithoutCareerConnectionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCareerConnectionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCareerConnectionsInput, Prisma.UserUncheckedUpdateWithoutCareerConnectionsInput>
+}
+
+export type UserUpdateWithoutCareerConnectionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
+  otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCareerConnectionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
+  otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUncheckedUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUncheckedUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUncheckedUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUncheckedUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutCareerOAuthStatesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
+  otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCareerOAuthStatesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
+  otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceUncheckedCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobUncheckedCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralUncheckedCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralUncheckedCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutCareerOAuthStatesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCareerOAuthStatesInput, Prisma.UserUncheckedCreateWithoutCareerOAuthStatesInput>
+}
+
+export type UserUpsertWithoutCareerOAuthStatesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCareerOAuthStatesInput, Prisma.UserUncheckedUpdateWithoutCareerOAuthStatesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCareerOAuthStatesInput, Prisma.UserUncheckedCreateWithoutCareerOAuthStatesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCareerOAuthStatesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCareerOAuthStatesInput, Prisma.UserUncheckedUpdateWithoutCareerOAuthStatesInput>
+}
+
+export type UserUpdateWithoutCareerOAuthStatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
+  otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCareerOAuthStatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
+  otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUncheckedUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUncheckedUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUncheckedUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUncheckedUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutCareerDeliveriesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
+  otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCareerDeliveriesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
+  otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceUncheckedCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobUncheckedCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralUncheckedCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralUncheckedCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutCareerDeliveriesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCareerDeliveriesInput, Prisma.UserUncheckedCreateWithoutCareerDeliveriesInput>
+}
+
+export type UserUpsertWithoutCareerDeliveriesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCareerDeliveriesInput, Prisma.UserUncheckedUpdateWithoutCareerDeliveriesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCareerDeliveriesInput, Prisma.UserUncheckedCreateWithoutCareerDeliveriesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCareerDeliveriesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCareerDeliveriesInput, Prisma.UserUncheckedUpdateWithoutCareerDeliveriesInput>
+}
+
+export type UserUpdateWithoutCareerDeliveriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
+  otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCareerDeliveriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
+  otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUncheckedUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUncheckedUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUncheckedUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUncheckedUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -2289,6 +4562,14 @@ export type UserCreateWithoutCoverLettersInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -2301,6 +4582,7 @@ export type UserCreateWithoutCoverLettersInput = {
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
   references?: Prisma.ReferenceCreateNestedManyWithoutUserInput
@@ -2326,6 +4608,14 @@ export type UserUncheckedCreateWithoutCoverLettersInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -2338,6 +4628,7 @@ export type UserUncheckedCreateWithoutCoverLettersInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
   references?: Prisma.ReferenceUncheckedCreateNestedManyWithoutUserInput
@@ -2379,6 +4670,14 @@ export type UserUpdateWithoutCoverLettersInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -2391,6 +4690,7 @@ export type UserUpdateWithoutCoverLettersInput = {
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
   references?: Prisma.ReferenceUpdateManyWithoutUserNestedInput
@@ -2416,6 +4716,14 @@ export type UserUncheckedUpdateWithoutCoverLettersInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -2428,6 +4736,7 @@ export type UserUncheckedUpdateWithoutCoverLettersInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
   references?: Prisma.ReferenceUncheckedUpdateManyWithoutUserNestedInput
@@ -2453,6 +4762,14 @@ export type UserCreateWithoutExportJobsInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -2465,6 +4782,7 @@ export type UserCreateWithoutExportJobsInput = {
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
@@ -2490,6 +4808,14 @@ export type UserUncheckedCreateWithoutExportJobsInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -2502,6 +4828,7 @@ export type UserUncheckedCreateWithoutExportJobsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
@@ -2543,6 +4870,14 @@ export type UserUpdateWithoutExportJobsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -2555,6 +4890,7 @@ export type UserUpdateWithoutExportJobsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
@@ -2580,6 +4916,14 @@ export type UserUncheckedUpdateWithoutExportJobsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -2592,6 +4936,7 @@ export type UserUncheckedUpdateWithoutExportJobsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
@@ -2617,6 +4962,14 @@ export type UserCreateWithoutNotificationsInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -2628,6 +4981,7 @@ export type UserCreateWithoutNotificationsInput = {
   limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
@@ -2654,6 +5008,14 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -2665,6 +5027,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
@@ -2707,6 +5070,14 @@ export type UserUpdateWithoutNotificationsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -2718,6 +5089,7 @@ export type UserUpdateWithoutNotificationsInput = {
   limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
@@ -2744,6 +5116,14 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -2755,6 +5135,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
@@ -2781,6 +5162,14 @@ export type UserCreateWithoutNotificationPreferenceInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -2792,6 +5181,7 @@ export type UserCreateWithoutNotificationPreferenceInput = {
   limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
@@ -2818,6 +5208,14 @@ export type UserUncheckedCreateWithoutNotificationPreferenceInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -2829,6 +5227,7 @@ export type UserUncheckedCreateWithoutNotificationPreferenceInput = {
   limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
@@ -2871,6 +5270,14 @@ export type UserUpdateWithoutNotificationPreferenceInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -2882,6 +5289,7 @@ export type UserUpdateWithoutNotificationPreferenceInput = {
   limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
@@ -2908,6 +5316,14 @@ export type UserUncheckedUpdateWithoutNotificationPreferenceInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -2919,6 +5335,7 @@ export type UserUncheckedUpdateWithoutNotificationPreferenceInput = {
   limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
@@ -2945,6 +5362,14 @@ export type UserCreateWithoutLimitsInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -2956,6 +5381,7 @@ export type UserCreateWithoutLimitsInput = {
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
@@ -2982,6 +5408,14 @@ export type UserUncheckedCreateWithoutLimitsInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -2993,6 +5427,7 @@ export type UserUncheckedCreateWithoutLimitsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
@@ -3035,6 +5470,14 @@ export type UserUpdateWithoutLimitsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -3046,6 +5489,7 @@ export type UserUpdateWithoutLimitsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
@@ -3072,6 +5516,14 @@ export type UserUncheckedUpdateWithoutLimitsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -3083,6 +5535,7 @@ export type UserUncheckedUpdateWithoutLimitsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
@@ -3109,6 +5562,14 @@ export type UserCreateWithoutOtpsInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -3120,6 +5581,7 @@ export type UserCreateWithoutOtpsInput = {
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
@@ -3146,6 +5608,14 @@ export type UserUncheckedCreateWithoutOtpsInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -3157,6 +5627,7 @@ export type UserUncheckedCreateWithoutOtpsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
@@ -3199,6 +5670,14 @@ export type UserUpdateWithoutOtpsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -3210,6 +5689,7 @@ export type UserUpdateWithoutOtpsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
@@ -3236,6 +5716,14 @@ export type UserUncheckedUpdateWithoutOtpsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -3247,6 +5735,7 @@ export type UserUncheckedUpdateWithoutOtpsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
@@ -3273,6 +5762,14 @@ export type UserCreateWithoutDevicesInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -3284,6 +5781,7 @@ export type UserCreateWithoutDevicesInput = {
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
@@ -3310,6 +5808,14 @@ export type UserUncheckedCreateWithoutDevicesInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -3321,6 +5827,7 @@ export type UserUncheckedCreateWithoutDevicesInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
@@ -3363,6 +5870,14 @@ export type UserUpdateWithoutDevicesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -3374,6 +5889,7 @@ export type UserUpdateWithoutDevicesInput = {
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
@@ -3400,6 +5916,14 @@ export type UserUncheckedUpdateWithoutDevicesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -3411,6 +5935,7 @@ export type UserUncheckedUpdateWithoutDevicesInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
@@ -3437,6 +5962,14 @@ export type UserCreateWithoutProfileInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
@@ -3448,6 +5981,7 @@ export type UserCreateWithoutProfileInput = {
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
@@ -3474,6 +6008,14 @@ export type UserUncheckedCreateWithoutProfileInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
@@ -3485,6 +6027,7 @@ export type UserUncheckedCreateWithoutProfileInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
@@ -3527,6 +6070,14 @@ export type UserUpdateWithoutProfileInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
@@ -3538,6 +6089,7 @@ export type UserUpdateWithoutProfileInput = {
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
@@ -3564,6 +6116,14 @@ export type UserUncheckedUpdateWithoutProfileInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -3575,6 +6135,7 @@ export type UserUncheckedUpdateWithoutProfileInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
@@ -3601,6 +6162,14 @@ export type UserCreateWithoutAdminProfileInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -3612,6 +6181,7 @@ export type UserCreateWithoutAdminProfileInput = {
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
@@ -3638,6 +6208,14 @@ export type UserUncheckedCreateWithoutAdminProfileInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -3649,6 +6227,7 @@ export type UserUncheckedCreateWithoutAdminProfileInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
@@ -3691,6 +6270,14 @@ export type UserUpdateWithoutAdminProfileInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -3702,6 +6289,7 @@ export type UserUpdateWithoutAdminProfileInput = {
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
@@ -3728,6 +6316,14 @@ export type UserUncheckedUpdateWithoutAdminProfileInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -3739,6 +6335,7 @@ export type UserUncheckedUpdateWithoutAdminProfileInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
@@ -3765,6 +6362,14 @@ export type UserCreateWithoutProjectsInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -3777,6 +6382,7 @@ export type UserCreateWithoutProjectsInput = {
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
   references?: Prisma.ReferenceCreateNestedManyWithoutUserInput
@@ -3802,6 +6408,14 @@ export type UserUncheckedCreateWithoutProjectsInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -3814,6 +6428,7 @@ export type UserUncheckedCreateWithoutProjectsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
   references?: Prisma.ReferenceUncheckedCreateNestedManyWithoutUserInput
@@ -3855,6 +6470,14 @@ export type UserUpdateWithoutProjectsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -3867,6 +6490,7 @@ export type UserUpdateWithoutProjectsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
   references?: Prisma.ReferenceUpdateManyWithoutUserNestedInput
@@ -3892,6 +6516,14 @@ export type UserUncheckedUpdateWithoutProjectsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -3904,6 +6536,7 @@ export type UserUncheckedUpdateWithoutProjectsInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
   references?: Prisma.ReferenceUncheckedUpdateManyWithoutUserNestedInput
@@ -3929,6 +6562,14 @@ export type UserCreateWithoutReferencesInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -3941,6 +6582,7 @@ export type UserCreateWithoutReferencesInput = {
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
@@ -3966,6 +6608,14 @@ export type UserUncheckedCreateWithoutReferencesInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -3978,6 +6628,7 @@ export type UserUncheckedCreateWithoutReferencesInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
@@ -4019,6 +6670,14 @@ export type UserUpdateWithoutReferencesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -4031,6 +6690,7 @@ export type UserUpdateWithoutReferencesInput = {
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
@@ -4056,6 +6716,14 @@ export type UserUncheckedUpdateWithoutReferencesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -4068,6 +6736,7 @@ export type UserUncheckedUpdateWithoutReferencesInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
@@ -4093,6 +6762,14 @@ export type UserCreateWithoutReferralsGivenInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -4105,6 +6782,7 @@ export type UserCreateWithoutReferralsGivenInput = {
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
@@ -4130,6 +6808,14 @@ export type UserUncheckedCreateWithoutReferralsGivenInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -4142,6 +6828,7 @@ export type UserUncheckedCreateWithoutReferralsGivenInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
@@ -4172,6 +6859,14 @@ export type UserCreateWithoutReferralReceivedInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -4184,6 +6879,7 @@ export type UserCreateWithoutReferralReceivedInput = {
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
@@ -4209,6 +6905,14 @@ export type UserUncheckedCreateWithoutReferralReceivedInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -4221,6 +6925,7 @@ export type UserUncheckedCreateWithoutReferralReceivedInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
@@ -4262,6 +6967,14 @@ export type UserUpdateWithoutReferralsGivenInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -4274,6 +6987,7 @@ export type UserUpdateWithoutReferralsGivenInput = {
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
@@ -4299,6 +7013,14 @@ export type UserUncheckedUpdateWithoutReferralsGivenInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -4311,6 +7033,7 @@ export type UserUncheckedUpdateWithoutReferralsGivenInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
@@ -4347,6 +7070,14 @@ export type UserUpdateWithoutReferralReceivedInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -4359,6 +7090,7 @@ export type UserUpdateWithoutReferralReceivedInput = {
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
@@ -4384,6 +7116,14 @@ export type UserUncheckedUpdateWithoutReferralReceivedInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -4396,6 +7136,7 @@ export type UserUncheckedUpdateWithoutReferralReceivedInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
@@ -4421,6 +7162,14 @@ export type UserCreateWithoutRewardLedgerInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -4433,6 +7182,7 @@ export type UserCreateWithoutRewardLedgerInput = {
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
@@ -4458,6 +7208,14 @@ export type UserUncheckedCreateWithoutRewardLedgerInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -4470,6 +7228,7 @@ export type UserUncheckedCreateWithoutRewardLedgerInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
@@ -4511,6 +7270,14 @@ export type UserUpdateWithoutRewardLedgerInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -4523,6 +7290,7 @@ export type UserUpdateWithoutRewardLedgerInput = {
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
@@ -4548,6 +7316,14 @@ export type UserUncheckedUpdateWithoutRewardLedgerInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -4560,6 +7336,7 @@ export type UserUncheckedUpdateWithoutRewardLedgerInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
@@ -4585,6 +7362,14 @@ export type UserCreateWithoutOwnedTemplatesInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -4596,6 +7381,7 @@ export type UserCreateWithoutOwnedTemplatesInput = {
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
@@ -4622,6 +7408,14 @@ export type UserUncheckedCreateWithoutOwnedTemplatesInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -4633,6 +7427,7 @@ export type UserUncheckedCreateWithoutOwnedTemplatesInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
@@ -4675,6 +7470,14 @@ export type UserUpdateWithoutOwnedTemplatesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -4686,6 +7489,7 @@ export type UserUpdateWithoutOwnedTemplatesInput = {
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
@@ -4712,6 +7516,14 @@ export type UserUncheckedUpdateWithoutOwnedTemplatesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -4723,6 +7535,7 @@ export type UserUncheckedUpdateWithoutOwnedTemplatesInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
@@ -4749,6 +7562,14 @@ export type UserCreateWithoutResumesInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -4760,6 +7581,7 @@ export type UserCreateWithoutResumesInput = {
   notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
@@ -4786,6 +7608,14 @@ export type UserUncheckedCreateWithoutResumesInput = {
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -4797,6 +7627,7 @@ export type UserUncheckedCreateWithoutResumesInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
   applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
@@ -4839,6 +7670,14 @@ export type UserUpdateWithoutResumesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -4850,6 +7689,7 @@ export type UserUpdateWithoutResumesInput = {
   notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
@@ -4876,6 +7716,14 @@ export type UserUncheckedUpdateWithoutResumesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -4887,6 +7735,7 @@ export type UserUncheckedUpdateWithoutResumesInput = {
   notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
   applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
@@ -4907,6 +7756,13 @@ export type UserUncheckedUpdateWithoutResumesInput = {
  */
 
 export type UserCountOutputType = {
+  careerEvidence: number
+  careerDocuments: number
+  careerAnalyses: number
+  careerUsage: number
+  careerConnections: number
+  careerOAuthStates: number
+  careerDeliveries: number
   sessions: number
   accounts: number
   devices: number
@@ -4915,6 +7771,7 @@ export type UserCountOutputType = {
   otps: number
   notifications: number
   jobApplications: number
+  savedJobs: number
   coverLetters: number
   applicationEvents: number
   projects: number
@@ -4929,6 +7786,13 @@ export type UserCountOutputType = {
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  careerEvidence?: boolean | UserCountOutputTypeCountCareerEvidenceArgs
+  careerDocuments?: boolean | UserCountOutputTypeCountCareerDocumentsArgs
+  careerAnalyses?: boolean | UserCountOutputTypeCountCareerAnalysesArgs
+  careerUsage?: boolean | UserCountOutputTypeCountCareerUsageArgs
+  careerConnections?: boolean | UserCountOutputTypeCountCareerConnectionsArgs
+  careerOAuthStates?: boolean | UserCountOutputTypeCountCareerOAuthStatesArgs
+  careerDeliveries?: boolean | UserCountOutputTypeCountCareerDeliveriesArgs
   sessions?: boolean | UserCountOutputTypeCountSessionsArgs
   accounts?: boolean | UserCountOutputTypeCountAccountsArgs
   devices?: boolean | UserCountOutputTypeCountDevicesArgs
@@ -4937,6 +7801,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   otps?: boolean | UserCountOutputTypeCountOtpsArgs
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
   jobApplications?: boolean | UserCountOutputTypeCountJobApplicationsArgs
+  savedJobs?: boolean | UserCountOutputTypeCountSavedJobsArgs
   coverLetters?: boolean | UserCountOutputTypeCountCoverLettersArgs
   applicationEvents?: boolean | UserCountOutputTypeCountApplicationEventsArgs
   projects?: boolean | UserCountOutputTypeCountProjectsArgs
@@ -4958,6 +7823,55 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
    * Select specific fields to fetch from the UserCountOutputType
    */
   select?: Prisma.UserCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCareerEvidenceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CareerEvidenceWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCareerDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CareerDocumentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCareerAnalysesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CareerAnalysisWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCareerUsageArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CareerUsageWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCareerConnectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CareerConnectionWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCareerOAuthStatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CareerOAuthStateWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCareerDeliveriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CareerDeliveryWhereInput
 }
 
 /**
@@ -5014,6 +7928,13 @@ export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.Ty
  */
 export type UserCountOutputTypeCountJobApplicationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.JobApplicationWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountSavedJobsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.JobWhereInput
 }
 
 /**
@@ -5106,6 +8027,14 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   isActive?: boolean
   twoFactorEnabled?: boolean
   twoFactorSecret?: boolean
+  careerEvidence?: boolean | Prisma.User$careerEvidenceArgs<ExtArgs>
+  careerDocuments?: boolean | Prisma.User$careerDocumentsArgs<ExtArgs>
+  careerAnalyses?: boolean | Prisma.User$careerAnalysesArgs<ExtArgs>
+  careerPreference?: boolean | Prisma.User$careerPreferenceArgs<ExtArgs>
+  careerUsage?: boolean | Prisma.User$careerUsageArgs<ExtArgs>
+  careerConnections?: boolean | Prisma.User$careerConnectionsArgs<ExtArgs>
+  careerOAuthStates?: boolean | Prisma.User$careerOAuthStatesArgs<ExtArgs>
+  careerDeliveries?: boolean | Prisma.User$careerDeliveriesArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
   profile?: boolean | Prisma.User$profileArgs<ExtArgs>
@@ -5118,6 +8047,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   notificationPreference?: boolean | Prisma.User$notificationPreferenceArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   jobApplications?: boolean | Prisma.User$jobApplicationsArgs<ExtArgs>
+  savedJobs?: boolean | Prisma.User$savedJobsArgs<ExtArgs>
   coverLetters?: boolean | Prisma.User$coverLettersArgs<ExtArgs>
   applicationEvents?: boolean | Prisma.User$applicationEventsArgs<ExtArgs>
   projects?: boolean | Prisma.User$projectsArgs<ExtArgs>
@@ -5177,6 +8107,14 @@ export type UserSelectScalar = {
 
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "createdAt" | "updatedAt" | "role" | "isActive" | "twoFactorEnabled" | "twoFactorSecret", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  careerEvidence?: boolean | Prisma.User$careerEvidenceArgs<ExtArgs>
+  careerDocuments?: boolean | Prisma.User$careerDocumentsArgs<ExtArgs>
+  careerAnalyses?: boolean | Prisma.User$careerAnalysesArgs<ExtArgs>
+  careerPreference?: boolean | Prisma.User$careerPreferenceArgs<ExtArgs>
+  careerUsage?: boolean | Prisma.User$careerUsageArgs<ExtArgs>
+  careerConnections?: boolean | Prisma.User$careerConnectionsArgs<ExtArgs>
+  careerOAuthStates?: boolean | Prisma.User$careerOAuthStatesArgs<ExtArgs>
+  careerDeliveries?: boolean | Prisma.User$careerDeliveriesArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
   profile?: boolean | Prisma.User$profileArgs<ExtArgs>
@@ -5189,6 +8127,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   notificationPreference?: boolean | Prisma.User$notificationPreferenceArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   jobApplications?: boolean | Prisma.User$jobApplicationsArgs<ExtArgs>
+  savedJobs?: boolean | Prisma.User$savedJobsArgs<ExtArgs>
   coverLetters?: boolean | Prisma.User$coverLettersArgs<ExtArgs>
   applicationEvents?: boolean | Prisma.User$applicationEventsArgs<ExtArgs>
   projects?: boolean | Prisma.User$projectsArgs<ExtArgs>
@@ -5209,6 +8148,14 @@ export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
+    careerEvidence: Prisma.$CareerEvidencePayload<ExtArgs>[]
+    careerDocuments: Prisma.$CareerDocumentPayload<ExtArgs>[]
+    careerAnalyses: Prisma.$CareerAnalysisPayload<ExtArgs>[]
+    careerPreference: Prisma.$CareerPreferencePayload<ExtArgs> | null
+    careerUsage: Prisma.$CareerUsagePayload<ExtArgs>[]
+    careerConnections: Prisma.$CareerConnectionPayload<ExtArgs>[]
+    careerOAuthStates: Prisma.$CareerOAuthStatePayload<ExtArgs>[]
+    careerDeliveries: Prisma.$CareerDeliveryPayload<ExtArgs>[]
     sessions: Prisma.$SessionPayload<ExtArgs>[]
     accounts: Prisma.$AccountPayload<ExtArgs>[]
     profile: Prisma.$UserProfilePayload<ExtArgs> | null
@@ -5221,6 +8168,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     notificationPreference: Prisma.$NotificationPreferencePayload<ExtArgs> | null
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
     jobApplications: Prisma.$JobApplicationPayload<ExtArgs>[]
+    savedJobs: Prisma.$JobPayload<ExtArgs>[]
     coverLetters: Prisma.$CoverLetterPayload<ExtArgs>[]
     applicationEvents: Prisma.$ApplicationEventPayload<ExtArgs>[]
     projects: Prisma.$ProjectPayload<ExtArgs>[]
@@ -5640,6 +8588,14 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  careerEvidence<T extends Prisma.User$careerEvidenceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$careerEvidenceArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CareerEvidencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  careerDocuments<T extends Prisma.User$careerDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$careerDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CareerDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  careerAnalyses<T extends Prisma.User$careerAnalysesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$careerAnalysesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CareerAnalysisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  careerPreference<T extends Prisma.User$careerPreferenceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$careerPreferenceArgs<ExtArgs>>): Prisma.Prisma__CareerPreferenceClient<runtime.Types.Result.GetResult<Prisma.$CareerPreferencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  careerUsage<T extends Prisma.User$careerUsageArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$careerUsageArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CareerUsagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  careerConnections<T extends Prisma.User$careerConnectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$careerConnectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CareerConnectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  careerOAuthStates<T extends Prisma.User$careerOAuthStatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$careerOAuthStatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CareerOAuthStatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  careerDeliveries<T extends Prisma.User$careerDeliveriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$careerDeliveriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CareerDeliveryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sessions<T extends Prisma.User$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   accounts<T extends Prisma.User$accountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   profile<T extends Prisma.User$profileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$profileArgs<ExtArgs>>): Prisma.Prisma__UserProfileClient<runtime.Types.Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -5652,6 +8608,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   notificationPreference<T extends Prisma.User$notificationPreferenceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationPreferenceArgs<ExtArgs>>): Prisma.Prisma__NotificationPreferenceClient<runtime.Types.Result.GetResult<Prisma.$NotificationPreferencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   jobApplications<T extends Prisma.User$jobApplicationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$jobApplicationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  savedJobs<T extends Prisma.User$savedJobsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$savedJobsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   coverLetters<T extends Prisma.User$coverLettersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$coverLettersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CoverLetterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   applicationEvents<T extends Prisma.User$applicationEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$applicationEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApplicationEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   projects<T extends Prisma.User$projectsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$projectsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -6097,6 +9054,193 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
+ * User.careerEvidence
+ */
+export type User$careerEvidenceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CareerEvidence
+   */
+  select?: Prisma.CareerEvidenceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CareerEvidence
+   */
+  omit?: Prisma.CareerEvidenceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CareerEvidenceInclude<ExtArgs> | null
+  where?: Prisma.CareerEvidenceWhereInput
+  orderBy?: Prisma.CareerEvidenceOrderByWithRelationInput | Prisma.CareerEvidenceOrderByWithRelationInput[]
+  cursor?: Prisma.CareerEvidenceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CareerEvidenceScalarFieldEnum | Prisma.CareerEvidenceScalarFieldEnum[]
+}
+
+/**
+ * User.careerDocuments
+ */
+export type User$careerDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CareerDocument
+   */
+  select?: Prisma.CareerDocumentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CareerDocument
+   */
+  omit?: Prisma.CareerDocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CareerDocumentInclude<ExtArgs> | null
+  where?: Prisma.CareerDocumentWhereInput
+  orderBy?: Prisma.CareerDocumentOrderByWithRelationInput | Prisma.CareerDocumentOrderByWithRelationInput[]
+  cursor?: Prisma.CareerDocumentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CareerDocumentScalarFieldEnum | Prisma.CareerDocumentScalarFieldEnum[]
+}
+
+/**
+ * User.careerAnalyses
+ */
+export type User$careerAnalysesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CareerAnalysis
+   */
+  select?: Prisma.CareerAnalysisSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CareerAnalysis
+   */
+  omit?: Prisma.CareerAnalysisOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CareerAnalysisInclude<ExtArgs> | null
+  where?: Prisma.CareerAnalysisWhereInput
+  orderBy?: Prisma.CareerAnalysisOrderByWithRelationInput | Prisma.CareerAnalysisOrderByWithRelationInput[]
+  cursor?: Prisma.CareerAnalysisWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CareerAnalysisScalarFieldEnum | Prisma.CareerAnalysisScalarFieldEnum[]
+}
+
+/**
+ * User.careerPreference
+ */
+export type User$careerPreferenceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CareerPreference
+   */
+  select?: Prisma.CareerPreferenceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CareerPreference
+   */
+  omit?: Prisma.CareerPreferenceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CareerPreferenceInclude<ExtArgs> | null
+  where?: Prisma.CareerPreferenceWhereInput
+}
+
+/**
+ * User.careerUsage
+ */
+export type User$careerUsageArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CareerUsage
+   */
+  select?: Prisma.CareerUsageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CareerUsage
+   */
+  omit?: Prisma.CareerUsageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CareerUsageInclude<ExtArgs> | null
+  where?: Prisma.CareerUsageWhereInput
+  orderBy?: Prisma.CareerUsageOrderByWithRelationInput | Prisma.CareerUsageOrderByWithRelationInput[]
+  cursor?: Prisma.CareerUsageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CareerUsageScalarFieldEnum | Prisma.CareerUsageScalarFieldEnum[]
+}
+
+/**
+ * User.careerConnections
+ */
+export type User$careerConnectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CareerConnection
+   */
+  select?: Prisma.CareerConnectionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CareerConnection
+   */
+  omit?: Prisma.CareerConnectionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CareerConnectionInclude<ExtArgs> | null
+  where?: Prisma.CareerConnectionWhereInput
+  orderBy?: Prisma.CareerConnectionOrderByWithRelationInput | Prisma.CareerConnectionOrderByWithRelationInput[]
+  cursor?: Prisma.CareerConnectionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CareerConnectionScalarFieldEnum | Prisma.CareerConnectionScalarFieldEnum[]
+}
+
+/**
+ * User.careerOAuthStates
+ */
+export type User$careerOAuthStatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CareerOAuthState
+   */
+  select?: Prisma.CareerOAuthStateSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CareerOAuthState
+   */
+  omit?: Prisma.CareerOAuthStateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CareerOAuthStateInclude<ExtArgs> | null
+  where?: Prisma.CareerOAuthStateWhereInput
+  orderBy?: Prisma.CareerOAuthStateOrderByWithRelationInput | Prisma.CareerOAuthStateOrderByWithRelationInput[]
+  cursor?: Prisma.CareerOAuthStateWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CareerOAuthStateScalarFieldEnum | Prisma.CareerOAuthStateScalarFieldEnum[]
+}
+
+/**
+ * User.careerDeliveries
+ */
+export type User$careerDeliveriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CareerDelivery
+   */
+  select?: Prisma.CareerDeliverySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CareerDelivery
+   */
+  omit?: Prisma.CareerDeliveryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CareerDeliveryInclude<ExtArgs> | null
+  where?: Prisma.CareerDeliveryWhereInput
+  orderBy?: Prisma.CareerDeliveryOrderByWithRelationInput | Prisma.CareerDeliveryOrderByWithRelationInput[]
+  cursor?: Prisma.CareerDeliveryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CareerDeliveryScalarFieldEnum | Prisma.CareerDeliveryScalarFieldEnum[]
+}
+
+/**
  * User.sessions
  */
 export type User$sessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -6362,6 +9506,30 @@ export type User$jobApplicationsArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.JobApplicationScalarFieldEnum | Prisma.JobApplicationScalarFieldEnum[]
+}
+
+/**
+ * User.savedJobs
+ */
+export type User$savedJobsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Job
+   */
+  select?: Prisma.JobSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Job
+   */
+  omit?: Prisma.JobOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobInclude<ExtArgs> | null
+  where?: Prisma.JobWhereInput
+  orderBy?: Prisma.JobOrderByWithRelationInput | Prisma.JobOrderByWithRelationInput[]
+  cursor?: Prisma.JobWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.JobScalarFieldEnum | Prisma.JobScalarFieldEnum[]
 }
 
 /**

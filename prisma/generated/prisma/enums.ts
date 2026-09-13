@@ -56,14 +56,52 @@ export type AiPendingActionStatus = (typeof AiPendingActionStatus)[keyof typeof 
 
 
 export const ApplicationStatus = {
+  SAVED: 'SAVED',
+  PREPARING: 'PREPARING',
   APPLIED: 'APPLIED',
+  FOLLOW_UP_DUE: 'FOLLOW_UP_DUE',
+  RECRUITER_SCREEN: 'RECRUITER_SCREEN',
   INTERVIEW: 'INTERVIEW',
+  ASSESSMENT: 'ASSESSMENT',
   OFFER: 'OFFER',
   REJECTED: 'REJECTED',
   WITHDRAWN: 'WITHDRAWN'
 } as const
 
 export type ApplicationStatus = (typeof ApplicationStatus)[keyof typeof ApplicationStatus]
+
+
+export const JobLifecycle = {
+  ACTIVE: 'ACTIVE',
+  POSSIBLY_EXPIRED: 'POSSIBLY_EXPIRED',
+  EXPIRED: 'EXPIRED',
+  REMOVED: 'REMOVED',
+  UNKNOWN: 'UNKNOWN'
+} as const
+
+export type JobLifecycle = (typeof JobLifecycle)[keyof typeof JobLifecycle]
+
+
+export const JobSourceType = {
+  MANUAL: 'MANUAL',
+  USER_URL: 'USER_URL',
+  LEVER: 'LEVER',
+  GREENHOUSE: 'GREENHOUSE',
+  COMPANY_CAREER: 'COMPANY_CAREER',
+  PARTNER_API: 'PARTNER_API'
+} as const
+
+export type JobSourceType = (typeof JobSourceType)[keyof typeof JobSourceType]
+
+
+export const WorkplaceType = {
+  REMOTE: 'REMOTE',
+  HYBRID: 'HYBRID',
+  ON_SITE: 'ON_SITE',
+  UNSPECIFIED: 'UNSPECIFIED'
+} as const
+
+export type WorkplaceType = (typeof WorkplaceType)[keyof typeof WorkplaceType]
 
 
 export const ApplicationEventType = {
