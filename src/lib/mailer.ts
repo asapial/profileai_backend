@@ -212,6 +212,65 @@ export const sendPasswordChangedEmail = async (
   });
 };
 
+const escapeHtml = (value: string) => value
+  .replaceAll("&", "&amp;")
+  .replaceAll("<", "&lt;")
+  .replaceAll(">", "&gt;")
+  .replaceAll('"', "&quot;")
+  .replaceAll("'", "&#039;");
+
+/** Notify every configured admin recipient about a public contact request. */
+export const sendContactNotification = async (args: {
+  recipients: string[];
+  ticketId: string;
+  name: string;
+  email: string;
+  company?: string;
+  category: string;
+  subject: string;
+  message: string;
+}): Promise<void> => {
+  const safeSubject = args.subject.replace(/[\r\n]+/g, " ").slice(0, 140);
+  const detailUrl = `${envVars.FRONTEND_URL}/admin/tickets`;
+  const company = args.company?.trim() || "Not provided";
+  const text = [
+    `New public contact request (${args.ticketId})`,
+    `Name: ${args.name}`,
+    `Email: ${args.email}`,
+    `Company: ${company}`,
+    `Category: ${args.category}`,
+    `Subject: ${safeSubject}`,
+    "",
+    args.message,
+    "",
+    `Open in admin: ${detailUrl}`,
+  ].join("\n");
+  const html = `
+    <div style="font-family:Arial,sans-serif;line-height:1.6;color:#262132;max-width:680px;margin:auto">
+      <p style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#7046b5">New public contact request</p>
+      <h1 style="font-size:24px;margin:8px 0 20px">${escapeHtml(safeSubject)}</h1>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:20px">
+        <tr><td style="padding:7px 0;color:#706a7e">Name</td><td>${escapeHtml(args.name)}</td></tr>
+        <tr><td style="padding:7px 0;color:#706a7e">Email</td><td>${escapeHtml(args.email)}</td></tr>
+        <tr><td style="padding:7px 0;color:#706a7e">Company</td><td>${escapeHtml(company)}</td></tr>
+        <tr><td style="padding:7px 0;color:#706a7e">Category</td><td>${escapeHtml(args.category)}</td></tr>
+        <tr><td style="padding:7px 0;color:#706a7e">Ticket</td><td>${escapeHtml(args.ticketId)}</td></tr>
+      </table>
+      <div style="white-space:pre-wrap;border:1px solid #ded9e8;border-radius:12px;padding:18px;background:#f8f7fb">${escapeHtml(args.message)}</div>
+      <p style="margin-top:24px"><a href="${detailUrl}" style="color:#7046b5;font-weight:700">Open support tickets</a></p>
+    </div>`;
+
+  await mailer.sendMail({
+    from: SMTP_FROM,
+    to: SMTP_FROM,
+    bcc: args.recipients,
+    replyTo: args.email,
+    subject: `New contact · ${safeSubject}`,
+    text,
+    html,
+  });
+};
+
 // ──────────────────────────────────────────────────────────
 // Better Auth hook adapters
 //

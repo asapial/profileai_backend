@@ -136,6 +136,51 @@ export const announcements = {
 };
 
 export const tickets = {
+  createFromContact: async (input: {
+    name: string;
+    email: string;
+    company?: string;
+    subject: string;
+    category: string;
+    message: string;
+  }) => {
+    const ticket = await createResource("TICKET", {
+      subject: input.subject,
+      status: "OPEN",
+      priority: input.category === "SECURITY" ? "HIGH" : "NORMAL",
+      category: input.category,
+      user: {
+        id: `contact:${input.email}`,
+        name: input.name,
+        email: input.email,
+        isGuest: true,
+      },
+      assignedTo: null,
+      preview: input.message,
+      context: {
+        company: input.company || null,
+        sourcePage: "/contact",
+      },
+      source: "PUBLIC_CONTACT",
+      messages: [
+        {
+          id: crypto.randomUUID(),
+          authorId: `contact:${input.email}`,
+          authorName: input.name,
+          authorRole: "USER",
+          body: input.message,
+          createdAt: new Date().toISOString(),
+        },
+      ],
+    });
+    await createRoleNotification("ADMIN", {
+      type: "SYSTEM",
+      title: `New contact: ${input.subject}`,
+      body: `${input.name} · ${input.email}`,
+      link: "/admin/tickets",
+    }).catch((error) => console.error("[contact] admin notification failed", error));
+    return ticket;
+  },
   createFromUser: async (input: {
     userId: string;
     subject: string;
