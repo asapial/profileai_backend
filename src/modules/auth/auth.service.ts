@@ -144,6 +144,10 @@ const consumeOtp = async (
   otp: string,
   type: 'EMAIL_VERIFY' | 'FORGET_PASSWORD' | 'RESET_PASSWORD' | 'TWO_FACTOR'
 ): Promise<void> => {
+  const attemptsKey = `otp:attempts:${type}:${userId}`;
+  const attempts = await redis.incr(attemptsKey);
+  if (attempts === 1) await redis.expire(attemptsKey, 600);
+  if (attempts > 10) throw new AppError(status.TOO_MANY_REQUESTS, 'Too many incorrect codes. Please wait 10 minutes.');
   const otpRecord = await prisma.otpCode.findFirst({
     where: { userId, type, used: false },
     orderBy: { createdAt: 'desc' },
@@ -161,10 +165,12 @@ const consumeOtp = async (
     throw new AppError(status.BAD_REQUEST, 'Invalid OTP. Please try again.');
   }
 
-  await prisma.otpCode.update({
-    where: { id: otpRecord.id },
+  const consumed = await prisma.otpCode.updateMany({
+    where: { id: otpRecord.id, used: false, expiresAt: { gt: new Date() } },
     data: { used: true },
   });
+  if (consumed.count !== 1) throw new AppError(status.BAD_REQUEST, 'Invalid or expired OTP.');
+  await redis.del(attemptsKey);
 };
 
 // ─── Device Fingerprinting ───────────────────────────
@@ -305,6 +311,7 @@ export const registerUser = async (data: RegisterInput, req?: Request) => {
       data: {
         id: userId,
         name: `${firstName} ${lastName}`,
+        image: data.avatarUrl ?? null,
         email,
         emailVerified: false,
         role: 'USER',
@@ -322,6 +329,7 @@ export const registerUser = async (data: RegisterInput, req?: Request) => {
           create: {
             firstName,
             lastName,
+            avatarUrl: data.avatarUrl ?? null,
             education: [] as unknown as Prisma.InputJsonValue,
             experience: [] as unknown as Prisma.InputJsonValue,
             skills: [],
@@ -480,6 +488,13 @@ export const loginUser = async (data: LoginInput, req: Request) => {
   // legitimate user who mistyped a few times is not locked out forever.
   await clearLoginRateLimit(email, ipAddress);
 
+  return finishSignIn(user, req);
+};
+
+export const finishSignIn = async (user: { id: string; name: string; email: string; role: 'USER' | 'ADMIN'; twoFactorEnabled: boolean; isActive: boolean; emailVerified: boolean }, req: Request) => {
+  if (!user.isActive || !user.emailVerified) throw new AppError(status.FORBIDDEN, 'Account is unavailable or email is unverified.');
+  const email = user.email;
+  const ipAddress = req.ip || 'unknown';
   // If 2FA enabled, send OTP and require verification
   if (user.twoFactorEnabled) {
     const otp = generateOtp();
@@ -487,6 +502,9 @@ export const loginUser = async (data: LoginInput, req: Request) => {
     await saveOtp(user.id, otp, 'TWO_FACTOR');
     await sendOtpEmail({ to: email, otp, type: 'TWO_FACTOR', ...(user.name.split(' ')[0] !== undefined ? { firstName: user.name.split(' ')[0]! } : {}) });
 
+    const challenge = crypto.randomBytes(32).toString('hex');
+    await redis.set(`auth:2fa:${challenge}`, user.id, 'EX', 600);
+    req.res?.cookie('twoFactorChallenge', challenge, { httpOnly: true, secure: envVars.NODE_ENV === 'production', sameSite: envVars.NODE_ENV === 'production' ? 'none' : 'lax', path: '/', maxAge: 600000 });
     return { twoFactorRequired: true, email };
   }
 
@@ -539,7 +557,12 @@ export const verifyTwoFactor = async (data: TwoFactorVerifyInput, req: Request) 
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) throw new AppError(status.NOT_FOUND, 'No account found with this email.');
 
+  if (!user.isActive || !user.twoFactorEnabled) throw new AppError(status.UNAUTHORIZED, 'Please sign in again.');
+  const challenge = req.cookies?.twoFactorChallenge;
+  if (!challenge || await redis.get(`auth:2fa:${challenge}`) !== user.id) throw new AppError(status.UNAUTHORIZED, 'Sign-in expired. Please enter your password or sign in with Google again.');
   await consumeOtp(user.id, otp, 'TWO_FACTOR');
+  await redis.del(`auth:2fa:${challenge}`);
+  req.res?.clearCookie('twoFactorChallenge', { path: '/' });
 
   const userAgent = req.headers['user-agent'] || 'Unknown';
   const ipAddress = (req.headers['x-forwarded-for'] as string)?.split(',')[0] || req.ip || '';
@@ -710,10 +733,9 @@ export const resetPassword = async (data: ResetPasswordInput) => {
 
   const newPasswordHash = await bcrypt.hash(newPassword, 12);
 
-  await prisma.account.updateMany({
-    where: { userId: user.id, providerId: 'credential' },
-    data: { password: newPasswordHash },
-  });
+  const credential = await prisma.account.findFirst({ where: { userId: user.id, providerId: 'credential' } });
+  if (credential) await prisma.account.update({ where: { id: credential.id }, data: { password: newPasswordHash } });
+  else await prisma.account.create({ data: { id: crypto.randomUUID(), accountId: user.id, userId: user.id, providerId: 'credential', password: newPasswordHash } });
 
   // A password reset is full account recovery: revoke sessions and clear
   // saved device slots so stale devices cannot immediately lock the user out.
@@ -749,6 +771,7 @@ export const getMe = async (userId: string) => {
       email: true,
       role: true,
       emailVerified: true,
+      image: true,
       twoFactorEnabled: true,
       isActive: true,
       createdAt: true,

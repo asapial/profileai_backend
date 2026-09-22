@@ -6,6 +6,7 @@ import { z } from 'zod';
 // accounts unless the user explicitly opts in to the ToS.
 export const registerSchema = z.object({
   body: z.object({
+    avatarUrl: z.string().url().max(2048).refine(value => { const u = new URL(value); return u.protocol === 'https:' && (u.hostname === 'i.ibb.co' || u.hostname.endsWith('.ibb.co')); }, 'Use an uploaded ImgBB photo.').optional(),
     firstName: z.string().min(1, 'First name is required').max(50),
     lastName: z.string().min(1, 'Last name is required').max(50),
     email: z.string().email('Invalid email address'),

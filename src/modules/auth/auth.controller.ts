@@ -22,7 +22,7 @@ export const verifyEmail = catchAsync(async (req: Request, res: Response) => {
     status: status.OK,
     success: true,
     message: result.message,
-    data: null,
+    data: { ...result, email: req.body.email },
   });
 });
 
@@ -106,7 +106,7 @@ export const forgotPassword = catchAsync(async (req: Request, res: Response) => 
     status: status.OK,
     success: true,
     message: result.message,
-    data: null,
+    data: { ...result, email: req.body.email },
   });
 });
 
@@ -116,7 +116,7 @@ export const resetPassword = catchAsync(async (req: Request, res: Response) => {
     status: status.OK,
     success: true,
     message: result.message,
-    data: null,
+    data: { ...result, email: req.body.email },
   });
 });
 
@@ -154,7 +154,7 @@ export const resendOtp = catchAsync(async (req: Request, res: Response) => {
     status: status.OK,
     success: true,
     message: result.message,
-    data: null,
+    data: { ...result, email: req.body.email },
   });
 });
 
@@ -164,7 +164,7 @@ export const enable2FA = catchAsync(async (req: Request, res: Response) => {
     status: status.OK,
     success: true,
     message: result.message,
-    data: null,
+    data: { ...result, email: req.body.email },
   });
 });
 
@@ -176,7 +176,7 @@ export const confirm2FA = catchAsync(async (req: Request, res: Response) => {
     status: status.OK,
     success: true,
     message: result.message,
-    data: null,
+    data: { ...result, email: req.body.email },
   });
 });
 
@@ -186,6 +186,6 @@ export const disable2FA = catchAsync(async (req: Request, res: Response) => {
     status: status.OK,
     success: true,
     message: result.message,
-    data: null,
+    data: { ...result, email: req.body.email },
   });
 });

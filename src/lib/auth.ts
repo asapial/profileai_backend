@@ -1,3 +1,4 @@
+import bcrypt from "bcryptjs";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
@@ -138,12 +139,19 @@ export const auth = betterAuth({
   secret: envVars.BETTER_AUTH_SECRET,
   baseURL: envVars.BETTER_AUTH_URL,
 
+  trustedOrigins: [envVars.FRONTEND_URL],
+  socialProviders: process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET ? {
+    google: { clientId: process.env.GOOGLE_CLIENT_ID, clientSecret: process.env.GOOGLE_CLIENT_SECRET },
+  } : {},
+  user: { additionalFields: { role: { type: "string", defaultValue: "USER", input: false } } },
+  account: { accountLinking: { enabled: false } },
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
 
   emailAndPassword: {
     enabled: true,
+    password: { hash: password => bcrypt.hash(password, 12), verify: ({ hash, password }) => bcrypt.compare(password, hash) },
     requireEmailVerification: true,
     autoSignIn: false, // we sign in via our own /auth/login after verification
     minPasswordLength: 8,
@@ -220,11 +228,11 @@ export const auth = betterAuth({
     crossSubDomainCookies: {
       enabled: false,
     },
-    disableCSRFCheck: true,
+    disableCSRFCheck: false,
     defaultCookieAttributes: {
-      sameSite: "none",
-      secure: true,
-      httpOnly: false,
+      sameSite: envVars.NODE_ENV === "production" ? "none" : "lax",
+      secure: envVars.NODE_ENV === "production",
+      httpOnly: true,
     },
   },
 
