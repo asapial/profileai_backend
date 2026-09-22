@@ -21,9 +21,11 @@ import { aiChatRouter } from './modules/aiChat/aiChat.router';
 import { jobRouter } from './modules/job/job.router';
 
 import { careerRouter } from './modules/career/career.router';
+import { contactRouter } from './modules/contact/contact.router';
 
 const router = Router();
 router.use('/career', careerRouter);
+router.use('/contact', contactRouter);
 
 // ─── Module Routers ────────────────────────────────────
 router.use('/auth', authRouter);

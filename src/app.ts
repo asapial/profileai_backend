@@ -21,8 +21,7 @@ app.use(cookieParser());
 // verifier sees the raw byte stream.
 app.use('/webhooks', stripeWebhookRouter);
 
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
+
 
 // ─── CORS Setup ───────────────────────────────────────
 const allowedOrigins = [envVars.FRONTEND_URL, "http://localhost:3000"].filter(Boolean);
@@ -50,6 +49,8 @@ app.use(
 
 // ─── BetterAuth API Route ─────────────────────────────
 app.all('/api/auth/*splat', toNodeHandler(auth));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
 
 // ─── Health Check ─────────────────────────────────────
 app.get("/", (_req, res) => {
