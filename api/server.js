@@ -74,7 +74,7 @@ async function main() {
       }
     }
     const [{ default: app }, scheduler, exports] = await Promise.all([
-      import("./app-GHRDMSDJ.js"),
+      import("./app-5QOWOGJH.js"),
       import("./scheduler-MPDQQSQM.js"),
       import("./exportQueue-7J67KQWD.js")
     ]);
