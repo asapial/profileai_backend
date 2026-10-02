@@ -2,10 +2,11 @@ import { z } from 'zod';
 import { Prisma } from '../../../prisma/generated/prisma/client';
 import { prisma } from '../../lib/prisma';
 import AppError from '../../errorHelpers/AppError';
-import { analyzeAlignment, composeStory, composeDraft, digest, ENTITLEMENTS, SCORING_VERSION, trustedEvidence } from './career.logic';
+import { composeStory, composeDraft, digest, ENTITLEMENTS, SCORING_VERSION, trustedEvidence } from './career.logic';
 import { draftBody, editDraftBody, evidenceBody } from './career.schema';
 import { jobFreshness } from '../job/job.identity';
 import { composeProfessionalDraft } from './career.draft-ai';
+import { analyzeHybridAlignment } from './career.alignment-ai';
 
 export const ownerLock = (tx: Prisma.TransactionClient, userId: string) => tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext(${userId}))::text`;
 export async function checkApplicationQuota(tx: Prisma.TransactionClient, userId: string) {
@@ -84,12 +85,17 @@ export async function alignment(userId: string, jobId: string, resumeId: string,
   const analysisContent = document ? combined ? { resume: resume.contentData, draft: document.body } : document.body : resume.contentData;
   const freshness = jobFreshness(job).freshness;
   const cacheKey = digest({ job: job.description, content: analysisContent, documentId, combined, version: resume.version, evidence, freshness, scoring: SCORING_VERSION });
+  const cached = await prisma.careerAnalysis.findUnique({ where: { userId_cacheKey: { userId, cacheKey } } });
+  if (cached) return { ...cached, cached: true };
+  // Run the slower semantic stage outside the transaction. The transaction rechecks the cache
+  // before charging, so concurrent identical requests are still billed and stored only once.
+  const analysisResult = await analyzeHybridAlignment(job.description, analysisContent, evidence, freshness, document ? combined ? "combined-input" : `draft:${document.id}` : "resume");
   return prisma.$transaction(async tx => {
     await ownerLock(tx, userId);
     const existing = await tx.careerAnalysis.findUnique({ where: { userId_cacheKey: { userId, cacheKey } } });
     if (existing) return { ...existing, cached: true };
     await charge(tx, userId, 'alignment');
-    const result = { ...analyzeAlignment(job.description, analysisContent, evidence, freshness, document ? combined ? "combined-input" : `draft:${document.id}` : "resume"), documentType: document ? combined ? 'COMBINED' : document.kind : 'RESUME' };
+    const result = { ...analysisResult, documentType: document ? combined ? 'COMBINED' : document.kind : 'RESUME' };
     return tx.careerAnalysis.create({ data: { userId, cacheKey, jobId, resumeId, result } });
   }, { maxWait: 20000, timeout: 20000 });
 }

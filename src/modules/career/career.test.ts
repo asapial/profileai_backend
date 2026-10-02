@@ -6,6 +6,7 @@ import { normalizePosting, sourceBody } from './career.sources';
 import { decryptToken, encryptToken } from './career.crypto';
 import { imageExtension } from '../../utils/uploadSafety';
 import { contextualFallback } from './career.draft-ai';
+import { mergeSemanticAssessment } from './career.alignment-ai';
 
 test('inferred evidence cannot support generated claims or alignment citations', () => {
   assert.equal(trustedEvidence('INFERRED'), false);
@@ -21,6 +22,27 @@ test('alignment extracts evidence with citations and refuses to invent a score w
   assert.match(result.requirements[0]!.citation!.quote, /React dashboard/);
   assert.equal(analyzeAlignment('Hello world', {}, [], 'recent').score, null);
   assert.match(result.disclaimer, /not hiring probability/);
+});
+test('hybrid alignment understands common skill aliases and weights required items', () => {
+  const result = analyzeAlignment(
+    'JavaScript and Node.js skills are required. GraphQL is a preferred skill.',
+    { skills: 'JS, Node, REST APIs' },
+    [],
+    'recent',
+  );
+  assert.notEqual(result.requirements[0]?.status, 'missing');
+  assert.equal(result.requirements[0]?.importance, 'required');
+  assert.equal(result.requirements[1]?.importance, 'preferred');
+  assert.equal(result.method.includes('Hybrid'), true);
+});
+test('semantic assessment is accepted only when it cites an allowed source', () => {
+  const baseline = analyzeAlignment('Required ability to build accessible interfaces.', { summary: 'Created inclusive web experiences.' }, [], 'recent');
+  const rejected = mergeSemanticAssessment(baseline, [{ requirementIndex: 0, sourceId: 'invented:1', semanticScore: 95, confidence: 'high' }], new Map());
+  assert.equal(rejected.score, baseline.score);
+  const source = new Map([['resume:1', 'Created inclusive web experiences.']]);
+  const accepted = mergeSemanticAssessment(baseline, [{ requirementIndex: 0, sourceId: 'resume:1', semanticScore: 80, confidence: 'high' }], source);
+  assert.ok((accepted.score ?? 0) > (baseline.score ?? 0));
+  assert.equal(accepted.requirements[0]?.citation?.source, 'resume:1');
 });
 test('draft fallback is a complete professional email and preserves confirmed claims exactly', () => {
   const claims = [{ id: '1', statement: 'Built a React dashboard.', source: 'Portfolio' }, { id: '2', statement: 'Maintained API documentation.', source: 'Notes' }];

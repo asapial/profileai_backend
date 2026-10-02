@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 
-export const SCORING_VERSION = 'evidence-lexical-v1';
+export const SCORING_VERSION = 'evidence-hybrid-v2';
 export const digest = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex');
 export const trustedEvidence = (status: string) => ['VERIFIED', 'USER_CONFIRMED'].includes(status);
 export function flattenText(value: unknown): string {
@@ -10,33 +10,90 @@ export function flattenText(value: unknown): string {
   if (value && typeof value === 'object') return Object.values(value).map(flattenText).join('\n');
   return '';
 }
-const tokens = (text: string) => [...new Set(text.toLowerCase().match(/[a-z][a-z0-9+#.-]{2,}/g) ?? [])]
-  .filter(word => !['the', 'and', 'with', 'for', 'you', 'your', 'our', 'are', 'will', 'have', 'that', 'this', 'from', 'work', 'must', 'required', 'experience'].includes(word));
+const STOP_WORDS = new Set(['the', 'and', 'with', 'for', 'you', 'your', 'our', 'are', 'will', 'have', 'that', 'this', 'from', 'work', 'must', 'required', 'requir', 'experience', 'experienc', 'years', 'year', 'role', 'candidate', 'skill']);
+const ALIASES: Record<string, string[]> = {
+  javascript: ['javascript', 'ecmascript', 'js'], typescript: ['typescript', 'ts'], nodejs: ['node.js', 'nodejs', 'node'],
+  react: ['react.js', 'reactjs', 'react'], nextjs: ['next.js', 'nextjs'], postgres: ['postgresql', 'postgres'],
+  aws: ['amazon web services', 'aws'], gcp: ['google cloud platform', 'google cloud', 'gcp'],
+  cicd: ['continuous integration', 'continuous delivery', 'continuous deployment', 'ci/cd', 'cicd'],
+  kubernetes: ['kubernetes', 'k8s'], rest: ['restful', 'rest api', 'rest'], dotnet: ['.net', 'dotnet'],
+  machinelearning: ['machine learning', 'ml'], artificialintelligence: ['artificial intelligence', 'ai'],
+};
+const normalizeAliases = (text: string) => {
+  let normalized = text.toLowerCase();
+  for (const [canonical, aliases] of Object.entries(ALIASES)) {
+    for (const alias of aliases.sort((a, b) => b.length - a.length)) normalized = normalized.replace(new RegExp(`\\b${alias.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')}\\b`, 'gi'), canonical);
+  }
+  return normalized;
+};
+const stem = (word: string) => word.length > 5 ? word.replace(/(ing|ments?|ness|ation|ed|es|s)$/i, '') : word;
+const tokens = (text: string) => [...new Set(normalizeAliases(text).match(/[a-z][a-z0-9+#.-]{1,}/g) ?? [])]
+  .map(stem).filter(word => word.length > 1 && !STOP_WORDS.has(word));
+const similarity = (left: string, right: string) => {
+  const a = tokens(left); const b = new Set(tokens(right));
+  if (!a.length) return { lexical: 0, semantic: 0, matched: [] as string[] };
+  const matched = a.filter(term => b.has(term));
+  const fuzzy = a.filter(term => !b.has(term) && [...b].some(other => other.startsWith(term) || term.startsWith(other))).length;
+  return { lexical: matched.length / a.length, semantic: Math.min(1, (matched.length + fuzzy * .65) / a.length), matched };
+};
+const requirementImportance = (requirement: string) => /\b(must|required|essential|minimum|need to)\b/i.test(requirement) ? 1.35 : /\b(preferred|nice to have|bonus|plus)\b/i.test(requirement) ? .7 : 1;
+const sourceQuality = (source: { kind: 'resume' | 'evidence'; status?: string | undefined; updatedAt?: string | Date | undefined; statement: string }) => {
+  const evidenceTrust = source.kind === 'resume' ? .86 : source.status === 'VERIFIED' ? 1 : .93;
+  const age = source.updatedAt ? Math.max(0, Date.now() - new Date(source.updatedAt).getTime()) / 31_557_600_000 : 0;
+  const recency = age <= 2 ? 1 : age <= 5 ? .92 : .82;
+  const specificity = /\d+(?:\.\d+)?(?:%|\s*(users?|hours?|days?|projects?|customers?|requests?|ms|seconds?))/i.test(source.statement) ? 1 : .94;
+  return Math.min(1, evidenceTrust * recency * specificity);
+};
 
-// This transparent baseline intentionally makes no semantic or hiring-probability claim.
-export function analyzeAlignment(description: string, resume: unknown, evidence: Array<{ id: string; statement: string; status: string }>, freshness: string, inputLabel = "resume") {
-  const resumeText = flattenText(resume);
-  const sentences = resumeText.split(/\n|(?<=[.!?])\s+/).filter(Boolean);
-  const requirements = description.split(/\n|(?<=[.!?])\s+/).map(s => s.trim()).filter(s => s.length > 15 && /required|must|experience|proficien|knowledge|ability|skill|familiar/i.test(s))
+export type AlignmentEvidence = { id: string; statement: string; status: string; technologies?: string[]; details?: unknown; updatedAt?: string | Date };
+export type SemanticAssessment = { requirementIndex: number; sourceId: string | null; semanticScore: number; confidence: 'high' | 'medium' | 'low'; rationale?: string | undefined };
+
+export function extractRequirements(description: string) {
+  return description.split(/\n|(?<=[.!?])\s+/).map(s => s.trim())
+    .filter(s => s.length > 15 && /required|must|experience|proficien|knowledge|ability|skill|familiar|responsib|preferred|qualif|expertise/i.test(s))
     .filter(s => !/\b(age|gender|race|religion|ethnicity|nationality|marital|disability|pregnan\w*|male|female)\b/i.test(s)).slice(0, 24);
+}
+
+export function alignmentSources(resume: unknown, evidence: AlignmentEvidence[], inputLabel = 'resume') {
+  const sentences = flattenText(resume).split(/\n|(?<=[.!?])\s+/).map(value => value.trim()).filter(Boolean);
+  return [
+    ...sentences.map((statement, index) => ({ id: `${inputLabel}:${index + 1}`, statement, kind: 'resume' as const, quality: sourceQuality({ kind: 'resume', statement }) })),
+    ...evidence.filter(e => trustedEvidence(e.status)).map(e => {
+      const statement = [e.statement, e.technologies?.join(' '), flattenText(e.details)].filter(Boolean).join(' ');
+      return { id: `evidence:${e.id}`, statement, kind: 'evidence' as const, quality: sourceQuality({ kind: 'evidence', statement, status: e.status, updatedAt: e.updatedAt }) };
+    }),
+  ];
+}
+
+// Deterministic half of the hybrid scorer. It remains usable when the semantic provider is unavailable.
+export function analyzeAlignment(description: string, resume: unknown, evidence: AlignmentEvidence[], freshness: string, inputLabel = "resume") {
+  const resumeText = flattenText(resume);
+  const requirements = extractRequirements(description);
+  const sources = alignmentSources(resume, evidence, inputLabel);
   const rows = requirements.map(requirement => {
-    const terms = tokens(requirement);
-    const sources = [ ...sentences.map((statement, index) => ({ id: `${inputLabel}:${index + 1}`, statement })),
-      ...evidence.filter(e => trustedEvidence(e.status)).map(e => ({ id: `evidence:${e.id}`, statement: e.statement })) ];
-    const ranked = sources.map(source => ({ ...source, matched: terms.filter(t => tokens(source.statement).includes(t)) })).sort((a, b) => b.matched.length - a.matched.length);
+    const ranked = sources.map(source => ({ ...source, ...similarity(requirement, source.statement) }))
+      .map(source => ({ ...source, coverage: Math.round((source.lexical * .55 + source.semantic * .30) * source.quality * 100) }))
+      .sort((a, b) => b.coverage - a.coverage || b.quality - a.quality);
     const best = ranked[0];
-    const coverage = terms.length && best ? best.matched.length / terms.length : 0;
-    return { requirement, status: coverage >= .65 ? 'strong' : coverage > 0 ? 'uncertain' : 'missing',
-      coverage: Math.round(coverage * 100), citation: best?.matched.length ? { source: best.id, quote: best.statement } : null };
+    const coverage = best?.coverage ?? 0;
+    const importance = requirementImportance(requirement);
+    return { requirement, status: coverage >= 65 ? 'strong' : coverage >= 25 ? 'partial' : 'missing', coverage,
+      confidence: coverage >= 65 && (best?.quality ?? 0) >= .9 ? 'high' : coverage >= 25 ? 'medium' : 'low',
+      importance: importance > 1 ? 'required' : importance < 1 ? 'preferred' : 'standard', importanceWeight: importance,
+      components: { lexical: Math.round((best?.lexical ?? 0) * 100), semantic: Math.round((best?.semantic ?? 0) * 100), evidenceQuality: Math.round((best?.quality ?? 0) * 100) },
+      citation: best && coverage >= 25 ? { source: best.id, quote: best.statement } : null };
   });
   const wordCount = resumeText.split(/\s+/).filter(Boolean).length;
-  const score = rows.length ? Math.round(rows.reduce((sum, row) => sum + row.coverage, 0) / rows.length) : null;
-  return { version: SCORING_VERSION, method: 'Lexical evidence coverage', score, confidence: 'limited',
-    disclaimer: 'Keyword overlap is a review aid, not hiring probability or a verified assessment of competence.',
-    requirements: rows, breakdown: { requirementCoverage: score, measurableImpact: /\d+(%|\s*(users|hours|days|projects|customers))/i.test(resumeText) ? 'Numeric evidence present; verify it' : 'No explicit metric found',
+  const totalWeight = rows.reduce((sum, row) => sum + row.importanceWeight, 0);
+  const score = rows.length ? Math.round(rows.reduce((sum, row) => sum + row.coverage * row.importanceWeight, 0) / totalWeight) : null;
+  const requiredRows = rows.filter(row => row.importance === 'required');
+  const requiredScore = requiredRows.length ? Math.round(requiredRows.reduce((sum, row) => sum + row.coverage, 0) / requiredRows.length) : null;
+  return { version: SCORING_VERSION, method: 'Hybrid evidence coverage (deterministic fallback)', score, confidence: rows.length >= 5 ? 'medium' : 'limited',
+    disclaimer: 'Evidence coverage combines requirement importance, skill aliases, semantic similarity, evidence quality and recency. It is not hiring probability, an ATS score, or a verified assessment of competence.',
+    requirements: rows, breakdown: { requirementCoverage: score, requiredCoverage: requiredScore, strongMatches: rows.filter(row => row.status === 'strong').length,
+      measurableImpact: /\d+(%|\s*(users|hours|days|projects|customers))/i.test(resumeText) ? 'Numeric evidence present; verify it' : 'No explicit metric found',
       structure: /experience|education|skills/i.test(resumeText) ? 'Common section labels found' : 'Review section labels',
-      readability: wordCount >= 100 && wordCount <= 1200 ? 'Within common length range' : 'Review document length',
-      experienceAlignment: 'Dates, seniority and depth require human review', keywordCoverage: score },
+      readability: wordCount >= 100 && wordCount <= 1200 ? 'Within common length range' : 'Review document length' },
     risks: [ ...(rows.length ? [] : ['No explicit requirements extracted; paste clear requirement statements.']),
       ...(freshness === 'recent' ? [] : ['Job availability is unverified or stale.']),
       ...(evidence.some(e => !trustedEvidence(e.status)) ? ['Unconfirmed evidence excluded.'] : []) ],
