@@ -5,11 +5,11 @@ import { envVars } from "../config/env";
 // Explicit fallbacks keep the feature available if the router is temporarily busy.
 // ─────────────────────────────────────────────
 const FREE_MODELS: string[] = [
-  "openrouter/free",
-  "openai/gpt-oss-20b:free",
+  "qwen/qwen3.8-27b:free",
   "google/gemma-4-26b-a4b-it:free",
   "nvidia/nemotron-3-ultra-550b-a55b:free",
   "nvidia/nemotron-3-super-120b-a12b:free",
+  "openrouter/free",
 ];
 
 // ─────────────────────────────────────────────

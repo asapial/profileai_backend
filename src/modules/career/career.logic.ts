@@ -43,20 +43,33 @@ export function analyzeAlignment(description: string, resume: unknown, evidence:
     analyzedAt: new Date().toISOString() };
 }
 
-export function composeDraft(input: { kind: string; tone: string; length: string; title: string; company: string; recipientName?: string | undefined }, claims: Array<{ id: string; statement: string; source: string }>) {
+export function composeDraft(input: { kind: string; tone: string; length: string; targetCharacters?: number; title: string; company: string; recipientName?: string | undefined }, claims: Array<{ id: string; statement: string; source: string }>) {
   const greeting = input.recipientName ? `Hello ${input.recipientName},` : 'Hello hiring team,';
   const openings: Record<string, string> = {
-    APPLICATION: `I am applying for the ${input.title} role at ${input.company}.`,
-    OUTREACH: `I would like to learn more about the ${input.title} opportunity at ${input.company}.`,
-    FOLLOW_UP: `I am following up about the ${input.title} role at ${input.company}. Could you share an update on the process?`,
-    THANK_YOU: `Thank you for your time discussing the ${input.title} role at ${input.company}.`,
-    REFERRAL: `Would you be comfortable discussing a referral for the ${input.title} role at ${input.company}?`,
-    COVER_LETTER: `I am interested in contributing to ${input.company} as a ${input.title}.`,
+    APPLICATION: `I am writing to express my interest in the ${input.title} position at ${input.company}. The role stands out as an opportunity to contribute relevant, hands-on experience while continuing to grow with a thoughtful team.`,
+    OUTREACH: `I am reaching out because I am interested in the ${input.title} opportunity at ${input.company}. I would value the chance to learn more about the team’s priorities and the problems this role is expected to solve.`,
+    FOLLOW_UP: `I wanted to follow up regarding the ${input.title} opportunity at ${input.company}. I remain genuinely interested in the role and in the possibility of contributing to the team.`,
+    THANK_YOU: `Thank you for taking the time to speak with me about the ${input.title} role at ${input.company}. I appreciated the conversation and the opportunity to better understand the position and the team’s goals.`,
+    REFERRAL: `I am exploring the ${input.title} opportunity at ${input.company} and wanted to ask for your perspective. The position appears closely connected to the kind of work I am interested in continuing.`,
+    COVER_LETTER: `I am pleased to submit my interest in the ${input.title} position at ${input.company}. I am drawn to the opportunity to apply relevant experience in a role where careful execution, collaboration, and measurable contribution matter.`,
   };
-  const selected = claims.slice(0, input.length === 'short' ? 1 : 3);
-  const closing = input.tone === 'warm' ? 'I would welcome the chance to connect. Thank you for considering my note.' : input.tone === 'confident' ? 'I would welcome a conversation about how this experience fits the role.' : 'Thank you for your consideration.';
+  const targetCharacters = input.targetCharacters ?? (input.length === 'short' ? 900 : 1600);
+  const evidenceLimit = targetCharacters <= 1000 ? 2 : targetCharacters <= 2200 ? 4 : 6;
+  const selected = claims.slice(0, evidenceLimit);
+  const evidenceParagraph = selected.length
+    ? `My background offers concrete experience relevant to this work. ${selected.map((e, index) => `${index === 0 ? 'For example' : index === selected.length - 1 ? 'Additionally' : 'I also'}: ${e.statement}`).join(' ')}`
+    : `My background has prepared me to approach this opportunity with care, curiosity, and a strong sense of ownership. I would be glad to discuss the most relevant examples from my experience in a conversation.`;
+  const intent: Record<string, string> = {
+    APPLICATION: `I would bring this experience to ${input.company} with a focus on understanding the team’s needs, communicating clearly, and delivering dependable work. The position aligns well with the direction in which I would like to continue developing my career.`,
+    OUTREACH: `I am particularly interested in how the team defines success for this position and which priorities would need attention first. Any context you can share about the role or the hiring process would be greatly appreciated.`,
+    FOLLOW_UP: `The opportunity continues to align with my experience and career direction. If there is any additional information I can provide to support the team’s review, I would be happy to send it.`,
+    THANK_YOU: `Our discussion reinforced my interest in the opportunity. I would be excited to bring my experience to the team and contribute with the same care and accountability reflected in my previous work.`,
+    REFERRAL: `If you believe my background may be relevant, I would appreciate any insight you can offer about the team or the role. If appropriate, I would also be grateful for your guidance on the best way to introduce my application.`,
+    COVER_LETTER: `I would bring this experience to ${input.company} with a practical, collaborative approach and a commitment to producing work the team can rely on. I am especially interested in contributing where the role’s needs and my confirmed experience overlap.`,
+  };
+  const closing = input.tone === 'warm' ? 'I would be glad to share more context and learn more about the team’s needs. Thank you for your time and consideration—I hope we have the opportunity to connect.\n\nBest regards,' : input.tone === 'confident' ? 'I would welcome a conversation about how this experience can support the team’s goals and would be happy to provide any additional information. Thank you for your consideration.\n\nBest regards,' : 'I would appreciate the opportunity to discuss how my experience aligns with the role and to learn more about the team’s priorities. Thank you for your time and consideration.\n\nSincerely,';
   return { subjects: [`${input.title} — application`, `${input.title} at ${input.company}`, `Regarding the ${input.title} opportunity`],
-    body: [greeting, openings[input.kind] ?? openings.APPLICATION, ...selected.map(e => e.statement), closing].join('\n\n'),
+    body: [greeting, openings[input.kind] ?? openings.APPLICATION, evidenceParagraph, intent[input.kind] ?? intent.APPLICATION, closing].join('\n\n'),
     claims: selected.map(e => ({ evidenceId: e.id, quote: e.statement, source: e.source })),
     missingQuestions: selected.length ? [] : ['Which relevant project or responsibility can you confirm? A metric is optional.'] };
 }

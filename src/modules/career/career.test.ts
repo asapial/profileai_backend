@@ -1,10 +1,11 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { analyzeAlignment, composeDraft, ENTITLEMENTS, trustedEvidence } from './career.logic';
-import { evidenceBody, editDraftBody } from './career.schema';
+import { draftBody, evidenceBody, editDraftBody, styleBody } from './career.schema';
 import { normalizePosting, sourceBody } from './career.sources';
 import { decryptToken, encryptToken } from './career.crypto';
 import { imageExtension } from '../../utils/uploadSafety';
+import { contextualFallback } from './career.draft-ai';
 
 test('inferred evidence cannot support generated claims or alignment citations', () => {
   assert.equal(trustedEvidence('INFERRED'), false);
@@ -21,14 +22,54 @@ test('alignment extracts evidence with citations and refuses to invent a score w
   assert.equal(analyzeAlignment('Hello world', {}, [], 'recent').score, null);
   assert.match(result.disclaimer, /not hiring probability/);
 });
-test('draft claims preserve confirmed text exactly and short mode reduces selected claims', () => {
+test('draft fallback is a complete professional email and preserves confirmed claims exactly', () => {
   const claims = [{ id: '1', statement: 'Built a React dashboard.', source: 'Portfolio' }, { id: '2', statement: 'Maintained API documentation.', source: 'Notes' }];
   const result = composeDraft({ title: 'Engineer', company: 'Example', tone: 'warm', kind: 'APPLICATION', length: 'short' }, claims);
   assert.ok(result.body.includes(claims[0]!.statement));
-  assert.equal(result.claims.length, 1);
+  assert.equal(result.claims.length, 2);
   assert.equal(/\d+%/.test(result.body), false);
   assert.equal(result.subjects.length, 3);
+  assert.ok(result.body.split(/\s+/).length >= 100);
+  assert.match(result.body, /Hello hiring team,/);
+  assert.match(result.body, /Best regards,/);
   assert.equal(composeDraft({ title: 'Engineer', company: 'Example', tone: 'neutral', kind: 'FOLLOW_UP', length: 'short' }, []).missingQuestions.length, 1);
+});
+test('standard drafts support bounded character targets and use additional relevant evidence', () => {
+  const claims = Array.from({ length: 6 }, (_, index) => ({ id: String(index + 1), statement: `Confirmed engineering achievement number ${index + 1}.`, source: 'Profile' }));
+  const short = composeDraft({ title: 'Engineer', company: 'Example', tone: 'neutral', kind: 'APPLICATION', length: 'short', targetCharacters: 800 }, claims);
+  const standard = composeDraft({ title: 'Engineer', company: 'Example', tone: 'neutral', kind: 'APPLICATION', length: 'standard', targetCharacters: 1800 }, claims);
+  assert.equal(short.claims.length, 2);
+  assert.equal(standard.claims.length, 4);
+  assert.ok(standard.body.length > short.body.length);
+  assert.equal(draftBody.safeParse({ jobId: 'job-1', targetCharacters: 600 }).success, true);
+  assert.equal(draftBody.safeParse({ jobId: 'job-1', targetCharacters: 599 }).success, false);
+  assert.equal(styleBody.safeParse({ tone: 'warm', length: 'standard', targetCharacters: 3600 }).success, true);
+  assert.equal(styleBody.safeParse({ tone: 'warm', length: 'standard', targetCharacters: 3601 }).success, false);
+});
+test('contextual fallback scales toward a long target without inventing evidence', () => {
+  const claim = { id: 'e1', statement: 'Led delivery of an accessible customer dashboard.', source: 'Profile' };
+  const result = contextualFallback(
+    { title: 'Senior Product Engineer', company: 'Example Labs', tone: 'neutral', kind: 'APPLICATION', length: 'standard', targetCharacters: 3600 },
+    [claim],
+    {
+      jobDescription: 'Build reliable customer-facing applications with React and TypeScript. Collaborate with product and design, improve accessibility, test APIs, review code, and communicate decisions clearly.',
+      resume: {
+        summary: 'Product-focused engineer experienced in React, TypeScript, API integration, automated testing, accessible interfaces, and technical documentation.',
+        experience: [
+          'Built and maintained customer-facing web products from planning through release.',
+          'Collaborated with product and design partners to refine requirements and review implementation details.',
+          'Integrated APIs and added automated tests for critical user journeys.',
+          'Reviewed interface accessibility and documented technical decisions for future maintainers.',
+          'Supported iterative releases by investigating defects and communicating tradeoffs to stakeholders.',
+        ],
+      },
+    },
+    3600,
+  );
+  assert.ok(result.body.length >= 3240, `expected at least 3240 characters, received ${result.body.length}`);
+  assert.ok(result.body.length <= 3960, `expected at most 3960 characters, received ${result.body.length}`);
+  assert.ok(result.body.includes(claim.statement));
+  assert.equal(result.claims.length, 1);
 });
 test('official parser fixtures normalize both providers and detect contract drift', () => {
   const lever = normalizePosting('LEVER', { id: 'a', text: 'Engineer', hostedUrl: 'https://jobs.lever.co/example/a', descriptionPlain: 'Build customer applications.', lists: [{ text: 'Requirements', content: '<li>React experience required</li>' }], categories: { location: 'Remote' } }, 'Example');

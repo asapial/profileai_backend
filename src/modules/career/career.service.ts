@@ -5,6 +5,7 @@ import AppError from '../../errorHelpers/AppError';
 import { analyzeAlignment, composeStory, composeDraft, digest, ENTITLEMENTS, SCORING_VERSION, trustedEvidence } from './career.logic';
 import { draftBody, editDraftBody, evidenceBody } from './career.schema';
 import { jobFreshness } from '../job/job.identity';
+import { composeProfessionalDraft } from './career.draft-ai';
 
 export const ownerLock = (tx: Prisma.TransactionClient, userId: string) => tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext(${userId}))::text`;
 export async function checkApplicationQuota(tx: Prisma.TransactionClient, userId: string) {
@@ -93,6 +94,19 @@ export async function alignment(userId: string, jobId: string, resumeId: string,
   }, { maxWait: 20000, timeout: 20000 });
 }
 export async function createDraft(userId: string, body: z.infer<typeof draftBody>) {
+  const [draftJob, draftResume, draftEvidence] = await Promise.all([
+    prisma.job.findFirst({ where: { id: body.jobId, userId } }),
+    body.resumeId ? prisma.resume.findFirst({ where: { id: body.resumeId, userId } }) : null,
+    prisma.careerEvidence.findMany({ where: { userId, id: { in: body.evidenceIds } } }),
+  ]);
+  if (!draftJob) throw new AppError(404, 'Job not found.');
+  if (body.resumeId && !draftResume) throw new AppError(404, 'Resume not found.');
+  if (draftEvidence.length !== new Set(body.evidenceIds).size || draftEvidence.some(e => !trustedEvidence(e.status))) throw new AppError(400, 'Select only confirmed evidence that you own.');
+  const generatedDraft = await composeProfessionalDraft(
+    { ...body, title: draftJob.title, company: draftJob.company },
+    draftEvidence,
+    { jobDescription: draftJob.description, resume: draftResume?.contentData },
+  );
   return prisma.$transaction(async tx => {
     await ownerLock(tx, userId);
     const job = await tx.job.findFirst({ where: { id: body.jobId, userId } });
@@ -101,10 +115,10 @@ export async function createDraft(userId: string, body: z.infer<typeof draftBody
     const evidence = await tx.careerEvidence.findMany({ where: { userId, id: { in: body.evidenceIds } } });
     if (evidence.length !== new Set(body.evidenceIds).size || evidence.some(e => !trustedEvidence(e.status))) throw new AppError(400, 'Select only confirmed evidence that you own.');
     await charge(tx, userId, 'draft');
-    const draft = composeDraft({ ...body, title: job.title, company: job.company }, evidence);
+    const draft = generatedDraft;
     const document = await tx.careerDocument.create({ data: { userId, jobId: job.id, resumeId: body.resumeId ?? null, kind: body.kind,
       title: `${job.title} · ${body.kind}`, subject: draft.subjects[0]!, body: draft.body, evidence: draft.claims, versions: [] } });
-    return { ...document, subjects: draft.subjects, missingQuestions: draft.missingQuestions };
+    return { ...document, subjects: draft.subjects, missingQuestions: draft.missingQuestions, generatedBy: draft.generatedBy, model: 'model' in draft ? draft.model : undefined };
   }, { maxWait: 20000, timeout: 20000 });
 }
 export async function editDraft(userId: string, id: string, body: z.infer<typeof editDraftBody>) {
