@@ -199,7 +199,7 @@ const getLegacyDashboardStats = async () => {
 
 export const listUsers = async (page = 1, limit = 20, search?: string, roleFilter?: string, statusFilter?: string) => {
   const where: Record<string, unknown> = {
-    role: 'USER',
+    ...(roleFilter && roleFilter !== 'all' ? { role: roleFilter } : {}),
     ...(search ? {
       OR: [
         { name: { contains: search, mode: 'insensitive' } },
@@ -226,6 +226,111 @@ export const listUsers = async (page = 1, limit = 20, search?: string, roleFilte
   ]);
 
   return { users, meta: { page, limit, total, totalPages: Math.ceil(total / limit) } };
+};
+
+export const listUserSubscriptions = async (
+  page = 1,
+  limit = 20,
+  search?: string,
+) => {
+  const safePage = Math.max(1, page);
+  const safeLimit = Math.min(Math.max(1, limit), 100);
+  const where = {
+    role: 'USER' as const,
+    ...(search ? {
+      OR: [
+        { name: { contains: search, mode: 'insensitive' as const } },
+        { email: { contains: search, mode: 'insensitive' as const } },
+      ],
+    } : {}),
+  };
+  const [users, total] = await Promise.all([
+    prisma.user.findMany({
+      where,
+      skip: (safePage - 1) * safeLimit,
+      take: safeLimit,
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        isActive: true,
+        limits: true,
+        subscriptions: {
+          include: { plan: true },
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+        },
+      },
+    }),
+    prisma.user.count({ where }),
+  ]);
+
+  return {
+    subscriptions: users.map((user) => {
+      const subscription = user.subscriptions[0] ?? null;
+      return {
+        user: { id: user.id, name: user.name, email: user.email, isActive: user.isActive },
+        plan: subscription ? {
+          id: subscription.plan.id,
+          name: subscription.plan.name,
+          slug: subscription.plan.slug,
+          interval: subscription.plan.interval,
+        } : { id: null, name: 'Free', slug: 'free', interval: null },
+        status: subscription?.status ?? 'FREE',
+        currentPeriodStart: subscription?.currentPeriodStart ?? null,
+        currentPeriodEnd: subscription?.currentPeriodEnd ?? null,
+        cancelAtPeriodEnd: subscription?.cancelAtPeriodEnd ?? false,
+        usage: {
+          resumes: { used: user.limits?.resumeUsed ?? 0, limit: user.limits?.resumeLimit ?? 0 },
+          ai: { used: user.limits?.apiUsed ?? 0, limit: user.limits?.apiLimit ?? 0 },
+          resetAt: user.limits?.resetAt ?? subscription?.currentPeriodEnd ?? null,
+          overrideByAdmin: user.limits?.overrideByAdmin ?? false,
+        },
+      };
+    }),
+    meta: { page: safePage, limit: safeLimit, total, totalPages: Math.ceil(total / safeLimit) },
+  };
+};
+
+export const resetUserPlanUsage = async (actorId: string, userId: string) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      email: true,
+      limits: true,
+      subscriptions: { orderBy: { createdAt: 'desc' }, take: 1, select: { currentPeriodEnd: true } },
+    },
+  });
+  if (!user) throw new AppError(status.NOT_FOUND, 'User not found.');
+  const nextResetAt = user.subscriptions[0]?.currentPeriodEnd ?? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+  const monthPeriod = new Date().toISOString().slice(0, 7);
+  const monday = new Date();
+  monday.setUTCDate(monday.getUTCDate() - ((monday.getUTCDay() + 6) % 7));
+  const weeklyPeriod = monday.toISOString().slice(0, 10);
+
+  const limits = await prisma.$transaction(async (tx) => {
+    const updated = await tx.userLimit.upsert({
+      where: { userId },
+      update: { resumeUsed: 0, apiUsed: 0, resetAt: nextResetAt },
+      create: { userId, resumeUsed: 0, apiUsed: 0, resetAt: nextResetAt },
+    });
+    await tx.careerUsage.deleteMany({
+      where: { userId, OR: [{ period: monthPeriod }, { period: weeklyPeriod }] },
+    });
+    await tx.auditLog.create({
+      data: {
+        actorId,
+        action: 'ADMIN_SUBSCRIPTION_USAGE_RESET',
+        entityType: 'User',
+        entityId: userId,
+        metadata: { email: user.email, previousResumeUsed: user.limits?.resumeUsed ?? 0, previousApiUsed: user.limits?.apiUsed ?? 0, resetAt: nextResetAt.toISOString() },
+      },
+    });
+    return updated;
+  });
+  return { userId, usage: { resumeUsed: limits.resumeUsed, apiUsed: limits.apiUsed, resetAt: limits.resetAt } };
 };
 
 export const getUserById = async (userId: string) => {

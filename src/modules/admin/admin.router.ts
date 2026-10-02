@@ -12,6 +12,8 @@ router.use(checkAuth('ADMIN'));
 
 router.get('/dashboard', adminController.getDashboard);
 router.get('/users', adminController.listUsers);
+router.get('/subscriptions', adminController.listUserSubscriptions);
+router.post('/subscriptions/:id/reset-usage', adminController.resetUserPlanUsage);
 router.post('/users/invite', adminController.inviteUser);
 router.get('/users/:id', adminController.getUserById);
 router.post('/users/:id/impersonate', adminController.impersonateUser);

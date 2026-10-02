@@ -28,9 +28,23 @@ export const listUsers = catchAsync(async (req: Request, res: Response) => {
     status: status.OK,
     success: true,
     message: 'Users retrieved.',
-    data: result.users,
-    meta: result.meta,
+    data: result,
   });
+});
+
+export const listUserSubscriptions = catchAsync(async (req: Request, res: Response) => {
+  const { page = '1', limit = '20', search } = req.query;
+  const data = await adminService.listUserSubscriptions(
+    parseInt(page as string),
+    parseInt(limit as string),
+    search as string,
+  );
+  sendResponse(res, { status: status.OK, success: true, message: 'User subscriptions retrieved.', data });
+});
+
+export const resetUserPlanUsage = catchAsync(async (req: Request, res: Response) => {
+  const data = await adminService.resetUserPlanUsage(req.user.userId, String(req.params.id));
+  sendResponse(res, { status: status.OK, success: true, message: 'Plan usage reset.', data });
 });
 
 export const getUserById = catchAsync(async (req: Request, res: Response) => {
