@@ -1,8 +1,7 @@
 import status from 'http-status';
-import { randomBytes } from 'node:crypto';
+import { createHash, randomBytes } from 'node:crypto';
 import { existsSync } from 'node:fs';
 import Handlebars from 'handlebars';
-import HTMLtoDOCX from 'html-to-docx';
 import puppeteer from 'puppeteer-core';
 import { Prisma } from '../../../prisma/generated/prisma/client';
 import { prisma } from '../../lib/prisma';
@@ -19,11 +18,7 @@ import {
   UpdateResumeTemplateInput,
   ShareResumeInput,
 } from './resume.schema';
-import {
-  buildResumeDocx,
-  buildResumePdf,
-  buildTemplateSnapshotDocx,
-} from './resumeDocument';
+import { buildTemplateSnapshotDocx } from './resumeDocument';
 
 type JsonObject = Record<string, unknown>;
 
@@ -54,6 +49,20 @@ const firstNonEmpty = (...values: unknown[]): string => {
   return '';
 };
 
+const DEPTH_POLICY = {
+  CONCISE: { summaryWords: '60-90', recentBullets: '2-3', olderBullets: '1-2', pageIntent: 'one focused page' },
+  STANDARD: { summaryWords: '90-130', recentBullets: '3-5', olderBullets: '2-3', pageIntent: 'one to two pages' },
+  DETAILED: { summaryWords: '120-170', recentBullets: '4-6', olderBullets: '3-4', pageIntent: 'a detailed two-page document' },
+  COMPREHENSIVE: { summaryWords: '140-200', recentBullets: '5-7', olderBullets: '3-5', pageIntent: 'a comprehensive CV with full career history' },
+} as const;
+
+const contentStrength = (value: unknown): number => {
+  const data = asObject(value);
+  return firstNonEmpty(data.summary, data.bio).split(/\s+/).filter(Boolean).length
+    + asObjects(data.experience).reduce((sum, row) => sum + asStrings(row.bullets).length * 18, 0)
+    + asObjects(data.projects).length * 20;
+};
+
 /**
  * AI is allowed to improve wording and prioritise skills, but it must not be
  * the source of truth for identity, employment, education, or credentials.
@@ -82,11 +91,21 @@ const mergeGeneratedWithProfile = (
     .map((skill) => profileSkillLookup.get(skill.toLocaleLowerCase()))
     .filter((skill): skill is string => Boolean(skill));
   const skills = [...new Set([...prioritisedSkills, ...profileSkills])];
+  const groundingText = [
+    ...profileExperience.map((item) => firstNonEmpty(item.desc, item.description)),
+    ...asObjects(profile.projects).map((item) => firstNonEmpty(item.description)),
+    ...asObjects(profile.confirmedEvidence).map((item) => firstNonEmpty(item.statement)),
+  ].join(' ');
+  const allowedNumbers = new Set(groundingText.match(/\b\d+(?:\.\d+)?%?\b/g) ?? []);
+  const groundedBullets = (items: string[]) => items.filter((bullet) => {
+    const numbers = bullet.match(/\b\d+(?:\.\d+)?%?\b/g) ?? [];
+    return numbers.every((number) => allowedNumbers.has(number));
+  });
 
   const experience = profileExperience.map((source, index) => {
     const enhanced = aiExperience[index] ?? {};
     const sourceDescription = firstNonEmpty(source.desc, source.description);
-    const enhancedBullets = asStrings(enhanced.bullets);
+    const enhancedBullets = groundedBullets(asStrings(enhanced.bullets));
     return {
       ...enhanced,
       company: firstNonEmpty(source.company),
@@ -133,6 +152,22 @@ const mergeGeneratedWithProfile = (
     profile.bio,
     `${firstNonEmpty(profile.headline, targetJobTitle)} targeting ${targetJobTitle}`,
   );
+  const sourceProjects = asObjects(profile.projects);
+  const aiProjects = asObjects(ai.projects);
+  const projects = sourceProjects.map((source, index) => ({
+    ...aiProjects[index],
+    title: firstNonEmpty(source.title),
+    description: firstNonEmpty(aiProjects[index]?.description, source.description),
+    techStack: asStrings(source.techStack),
+    url: firstNonEmpty(source.url),
+    repoUrl: firstNonEmpty(source.repoUrl),
+    startDate: firstNonEmpty(source.startDate),
+    endDate: firstNonEmpty(source.endDate),
+    current: Boolean(source.current),
+  }));
+  const evidenceHighlights = asObjects(profile.confirmedEvidence).map((item) => ({
+    title: firstNonEmpty(item.title), statement: firstNonEmpty(item.statement), technologies: asStrings(item.technologies), source: firstNonEmpty(item.source),
+  }));
 
   return {
     ...ai,
@@ -142,6 +177,8 @@ const mergeGeneratedWithProfile = (
     skills,
     languages: asStrings(profile.languages),
     certifications,
+    projects,
+    evidenceHighlights,
     personalInfo: {
       ...aiPersonal,
       firstName: firstNonEmpty(profile.firstName),
@@ -290,6 +327,8 @@ const renderTemplatePngPages = async (
 // ─── AI Resume Generation Prompt ─────────────────────
 
 const buildResumePrompt = (profile: Record<string, unknown>, input: GenerateResumeInput): string => {
+  const selectedDepth = input.contentDepth ?? 'STANDARD';
+  const depth = DEPTH_POLICY[selectedDepth];
   return `
 You are an expert resume writer and career coach. Generate a professional, ATS-optimized resume for the following person targeting the specified job title.
 
@@ -305,6 +344,8 @@ Languages: ${JSON.stringify(profile.languages || [])}
 Experience: ${JSON.stringify(profile.experience || [])}
 Education: ${JSON.stringify(profile.education || [])}
 Certifications: ${JSON.stringify(profile.certifications || [])}
+Projects: ${JSON.stringify(profile.projects || [])}
+Confirmed career evidence: ${JSON.stringify(profile.confirmedEvidence || [])}
 
 == TARGET POSITION ==
 Job Title: ${input.targetJobTitle}
@@ -318,12 +359,68 @@ ${input.jobDescription ? `Job Description:\n${input.jobDescription}` : ''}
 5. Use action verbs for experience descriptions
 6. Never invent employers, job titles, schools, dates, credentials, contact details, or skills
 7. Preserve every profile experience, education, language, and certification entry
+8. Content depth is ${selectedDepth}: target ${depth.pageIntent}, a ${depth.summaryWords}-word summary, ${depth.recentBullets} evidence-grounded bullets for recent roles, and ${depth.olderBullets} for older roles
+9. Use confirmed projects and career evidence where relevant; never attach an achievement to an employer unless the supplied data explicitly connects them
+10. Do not pad thin source material. If facts are insufficient, write specific metric-free bullets instead of inventing details
 `;
+};
+
+type AtsRequirement = {
+  label: string;
+  priority: 'required' | 'responsibility' | 'preferred';
+  category: 'skill' | 'experience' | 'qualification' | 'responsibility' | 'tool' | 'domain';
+  aliases: string[];
+};
+
+type SemanticCandidate = { requirement: string; evidence: string; confidence: number };
+
+type AtsAiAnalysis = {
+  requirements?: AtsRequirement[];
+  semanticMatches?: SemanticCandidate[];
+  suggestions?: Array<{ section: string; issue: string; suggestion: string }>;
+};
+
+const normalizeAtsText = (value: unknown): string => stringValue(value)
+  .toLocaleLowerCase()
+  .replace(/[^\p{L}\p{N}+#.]+/gu, ' ')
+  .replace(/\s+/g, ' ')
+  .trim();
+
+const atsChunks = (contentData: JsonObject) => {
+  const chunks: Array<{ section: string; text: string; strength: number }> = [];
+  const add = (section: string, value: unknown, strength: number) => {
+    const text = stringValue(value).trim();
+    if (text) chunks.push({ section, text, strength });
+  };
+  add('summary', contentData.summary ?? contentData.bio, 0.35);
+  asStrings(contentData.skills).forEach((value) => add('skills', value, 0.25));
+  asObjects(contentData.experience).forEach((row) => {
+    add('experience', [firstNonEmpty(row.role, row.title), row.company].filter(Boolean).join(' — '), 0.65);
+    asStrings(row.bullets).forEach((value) => add('experience', value, /\b\d+(?:\.\d+)?%?\b/.test(value) ? 1 : 0.8));
+  });
+  asObjects(contentData.projects).forEach((row) => {
+    add('projects', firstNonEmpty(row.title, row.name), 0.7);
+    add('projects', row.description, /\b\d+(?:\.\d+)?%?\b/.test(stringValue(row.description)) ? 1 : 0.8);
+    asStrings(row.techStack).forEach((value) => add('projects', value, 0.7));
+  });
+  asObjects(contentData.education).forEach((row) => add('education', [firstNonEmpty(row.degree), firstNonEmpty(row.field), firstNonEmpty(row.school, row.institution)].filter(Boolean).join(' '), 0.65));
+  asObjects(contentData.certifications).forEach((row) => add('certifications', [row.name, row.issuer].filter(Boolean).join(' '), 0.7));
+  return chunks;
+};
+
+const fallbackRequirements = (jobDescription: string): AtsRequirement[] => {
+  const stop = new Set(['and','the','with','for','that','this','from','will','your','you','our','are','have','has','years','work','role','team']);
+  const counts = new Map<string, number>();
+  for (const token of normalizeAtsText(jobDescription).split(' ')) {
+    if (token.length < 3 || stop.has(token)) continue;
+    counts.set(token, (counts.get(token) ?? 0) + 1);
+  }
+  return [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 12).map(([label]) => ({ label, priority: 'required', category: 'skill', aliases: [] }));
 };
 
 const buildAtsPrompt = (contentData: Record<string, unknown>, jobDescription: string): string => {
   return `
-Analyze this resume against the job description and provide an ATS optimization score.
+Extract structured job requirements and identify semantic evidence candidates. Do not calculate the final score; application code calculates it deterministically.
 
 == RESUME CONTENT ==
 ${JSON.stringify(contentData, null, 2)}
@@ -331,15 +428,24 @@ ${JSON.stringify(contentData, null, 2)}
 == JOB DESCRIPTION ==
 ${jobDescription}
 
-Return a JSON with this exact structure:
+Return JSON with this exact structure:
 {
-  "atsScore": <number 0-100>,
-  "matchedKeywords": [<string>],
-  "missingKeywords": [<string>],
+  "requirements": [{
+    "label": "canonical requirement",
+    "priority": "required | responsibility | preferred",
+    "category": "skill | experience | qualification | responsibility | tool | domain",
+    "aliases": ["only genuine aliases from the job description"]
+  }],
+  "semanticMatches": [{
+    "requirement": "exact canonical requirement label",
+    "evidence": "an exact short quote copied from the resume content",
+    "confidence": <number 0.60-0.85>
+  }],
   "suggestions": [
     { "section": "<section name>", "issue": "<issue>", "suggestion": "<improved text>" }
   ]
 }
+Rules: extract at most 20 distinct requirements; distinguish required, responsibilities, and preferred items; never invent resume evidence; evidence must be a verbatim resume quote; do not treat keyword repetition as stronger evidence.
 `;
 };
 
@@ -424,31 +530,53 @@ export const generateResume = async (userId: string, input: GenerateResumeInput)
   });
   if (!template) throw new AppError(status.NOT_FOUND, 'Template not found.');
 
+  const [account, projects, confirmedEvidence] = await Promise.all([
+    prisma.user.findUnique({ where: { id: userId }, select: { email: true } }),
+    prisma.project.findMany({ where: { userId }, orderBy: { updatedAt: 'desc' }, take: 30 }),
+    prisma.careerEvidence.findMany({ where: { userId, status: { in: ['VERIFIED', 'USER_CONFIRMED'] } }, orderBy: { updatedAt: 'desc' }, take: 50 }),
+  ]);
   const profileData = {
     ...profile,
-    email: (await prisma.user.findUnique({ where: { id: userId }, select: { email: true } }))?.email,
+    email: account?.email,
+    projects,
+    confirmedEvidence,
   };
 
   const prompt = buildResumePrompt(profileData as Record<string, unknown>, input);
 
-  const aiResult = await getAiResponse<Record<string, unknown>>({
-    context: prompt,
-    responseStyle: `Return a JSON object representing a complete resume with these sections:
+  const responseStyle = `Return a JSON object representing a complete grounded career document with these sections:
 {
   "summary": "Professional summary text",
   "experience": [{ "company": "", "role": "", "from": "", "to": "", "current": false, "bullets": [""] }],
   "education": [{ "school": "", "degree": "", "field": "", "from": "", "to": "", "gpa": "" }],
+  "projects": [{ "title": "", "description": "", "techStack": [""], "url": "", "repoUrl": "" }],
   "skills": [""],
   "languages": [""],
   "certifications": [{ "name": "", "issuer": "", "year": "" }],
   "personalInfo": { "firstName": "", "lastName": "", "email": "", "phone": "", "location": "", "headline": "", "website": "", "linkedIn": "", "github": "" }
-}`,
+}`;
+  let aiResult = await getAiResponse<Record<string, unknown>>({
+    context: prompt,
+    responseStyle,
     responseTime: 30000,
     retryNumber: 3,
   });
 
   if (!aiResult.success || !aiResult.data) {
     throw new AppError(status.INTERNAL_SERVER_ERROR, 'AI generation failed. Please try again.');
+  }
+
+  const selectedDepth = input.contentDepth ?? 'STANDARD';
+  const minimumStrength = selectedDepth === 'CONCISE' ? 70 : selectedDepth === 'STANDARD' ? 110 : selectedDepth === 'DETAILED' ? 150 : 180;
+  if (contentStrength(aiResult.data) < minimumStrength) {
+    const expanded = await getAiResponse<Record<string, unknown>>({
+      context: `${prompt}\n\nThe first draft was too sparse. Produce a fuller version using only the supplied facts. Expand responsibilities into distinct, non-repetitive, metric-free bullets when no confirmed metric exists. Do not add claims merely to reach a length target.`,
+      responseStyle,
+      responseTime: 30000,
+      retryNumber: 1,
+      aiModel: aiResult.model,
+    });
+    if (expanded.success && expanded.data && contentStrength(expanded.data) > contentStrength(aiResult.data)) aiResult = expanded;
   }
 
   const contentData = mergeGeneratedWithProfile(
@@ -530,47 +658,279 @@ export const deleteResume = async (userId: string, resumeId: string) => {
 // ─── ATS Check ───────────────────────────────────────
 
 export const runAtsCheck = async (userId: string, resumeId: string, data: AtsCheckInput) => {
-  const resume = await prisma.resume.findFirst({ where: { id: resumeId, userId } });
+  const resume = await prisma.resume.findFirst({ where: { id: resumeId, userId }, include: { template: true } });
   if (!resume) throw new AppError(status.NOT_FOUND, 'Resume not found.');
 
-  const limits = await prisma.userLimit.findUnique({ where: { userId } });
-  if (!limits || limits.apiUsed >= limits.apiLimit) {
-    throw new AppError(status.FORBIDDEN, 'API call limit reached.', 'API_LIMIT_REACHED');
+  const sourceHash = createHash('sha256')
+    .update(JSON.stringify({ contentData: resume.contentData, jobDescription: data.jobDescription, templateId: resume.templateId }))
+    .digest('hex');
+  const priorAnalysis = asObject(resume.aiSuggestions);
+  if (priorAnalysis.methodologyVersion === 'hybrid-v1' && priorAnalysis.analysisMode === 'FULL_HYBRID' && priorAnalysis.sourceHash === sourceHash) {
+    return { resume, atsData: priorAnalysis };
   }
 
-  const prompt = buildAtsPrompt(resume.contentData as Record<string, unknown>, data.jobDescription);
+  const limits = await prisma.userLimit.findUnique({ where: { userId } });
+  let aiData: AtsAiAnalysis = {};
+  let usedAi = false;
+  if (limits && limits.apiUsed < limits.apiLimit) {
+    try {
+      const aiResult = await getAiResponse<AtsAiAnalysis>({
+        context: buildAtsPrompt(resume.contentData as Record<string, unknown>, data.jobDescription),
+        responseStyle: 'Return JSON with requirements, semanticMatches, and suggestions. Do not return a final score.',
+        responseTime: 20000,
+        retryNumber: 2,
+      });
+      if (aiResult.success && aiResult.data && Array.isArray(aiResult.data.requirements) && aiResult.data.requirements.length > 0) {
+        aiData = aiResult.data;
+        usedAi = true;
+      }
+    } catch (error) {
+      console.warn('[ATS] AI analysis unavailable; using deterministic fallback.', error);
+    }
+  }
 
-  const aiResult = await getAiResponse<{
-    atsScore: number;
-    matchedKeywords: string[];
-    missingKeywords: string[];
-    suggestions: Array<{ section: string; issue: string; suggestion: string }>;
-  }>({
-    context: prompt,
-    responseStyle: 'Return JSON with atsScore, matchedKeywords, missingKeywords, suggestions',
-    responseTime: 20000,
-    retryNumber: 3,
+  const content = asObject(resume.contentData);
+  const chunks = atsChunks(content);
+  const allResumeText = normalizeAtsText(chunks.map((chunk) => chunk.text).join(' '));
+  const rawRequirements = Array.isArray(aiData.requirements) ? aiData.requirements : [];
+  const requirements = rawRequirements.slice(0, 20).map((item): AtsRequirement => ({
+    label: stringValue(item?.label).trim(),
+    priority: ['required', 'responsibility', 'preferred'].includes(item?.priority) ? item.priority : 'required',
+    category: ['skill', 'experience', 'qualification', 'responsibility', 'tool', 'domain'].includes(item?.category) ? item.category : 'skill',
+    aliases: asStrings(item?.aliases).slice(0, 8),
+  })).filter((item) => item.label.length >= 2);
+  const finalRequirements = requirements.length ? requirements : fallbackRequirements(data.jobDescription);
+  const semanticCandidates = Array.isArray(aiData.semanticMatches) ? aiData.semanticMatches : [];
+  const priorityWeight = { required: 1, responsibility: 0.8, preferred: 0.5 } as const;
+
+  const requirementResults = finalRequirements.map((requirement) => {
+    const terms = [requirement.label, ...requirement.aliases].map(normalizeAtsText).filter(Boolean);
+    let bestChunk: (typeof chunks)[number] | undefined;
+    let matchType: 'exact' | 'alias' | 'semantic' | 'missing' = 'missing';
+    let matchConfidence = 0;
+    chunks.forEach((chunk) => {
+      const text = normalizeAtsText(chunk.text);
+      terms.forEach((term, index) => {
+        if (term && text.includes(term)) {
+          const confidence = index === 0 ? 1 : 0.9;
+          if (confidence > matchConfidence || (confidence === matchConfidence && chunk.strength > (bestChunk?.strength ?? 0))) {
+            matchConfidence = confidence;
+            bestChunk = chunk;
+            matchType = index === 0 ? 'exact' : 'alias';
+          }
+        }
+      });
+    });
+
+    if (!bestChunk) {
+      const semantic = semanticCandidates.find((candidate) => normalizeAtsText(candidate.requirement) === normalizeAtsText(requirement.label));
+      const quote = normalizeAtsText(semantic?.evidence);
+      const verifiedQuote = quote.length >= 12 && allResumeText.includes(quote);
+      if (semantic && verifiedQuote) {
+        const confidence = Math.max(0.6, Math.min(0.85, Number(semantic.confidence) || 0.6));
+        bestChunk = chunks.find((chunk) => normalizeAtsText(chunk.text).includes(quote));
+        matchConfidence = confidence;
+        matchType = 'semantic';
+      }
+    }
+
+    return {
+      label: requirement.label,
+      priority: requirement.priority,
+      category: requirement.category,
+      matched: matchConfidence > 0,
+      matchType,
+      matchConfidence: Math.round(matchConfidence * 100),
+      evidenceStrength: Math.round((bestChunk?.strength ?? 0) * 100),
+      evidenceSection: bestChunk?.section ?? null,
+      evidence: bestChunk?.text ?? null,
+      weight: priorityWeight[requirement.priority],
+    };
   });
 
-  if (!aiResult.success || !aiResult.data) {
-    throw new AppError(status.INTERNAL_SERVER_ERROR, 'ATS analysis failed. Please try again.');
-  }
+  const weightedAverage = (selector: (item: typeof requirementResults[number]) => number, filter?: (item: typeof requirementResults[number]) => boolean) => {
+    const rows = filter ? requirementResults.filter(filter) : requirementResults;
+    const totalWeight = rows.reduce((sum, item) => sum + item.weight, 0);
+    return totalWeight ? rows.reduce((sum, item) => sum + selector(item) * item.weight, 0) / totalWeight : 0;
+  };
+  const requirementCoverage = weightedAverage((item) => item.matchConfidence);
+  const evidenceStrength = weightedAverage((item) => item.matched ? item.evidenceStrength : 0);
+  const semanticRelevance = usedAi ? weightedAverage((item) => item.matchConfidence) : 0;
+  const experienceAlignment = weightedAverage(
+    (item) => item.evidenceSection === 'experience' || item.evidenceSection === 'projects' ? item.matchConfidence : 0,
+    (item) => ['experience', 'responsibility', 'domain'].includes(item.category),
+  );
+
+  const bullets = asObjects(content.experience).flatMap((row) => asStrings(row.bullets));
+  // Keep the quality check broad enough to recognise legitimate resume verbs.
+  // A narrow allow-list made strong bullets such as "Collaborated..." and
+  // "Maintained..." score like passive prose, so one-click optimisation could
+  // clean the document without moving the score at all.
+  const actionVerb = /^(achieved|administered|analysed|analyzed|architected|automated|built|collaborated|configured|coordinated|created|debugged|delivered|deployed|designed|developed|directed|documented|enhanced|established|executed|facilitated|implemented|improved|increased|integrated|launched|led|maintained|managed|mentored|migrated|monitored|operated|optimized|orchestrated|performed|planned|produced|refactored|reduced|resolved|reviewed|scaled|secured|streamlined|supported|tested|trained|troubleshot|updated)\b/i;
+  const qualityPoints = bullets.length
+    ? bullets.reduce((sum, bullet) => sum + (actionVerb.test(bullet.trim()) ? 0.45 : 0.15) + (/\b\d+(?:\.\d+)?%?\b/.test(bullet) ? 0.3 : 0) + (bullet.split(/\s+/).length >= 8 ? 0.25 : 0.1), 0) / bullets.length
+    : 0;
+  const contentQuality = Math.min(100, qualityPoints * 100);
+
+  const personal = asObject(content.personalInfo);
+  const completenessChecks = [
+    Boolean(firstNonEmpty(personal.firstName, personal.lastName)),
+    Boolean(firstNonEmpty(personal.email)),
+    Boolean(firstNonEmpty(content.summary, content.bio)),
+    asObjects(content.experience).length > 0,
+    asObjects(content.education).length > 0,
+    asStrings(content.skills).length > 0,
+  ];
+  const completeness = completenessChecks.filter(Boolean).length / completenessChecks.length * 100;
+
+  let parsingSafety = 100;
+  const templateSource = `${resume.template?.htmlLayout ?? ''} ${resume.template?.cssStyles ?? ''}`;
+  if (/<table\b/i.test(templateSource)) parsingSafety -= 12;
+  if (/position\s*:\s*absolute/i.test(templateSource)) parsingSafety -= 8;
+  if (!firstNonEmpty(personal.email)) parsingSafety -= 15;
+  if (!asObjects(content.experience).length) parsingSafety -= 10;
+  parsingSafety = Math.max(0, parsingSafety);
+
+  const breakdown = {
+    requirementCoverage: Math.round(requirementCoverage),
+    evidenceStrength: Math.round(evidenceStrength),
+    semanticRelevance: Math.round(semanticRelevance),
+    experienceAlignment: Math.round(experienceAlignment),
+    contentQuality: Math.round(contentQuality),
+    parsingSafety: Math.round(parsingSafety),
+    completeness: Math.round(completeness),
+  };
+  const atsScore = Math.round(
+    breakdown.requirementCoverage * 0.30
+    + breakdown.evidenceStrength * 0.25
+    + breakdown.semanticRelevance * 0.15
+    + breakdown.experienceAlignment * 0.10
+    + breakdown.contentQuality * 0.10
+    + breakdown.parsingSafety * 0.05
+    + breakdown.completeness * 0.05,
+  );
+  const confidence = usedAi
+    ? (finalRequirements.length >= 8 && allResumeText.split(' ').length >= 120 ? 'HIGH' : finalRequirements.length >= 4 ? 'MEDIUM' : 'LOW')
+    : 'LOW';
+  const fallbackSuggestions = requirementResults
+    .filter((item) => !item.matched)
+    .slice(0, 6)
+    .map((item) => ({
+      section: item.category === 'skill' || item.category === 'tool' ? 'Skills' : 'Experience',
+      issue: `No verified evidence found for “${item.label}”.`,
+      suggestion: 'Add this only if it is true, and support it with a concrete experience or project example.',
+    }));
+  const atsData = {
+    atsScore,
+    confidence,
+    breakdown,
+    requirements: requirementResults.map(({ weight: _weight, ...item }) => item),
+    matchedKeywords: requirementResults.filter((item) => item.matched).map((item) => item.label),
+    missingKeywords: requirementResults.filter((item) => !item.matched).map((item) => item.label),
+    suggestions: usedAi && Array.isArray(aiData.suggestions) ? aiData.suggestions.slice(0, 10) : fallbackSuggestions,
+    methodologyVersion: 'hybrid-v1',
+    analysisMode: usedAi ? 'FULL_HYBRID' : 'DETERMINISTIC_FALLBACK',
+    sourceHash,
+  };
 
   const updated = await prisma.resume.update({
     where: { id: resumeId },
     data: {
-      atsScore: aiResult.data.atsScore,
+      atsScore,
       jobDescription: data.jobDescription,
-      aiSuggestions: aiResult.data as object,
+      aiSuggestions: atsData as object,
     },
     include: { template: true },
   });
 
-  await prisma.userLimit.update({ where: { userId }, data: { apiUsed: { increment: 1 } } });
+  if (usedAi && limits) {
+    await prisma.userLimit.update({ where: { userId }, data: { apiUsed: { increment: 1 } } });
+    await recordAiUsage(userId, 'ats_analysis');
+  }
 
-  await recordAiUsage(userId, 'ats_analysis');
+  return { resume: updated, atsData };
+};
 
-  return { resume: updated, atsData: aiResult.data };
+// ─── One-click ATS optimization ─────────────────────
+
+export const optimizeForAts = async (userId: string, resumeId: string) => {
+  const resume = await prisma.resume.findFirst({
+    where: { id: resumeId, userId },
+    include: { template: true },
+  });
+  if (!resume) throw new AppError(status.NOT_FOUND, 'Resume not found.');
+  if (!resume.jobDescription || resume.jobDescription.trim().length < 10) {
+    throw new AppError(status.BAD_REQUEST, 'Add a target job description before optimizing for ATS.');
+  }
+
+  const content = asObject(resume.contentData);
+  const jobText = normalizeAtsText(resume.jobDescription);
+  const skills = asStrings(content.skills);
+  const prioritizedSkills = [...skills].sort((a, b) => {
+    const aMatch = jobText.includes(normalizeAtsText(a)) ? 1 : 0;
+    const bMatch = jobText.includes(normalizeAtsText(b)) ? 1 : 0;
+    return bMatch - aMatch;
+  });
+  const cleanText = (value: unknown) => stringValue(value).replace(/\s+/g, ' ').trim();
+  const cleanBullet = (value: string) => cleanText(value.replace(/^[\s•·▪◦*-]+/, ''));
+  const experience = asObjects(content.experience).map((row) => ({
+    ...row,
+    bullets: asStrings(row.bullets).map(cleanBullet).filter(Boolean),
+  }));
+  const education = asObjects(content.education).map((row) => ({
+    ...row,
+    ...(row.description !== undefined ? { description: cleanText(row.description) } : {}),
+  }));
+  const optimizedContent: JsonObject = {
+    ...content,
+    ...(content.summary !== undefined ? { summary: cleanText(content.summary) } : {}),
+    skills: prioritizedSkills,
+    experience,
+    education,
+  };
+
+  const atsTemplate = await prisma.resumeTemplate.findFirst({
+    where: {
+      category: 'ATS',
+      documentType: resume.type,
+      isActive: true,
+      reviewStatus: 'APPROVED',
+    },
+    orderBy: [{ isDefault: 'desc' }, { isFeatured: 'desc' }, { displayOrder: 'asc' }],
+  });
+  const changes: string[] = [];
+  if (JSON.stringify(skills) !== JSON.stringify(prioritizedSkills)) changes.push('Prioritized job-relevant skills');
+  if (JSON.stringify(content.experience) !== JSON.stringify(experience)) changes.push('Normalized experience bullets for parser readability');
+  if (JSON.stringify(content.education) !== JSON.stringify(education)) changes.push('Normalized education descriptions');
+  if (atsTemplate && atsTemplate.id !== resume.templateId) changes.push(`Applied ATS-safe ${atsTemplate.name} template`);
+  if (!changes.length) changes.push('Validated existing ATS-friendly structure');
+
+  await prisma.$transaction([
+    prisma.resumeHistory.create({
+      data: {
+        resumeId,
+        version: resume.version,
+        snapshot: resume.contentData as object,
+        changedBy: userId,
+      },
+    }),
+    prisma.resume.update({
+      where: { id: resumeId },
+      data: {
+        contentData: optimizedContent as Prisma.InputJsonValue,
+        ...(atsTemplate ? { templateId: atsTemplate.id } : {}),
+        version: { increment: 1 },
+      },
+    }),
+  ]);
+
+  const analysis = await runAtsCheck(userId, resumeId, { jobDescription: resume.jobDescription });
+  return {
+    ...analysis,
+    changes,
+    beforeScore: resume.atsScore,
+    afterScore: analysis.atsData.atsScore,
+  };
 };
 
 // ─── Export PDF ───────────────────────────────────────
@@ -584,9 +944,9 @@ export const exportPdf = async (userId: string, resumeId: string, format: 'A4' |
 
   const fullHtml = renderTemplateHtml(resume.contentData, resume.template, format);
 
-  // Production uses the browser renderer for pixel-perfect HTML/CSS output.
-  // Local/self-hosted environments get a template-aware PDFKit fallback, so
-  // PDF export never depends on a second service being online.
+  // The selected variable template is the only visual source of truth. Never
+  // silently substitute a generic PDF layout: that makes preview and export
+  // disagree and can change colours, spacing and pagination.
   let pdfBuffer: Buffer;
   if (envVars.NODE_ENV === 'production') {
     try {
@@ -604,21 +964,16 @@ export const exportPdf = async (userId: string, resumeId: string, format: 'A4' |
       try {
         pdfBuffer = await renderPdfWithLocalBrowser(fullHtml, format);
       } catch (localError) {
-        console.warn('[Resume export] Local Chromium unavailable; using PDFKit fallback.', localError);
-        pdfBuffer = await buildResumePdf(
-          asObject(resume.contentData),
-          resume.template,
-          resume.title,
-          format,
-        );
+        console.error('[Resume export] Canonical browser renderer unavailable.', localError);
+        throw new AppError(status.SERVICE_UNAVAILABLE, 'The document renderer is temporarily unavailable. Your resume was not changed.');
       }
     }
   } else {
     try {
       pdfBuffer = await renderPdfWithLocalBrowser(fullHtml, format);
     } catch (error) {
-      console.warn('[Resume export] Local Chromium unavailable; using PDFKit fallback.', error);
-      pdfBuffer = await buildResumePdf(asObject(resume.contentData), resume.template, resume.title, format);
+      console.error('[Resume export] Canonical browser renderer unavailable.', error);
+      throw new AppError(status.SERVICE_UNAVAILABLE, 'The document renderer is temporarily unavailable. Your resume was not changed.');
     }
   }
 
@@ -670,21 +1025,8 @@ export const exportDocx = async (userId: string, resumeId: string) => {
       'A4',
     );
   } catch (error) {
-    console.warn('[Resume export] Fidelity DOCX renderer unavailable; trying editable HTML conversion.', error);
-    try {
-      const generated = await HTMLtoDOCX(fullHtml, null, {
-        title: resume.title,
-        subject: `Resume using the ${resume.template.name} template`,
-        creator: 'ProFile AI',
-        pageSize: { width: 11906, height: 16838 },
-        margins: { top: 0, right: 0, bottom: 0, left: 0 },
-        table: { row: { cantSplit: true } },
-      });
-      docxBuffer = Buffer.from(generated as ArrayBuffer);
-    } catch (conversionError) {
-      console.warn('[Resume export] HTML DOCX conversion failed; using structured fallback.', conversionError);
-      docxBuffer = await buildResumeDocx(asObject(resume.contentData), resume.template, resume.title);
-    }
+    console.error('[Resume export] Canonical DOCX renderer unavailable.', error);
+    throw new AppError(status.SERVICE_UNAVAILABLE, 'The Word document renderer is temporarily unavailable. Your resume was not changed.');
   }
   const objectName = `resumes/${userId}/${resumeId}/resume.docx`;
   const contentType =

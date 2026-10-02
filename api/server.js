@@ -74,8 +74,8 @@ async function main() {
       }
     }
     const [{ default: app }, scheduler, exports] = await Promise.all([
-      import("./app-SHCIORVH.js"),
-      import("./scheduler-Q6L7GGKJ.js"),
+      import("./app-OVWFICZB.js"),
+      import("./scheduler-A25C44MH.js"),
       import("./exportQueue-7J67KQWD.js")
     ]);
     await scheduler.scheduleMonthlyReset();

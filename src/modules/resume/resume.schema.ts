@@ -6,6 +6,7 @@ export const generateResumeSchema = z.object({
     templateId: z.string().min(1, 'Template ID is required'),
     title: z.string().min(1, 'Resume title is required').max(100),
     type: z.enum(['RESUME', 'CV']).default('RESUME'),
+    contentDepth: z.enum(['CONCISE', 'STANDARD', 'DETAILED', 'COMPREHENSIVE']).optional(),
     targetJobTitle: z.string().min(1, 'Target job title is required').max(100),
     jobDescription: z.string().max(5000).optional(),
   }),

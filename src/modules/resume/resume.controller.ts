@@ -47,6 +47,11 @@ export const atsCheck = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, { status: status.OK, success: true, message: 'ATS analysis complete.', data });
 });
 
+export const optimizeForAts = catchAsync(async (req: Request, res: Response) => {
+  const data = await resumeService.optimizeForAts(req.user.userId, String(req.params.id));
+  sendResponse(res, { status: status.OK, success: true, message: 'Document optimized for ATS.', data });
+});
+
 export const exportPdf = catchAsync(async (req: Request, res: Response) => {
   const fileType = (req.body.fileType as 'PDF' | 'DOCX') || 'PDF';
   const pageSize = (req.body.pageSize as 'A4' | 'Letter') || 'A4';
