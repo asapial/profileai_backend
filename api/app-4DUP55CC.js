@@ -1,10 +1,10 @@
 import {
   jwtUtils,
   notificationGateway
-} from "./chunk-S3SDV2LP.js";
+} from "./chunk-2SD54OD4.js";
 import {
   exportQueue
-} from "./chunk-IYMTY4RH.js";
+} from "./chunk-JI6CJ54R.js";
 import {
   alignment,
   calendarBody,
@@ -33,7 +33,7 @@ import {
   sourceBody,
   tailor,
   updateEvidence
-} from "./chunk-KXJAAHUS.js";
+} from "./chunk-PX56TRHL.js";
 import {
   AppError_default,
   envVars,
@@ -42,7 +42,7 @@ import {
   prismaNamespace_exports,
   redis,
   uploadBuffer
-} from "./chunk-AQ3QEWOG.js";
+} from "./chunk-ZLOG52RV.js";
 
 // src/app.ts
 import express from "express";
@@ -170,7 +170,7 @@ var sendContactNotification = async (args) => {
   const safeSubject = args.subject.replace(/[\r\n]+/g, " ").slice(0, 140);
   const detailUrl = `${envVars.FRONTEND_URL}/admin/tickets`;
   const company = args.company?.trim() || "Not provided";
-  const text3 = [
+  const text2 = [
     `New public contact request (${args.ticketId})`,
     `Name: ${args.name}`,
     `Email: ${args.email}`,
@@ -202,7 +202,7 @@ var sendContactNotification = async (args) => {
     bcc: args.recipients,
     replyTo: args.email,
     subject: `New contact \xB7 ${safeSubject}`,
-    text: text3,
+    text: text2,
     html
   });
 };
@@ -391,7 +391,7 @@ var auth = betterAuth({
 });
 
 // src/index.ts
-import { Router as Router23 } from "express";
+import { Router as Router24 } from "express";
 
 // src/modules/auth/auth.router.ts
 import { Router } from "express";
@@ -3822,10 +3822,9 @@ import status19 from "http-status";
 
 // src/modules/resume/resume.service.ts
 import status18 from "http-status";
-import { randomBytes } from "crypto";
+import { createHash, randomBytes } from "crypto";
 import { existsSync } from "fs";
 import Handlebars from "handlebars";
-import HTMLtoDOCX from "html-to-docx";
 import puppeteer from "puppeteer-core";
 
 // src/utils/aiUsage.ts
@@ -3854,260 +3853,6 @@ import {
   WidthType
 } from "docx";
 import PDFDocument from "pdfkit";
-var asObject = (value) => value && typeof value === "object" && !Array.isArray(value) ? value : {};
-var asObjects = (value) => Array.isArray(value) ? value.map(asObject) : [];
-var asStrings = (value) => Array.isArray(value) ? value.filter((item) => typeof item === "string").map((item) => item.trim()).filter(Boolean) : [];
-var text = (value) => typeof value === "string" || typeof value === "number" ? String(value).trim() : "";
-var cleanHex = (value) => value.replace("#", "").toUpperCase();
-function templateAccent(template) {
-  const source = `${template.htmlLayout}
-${template.cssStyles}`;
-  const match = source.match(/--accent\s*:\s*(#[0-9a-f]{6})/i);
-  const matchedColor = match?.[1];
-  if (matchedColor) return cleanHex(matchedColor);
-  if (template.category === "CREATIVE") return "7C3AED";
-  if (template.category === "MODERN") return "4F46E5";
-  return "0F172A";
-}
-function sectionTitle(label, accent) {
-  return new Paragraph({
-    spacing: { before: 220, after: 80 },
-    border: {
-      bottom: { color: accent, size: 8, style: BorderStyle.SINGLE }
-    },
-    children: [
-      new TextRun({
-        text: label.toUpperCase(),
-        bold: true,
-        color: accent,
-        size: 19,
-        characterSpacing: 24
-      })
-    ]
-  });
-}
-function summaryChildren(data, accent) {
-  const summary = text(data.summary ?? data.bio);
-  if (!summary) return [];
-  return [
-    sectionTitle("Summary", accent),
-    new Paragraph({
-      spacing: { after: 80 },
-      children: [new TextRun({ text: summary, size: 20 })]
-    })
-  ];
-}
-function experienceChildren(data, accent) {
-  const rows = asObjects(data.experience);
-  if (!rows.length) return [];
-  const children = [sectionTitle("Experience", accent)];
-  for (const row of rows) {
-    const role = text(row.role ?? row.title);
-    const company = text(row.company);
-    const location = text(row.location);
-    const from = text(row.from ?? row.startDate);
-    const to = row.current ? "Present" : text(row.to ?? row.endDate);
-    children.push(
-      new Paragraph({
-        keepNext: true,
-        spacing: { before: 90, after: 20 },
-        children: [
-          new TextRun({ text: role || "Role", bold: true, size: 21 }),
-          new TextRun({ text: company ? `  |  ${company}` : "", bold: true, color: accent, size: 20 })
-        ]
-      }),
-      new Paragraph({
-        keepNext: true,
-        spacing: { after: 35 },
-        children: [
-          new TextRun({
-            text: [location, [from, to].filter(Boolean).join(" \u2013 ")].filter(Boolean).join("  |  "),
-            italics: true,
-            color: "64748B",
-            size: 17
-          })
-        ]
-      })
-    );
-    const bullets = asStrings(row.bullets);
-    const fallback = text(row.desc);
-    for (const bullet of bullets.length ? bullets : fallback ? fallback.split(/\r?\n/).filter(Boolean) : []) {
-      children.push(
-        new Paragraph({
-          bullet: { level: 0 },
-          spacing: { after: 35 },
-          children: [new TextRun({ text: bullet, size: 19 })]
-        })
-      );
-    }
-  }
-  return children;
-}
-function educationChildren(data, accent) {
-  const rows = asObjects(data.education);
-  if (!rows.length) return [];
-  const children = [sectionTitle("Education", accent)];
-  for (const row of rows) {
-    const school = text(row.school ?? row.institution);
-    const degree = [text(row.degree), text(row.field)].filter(Boolean).join(", ");
-    const dates = [text(row.from ?? row.startDate), text(row.to ?? row.endDate)].filter(Boolean).join(" \u2013 ");
-    const gpa = text(row.gpa);
-    children.push(
-      new Paragraph({
-        keepNext: true,
-        spacing: { before: 70, after: 20 },
-        children: [new TextRun({ text: school, bold: true, size: 20, color: accent })]
-      }),
-      new Paragraph({
-        spacing: { after: 50 },
-        children: [
-          new TextRun({ text: degree, size: 19 }),
-          new TextRun({ text: [dates, gpa ? `GPA ${gpa}` : ""].filter(Boolean).join("  |  "), italics: true, color: "64748B", size: 17, break: degree ? 1 : 0 })
-        ]
-      })
-    );
-  }
-  return children;
-}
-function stringListChildren(label, items, accent) {
-  if (!items.length) return [];
-  return [
-    sectionTitle(label, accent),
-    ...items.map(
-      (item) => new Paragraph({
-        bullet: { level: 0 },
-        spacing: { after: 25 },
-        children: [new TextRun({ text: item, size: 18 })]
-      })
-    )
-  ];
-}
-function certificationChildren(data, accent) {
-  const rows = asObjects(data.certifications);
-  if (!rows.length) return [];
-  return [
-    sectionTitle("Certifications", accent),
-    ...rows.map(
-      (row) => new Paragraph({
-        spacing: { after: 35 },
-        children: [
-          new TextRun({ text: text(row.name), bold: true, size: 18 }),
-          new TextRun({
-            text: [text(row.issuer), text(row.year)].filter(Boolean).join(" \xB7 "),
-            color: "64748B",
-            size: 17,
-            break: 1
-          })
-        ]
-      })
-    )
-  ];
-}
-function headerChildren(data, template, accent) {
-  const personal = asObject(data.personalInfo);
-  const firstName = text(personal.firstName ?? data.firstName);
-  const lastName = text(personal.lastName ?? data.lastName);
-  const headline = text(personal.headline ?? data.headline);
-  const contact = [
-    text(personal.email ?? data.email),
-    text(personal.phone ?? data.phone),
-    text(personal.location ?? data.location),
-    text(personal.website ?? data.website),
-    text(personal.linkedIn ?? data.linkedIn)
-  ].filter(Boolean);
-  const colorful = template.category === "MODERN" || template.category === "CREATIVE";
-  const alignment2 = template.category === "CLASSIC" ? AlignmentType.CENTER : AlignmentType.LEFT;
-  const headerColor = colorful ? "FFFFFF" : accent;
-  return [
-    new Paragraph({
-      alignment: alignment2,
-      ...colorful ? { shading: { fill: accent, type: ShadingType.CLEAR, color: "auto" } } : {},
-      spacing: { before: colorful ? 180 : 0, after: 55 },
-      children: [
-        new TextRun({
-          text: [firstName, lastName].filter(Boolean).join(" ") || "Untitled Candidate",
-          bold: true,
-          color: headerColor,
-          size: 36
-        })
-      ]
-    }),
-    new Paragraph({
-      alignment: alignment2,
-      ...colorful ? { shading: { fill: accent, type: ShadingType.CLEAR, color: "auto" } } : {},
-      spacing: { after: 35 },
-      children: [new TextRun({ text: headline, color: colorful ? "EDE9FE" : "475569", size: 21 })]
-    }),
-    new Paragraph({
-      alignment: alignment2,
-      ...colorful ? { shading: { fill: accent, type: ShadingType.CLEAR, color: "auto" } } : {},
-      spacing: { after: colorful ? 180 : 90 },
-      children: [
-        new TextRun({
-          text: contact.join("  \u2022  "),
-          color: colorful ? "FFFFFF" : "475569",
-          size: 17
-        })
-      ]
-    })
-  ];
-}
-async function buildResumeDocx(contentData, template, title) {
-  const accent = templateAccent(template);
-  const main = [
-    ...summaryChildren(contentData, accent),
-    ...experienceChildren(contentData, accent)
-  ];
-  const supporting = [
-    ...stringListChildren("Skills", asStrings(contentData.skills), accent),
-    ...educationChildren(contentData, accent),
-    ...certificationChildren(contentData, accent),
-    ...stringListChildren("Languages", asStrings(contentData.languages), accent)
-  ];
-  const body = template.category === "MODERN" || template.category === "CREATIVE" ? [
-    new Table({
-      width: { size: 100, type: WidthType.PERCENTAGE },
-      borders: TableBorders.NONE,
-      columnWidths: [6200, 3200],
-      rows: [
-        new TableRow({
-          children: [
-            new TableCell({
-              width: { size: 66, type: WidthType.PERCENTAGE },
-              margins: { right: 180 },
-              borders: TableBorders.NONE,
-              children: main.length ? main : [new Paragraph("")]
-            }),
-            new TableCell({
-              width: { size: 34, type: WidthType.PERCENTAGE },
-              shading: { fill: "F8FAFC", type: ShadingType.CLEAR, color: "auto" },
-              margins: { top: 120, bottom: 120, left: 180, right: 120 },
-              borders: TableBorders.NONE,
-              children: supporting.length ? supporting : [new Paragraph("")]
-            })
-          ]
-        })
-      ]
-    })
-  ] : [...main, ...supporting];
-  const document2 = new Document({
-    title,
-    subject: `Resume using the ${template.name} template`,
-    creator: "ProFile AI",
-    sections: [
-      {
-        properties: {
-          page: {
-            size: { width: 11906, height: 16838 },
-            margin: { top: 720, right: 720, bottom: 720, left: 720 }
-          }
-        },
-        children: [...headerChildren(contentData, template, accent), ...body]
-      }
-    ]
-  });
-  return Packer.toBuffer(document2);
-}
 async function buildTemplateSnapshotDocx(pages, title, templateName, pageSize = "A4") {
   if (!pages.length) throw new Error("No rendered template pages were supplied.");
   const isLetter = pageSize === "Letter";
@@ -4139,138 +3884,11 @@ async function buildTemplateSnapshotDocx(pages, title, templateName, pageSize = 
   });
   return Packer.toBuffer(document2);
 }
-async function buildResumePdf(contentData, template, title, pageSize = "A4") {
-  return new Promise((resolve, reject) => {
-    const chunks = [];
-    const doc = new PDFDocument({
-      size: pageSize,
-      margins: { top: 42, right: 48, bottom: 42, left: 48 },
-      bufferPages: true,
-      info: { Title: title, Author: "ProFile AI", Subject: `${template.name} resume` }
-    });
-    doc.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
-    doc.on("end", () => resolve(Buffer.concat(chunks)));
-    doc.on("error", reject);
-    const accent = `#${templateAccent(template)}`;
-    const personal = asObject(contentData.personalInfo);
-    const candidate = [text(personal.firstName), text(personal.lastName)].filter(Boolean).join(" ");
-    const headline = text(personal.headline);
-    const contact = [
-      text(personal.email),
-      text(personal.phone),
-      text(personal.location),
-      text(personal.website),
-      text(personal.linkedIn)
-    ].filter(Boolean).join("  \u2022  ");
-    const colorful = template.category === "MODERN" || template.category === "CREATIVE";
-    const contentWidth = doc.page.width - doc.page.margins.left - doc.page.margins.right;
-    if (colorful) {
-      doc.save().rect(0, 0, doc.page.width, 122).fill(accent).restore();
-      doc.fillColor("#FFFFFF");
-    } else {
-      doc.fillColor(accent);
-    }
-    doc.font("Helvetica-Bold").fontSize(25).text(candidate || "Untitled Candidate", {
-      align: template.category === "CLASSIC" ? "center" : "left"
-    });
-    doc.moveDown(0.15).font("Helvetica").fontSize(12).fillColor(colorful ? "#F5F3FF" : "#475569").text(headline, {
-      align: template.category === "CLASSIC" ? "center" : "left"
-    });
-    doc.moveDown(0.3).fontSize(9).fillColor(colorful ? "#FFFFFF" : "#475569").text(contact, {
-      align: template.category === "CLASSIC" ? "center" : "left"
-    });
-    doc.y = colorful ? Math.max(doc.y + 26, 142) : doc.y + 12;
-    const ensureSpace = (height = 72) => {
-      if (doc.y + height > doc.page.height - doc.page.margins.bottom) doc.addPage();
-    };
-    const section = (label) => {
-      ensureSpace(48);
-      doc.moveDown(0.45);
-      doc.font("Helvetica-Bold").fontSize(10).fillColor(accent).text(label.toUpperCase(), {
-        characterSpacing: 1.4
-      });
-      const lineY = doc.y + 2;
-      doc.save().strokeColor(accent).lineWidth(0.8).moveTo(doc.page.margins.left, lineY).lineTo(doc.page.margins.left + contentWidth, lineY).stroke().restore();
-      doc.y = lineY + 8;
-    };
-    const body = (value, options = {}) => {
-      doc.font("Helvetica").fontSize(9.5).fillColor("#1F2937").text(value, {
-        lineGap: 2.2,
-        ...options
-      });
-    };
-    const summary = text(contentData.summary ?? contentData.bio);
-    if (summary) {
-      section("Summary");
-      body(summary);
-    }
-    const experiences = asObjects(contentData.experience);
-    if (experiences.length) {
-      section("Experience");
-      for (const row of experiences) {
-        ensureSpace(86);
-        const role = text(row.role ?? row.title);
-        const company = text(row.company);
-        const from = text(row.from ?? row.startDate);
-        const to = row.current ? "Present" : text(row.to ?? row.endDate);
-        doc.font("Helvetica-Bold").fontSize(10.5).fillColor("#111827").text(role || "Role", { continued: Boolean(company) });
-        if (company) doc.fillColor(accent).text(`  |  ${company}`);
-        doc.font("Helvetica-Oblique").fontSize(8.5).fillColor("#64748B").text([from, to].filter(Boolean).join(" \u2013 "));
-        const bullets = asStrings(row.bullets);
-        const fallback = text(row.desc);
-        for (const bullet of bullets.length ? bullets : fallback ? fallback.split(/\r?\n/).filter(Boolean) : []) {
-          body(`\u2022  ${bullet}`, { indent: 8, paragraphGap: 2 });
-        }
-        doc.moveDown(0.25);
-      }
-    }
-    const skills = asStrings(contentData.skills);
-    if (skills.length) {
-      section("Skills");
-      body(skills.join("  \u2022  "));
-    }
-    const educations = asObjects(contentData.education);
-    if (educations.length) {
-      section("Education");
-      for (const row of educations) {
-        ensureSpace(54);
-        const school = text(row.school ?? row.institution);
-        const degree = [text(row.degree), text(row.field)].filter(Boolean).join(", ");
-        const dates = [text(row.from ?? row.startDate), text(row.to ?? row.endDate)].filter(Boolean).join(" \u2013 ");
-        doc.font("Helvetica-Bold").fontSize(10).fillColor(accent).text(school);
-        body([degree, dates, text(row.gpa) ? `GPA ${text(row.gpa)}` : ""].filter(Boolean).join("  |  "));
-      }
-    }
-    const certifications = asObjects(contentData.certifications);
-    if (certifications.length) {
-      section("Certifications");
-      for (const row of certifications) {
-        body(`\u2022  ${[text(row.name), text(row.issuer), text(row.year)].filter(Boolean).join(" \xB7 ")}`, { indent: 8 });
-      }
-    }
-    const languages = asStrings(contentData.languages);
-    if (languages.length) {
-      section("Languages");
-      body(languages.join("  \u2022  "));
-    }
-    const range = doc.bufferedPageRange();
-    for (let index = range.start; index < range.start + range.count; index += 1) {
-      doc.switchToPage(index);
-      doc.font("Helvetica").fontSize(8).fillColor("#94A3B8").text(
-        `${template.name} \xB7 ${index + 1}/${range.count}`,
-        doc.page.margins.left,
-        doc.page.height - 28,
-        { width: contentWidth, align: "right" }
-      );
-    }
-    doc.end();
-  });
-}
 
 // src/modules/resume/resume.service.ts
-var asObject2 = (value) => value && typeof value === "object" && !Array.isArray(value) ? value : {};
-var asObjects2 = (value) => Array.isArray(value) ? value.map(asObject2) : [];
-var asStrings2 = (value) => Array.isArray(value) ? value.filter((item) => typeof item === "string").map((item) => item.trim()).filter(Boolean) : [];
+var asObject = (value) => value && typeof value === "object" && !Array.isArray(value) ? value : {};
+var asObjects = (value) => Array.isArray(value) ? value.map(asObject) : [];
+var asStrings = (value) => Array.isArray(value) ? value.filter((item) => typeof item === "string").map((item) => item.trim()).filter(Boolean) : [];
 var stringValue = (value) => typeof value === "string" || typeof value === "number" ? String(value) : "";
 var firstNonEmpty = (...values) => {
   for (const value of values) {
@@ -4279,26 +3897,46 @@ var firstNonEmpty = (...values) => {
   }
   return "";
 };
+var DEPTH_POLICY = {
+  CONCISE: { summaryWords: "60-90", recentBullets: "2-3", olderBullets: "1-2", pageIntent: "one focused page" },
+  STANDARD: { summaryWords: "90-130", recentBullets: "3-5", olderBullets: "2-3", pageIntent: "one to two pages" },
+  DETAILED: { summaryWords: "120-170", recentBullets: "4-6", olderBullets: "3-4", pageIntent: "a detailed two-page document" },
+  COMPREHENSIVE: { summaryWords: "140-200", recentBullets: "5-7", olderBullets: "3-5", pageIntent: "a comprehensive CV with full career history" }
+};
+var contentStrength = (value) => {
+  const data = asObject(value);
+  return firstNonEmpty(data.summary, data.bio).split(/\s+/).filter(Boolean).length + asObjects(data.experience).reduce((sum, row) => sum + asStrings(row.bullets).length * 18, 0) + asObjects(data.projects).length * 20;
+};
 var mergeGeneratedWithProfile = (profile, aiValue, targetJobTitle) => {
-  const ai = asObject2(aiValue);
-  const aiPersonal = asObject2(ai.personalInfo);
-  const profileExperience = asObjects2(profile.experience);
-  const aiExperience = asObjects2(ai.experience);
-  const profileEducation = asObjects2(profile.education);
-  const aiEducation = asObjects2(ai.education);
-  const profileCertifications = asObjects2(profile.certifications);
-  const aiCertifications = asObjects2(ai.certifications);
-  const profileSkills = asStrings2(profile.skills);
-  const aiSkills = asStrings2(ai.skills);
+  const ai = asObject(aiValue);
+  const aiPersonal = asObject(ai.personalInfo);
+  const profileExperience = asObjects(profile.experience);
+  const aiExperience = asObjects(ai.experience);
+  const profileEducation = asObjects(profile.education);
+  const aiEducation = asObjects(ai.education);
+  const profileCertifications = asObjects(profile.certifications);
+  const aiCertifications = asObjects(ai.certifications);
+  const profileSkills = asStrings(profile.skills);
+  const aiSkills = asStrings(ai.skills);
   const profileSkillLookup = new Map(
     profileSkills.map((skill) => [skill.toLocaleLowerCase(), skill])
   );
   const prioritisedSkills = aiSkills.map((skill) => profileSkillLookup.get(skill.toLocaleLowerCase())).filter((skill) => Boolean(skill));
   const skills = [.../* @__PURE__ */ new Set([...prioritisedSkills, ...profileSkills])];
+  const groundingText = [
+    ...profileExperience.map((item) => firstNonEmpty(item.desc, item.description)),
+    ...asObjects(profile.projects).map((item) => firstNonEmpty(item.description)),
+    ...asObjects(profile.confirmedEvidence).map((item) => firstNonEmpty(item.statement))
+  ].join(" ");
+  const allowedNumbers = new Set(groundingText.match(/\b\d+(?:\.\d+)?%?\b/g) ?? []);
+  const groundedBullets = (items) => items.filter((bullet) => {
+    const numbers = bullet.match(/\b\d+(?:\.\d+)?%?\b/g) ?? [];
+    return numbers.every((number) => allowedNumbers.has(number));
+  });
   const experience = profileExperience.map((source, index) => {
     const enhanced = aiExperience[index] ?? {};
     const sourceDescription = firstNonEmpty(source.desc, source.description);
-    const enhancedBullets = asStrings2(enhanced.bullets);
+    const enhancedBullets = groundedBullets(asStrings(enhanced.bullets));
     return {
       ...enhanced,
       company: firstNonEmpty(source.company),
@@ -4338,14 +3976,35 @@ var mergeGeneratedWithProfile = (profile, aiValue, targetJobTitle) => {
     profile.bio,
     `${firstNonEmpty(profile.headline, targetJobTitle)} targeting ${targetJobTitle}`
   );
+  const sourceProjects = asObjects(profile.projects);
+  const aiProjects = asObjects(ai.projects);
+  const projects = sourceProjects.map((source, index) => ({
+    ...aiProjects[index],
+    title: firstNonEmpty(source.title),
+    description: firstNonEmpty(aiProjects[index]?.description, source.description),
+    techStack: asStrings(source.techStack),
+    url: firstNonEmpty(source.url),
+    repoUrl: firstNonEmpty(source.repoUrl),
+    startDate: firstNonEmpty(source.startDate),
+    endDate: firstNonEmpty(source.endDate),
+    current: Boolean(source.current)
+  }));
+  const evidenceHighlights = asObjects(profile.confirmedEvidence).map((item) => ({
+    title: firstNonEmpty(item.title),
+    statement: firstNonEmpty(item.statement),
+    technologies: asStrings(item.technologies),
+    source: firstNonEmpty(item.source)
+  }));
   return {
     ...ai,
     summary,
     experience,
     education,
     skills,
-    languages: asStrings2(profile.languages),
+    languages: asStrings(profile.languages),
     certifications,
+    projects,
+    evidenceHighlights,
     personalInfo: {
       ...aiPersonal,
       firstName: firstNonEmpty(profile.firstName),
@@ -4361,20 +4020,20 @@ var mergeGeneratedWithProfile = (profile, aiValue, targetJobTitle) => {
   };
 };
 var toTemplateContext = (value) => {
-  const data = asObject2(value);
-  const personalInfo = asObject2(data.personalInfo);
+  const data = asObject(value);
+  const personalInfo = asObject(data.personalInfo);
   return {
     ...data,
     ...personalInfo,
     bio: firstNonEmpty(data.bio, data.summary),
-    experience: asObjects2(data.experience).map((item) => ({
+    experience: asObjects(data.experience).map((item) => ({
       ...item,
       role: firstNonEmpty(item.role, item.title),
       from: firstNonEmpty(item.from, item.startDate),
       to: firstNonEmpty(item.to, item.endDate),
-      desc: firstNonEmpty(item.desc, asStrings2(item.bullets).join("\n"))
+      desc: firstNonEmpty(item.desc, asStrings(item.bullets).join("\n"))
     })),
-    education: asObjects2(data.education).map((item) => ({
+    education: asObjects(data.education).map((item) => ({
       ...item,
       school: firstNonEmpty(item.school, item.institution),
       from: firstNonEmpty(item.from, item.startDate),
@@ -4475,6 +4134,8 @@ var renderTemplatePngPages = async (html, pageSize = "A4") => {
   }
 };
 var buildResumePrompt = (profile, input) => {
+  const selectedDepth = input.contentDepth ?? "STANDARD";
+  const depth = DEPTH_POLICY[selectedDepth];
   return `
 You are an expert resume writer and career coach. Generate a professional, ATS-optimized resume for the following person targeting the specified job title.
 
@@ -4490,6 +4151,8 @@ Languages: ${JSON.stringify(profile.languages || [])}
 Experience: ${JSON.stringify(profile.experience || [])}
 Education: ${JSON.stringify(profile.education || [])}
 Certifications: ${JSON.stringify(profile.certifications || [])}
+Projects: ${JSON.stringify(profile.projects || [])}
+Confirmed career evidence: ${JSON.stringify(profile.confirmedEvidence || [])}
 
 == TARGET POSITION ==
 Job Title: ${input.targetJobTitle}
@@ -4504,11 +4167,45 @@ ${input.jobDescription}` : ""}
 5. Use action verbs for experience descriptions
 6. Never invent employers, job titles, schools, dates, credentials, contact details, or skills
 7. Preserve every profile experience, education, language, and certification entry
+8. Content depth is ${selectedDepth}: target ${depth.pageIntent}, a ${depth.summaryWords}-word summary, ${depth.recentBullets} evidence-grounded bullets for recent roles, and ${depth.olderBullets} for older roles
+9. Use confirmed projects and career evidence where relevant; never attach an achievement to an employer unless the supplied data explicitly connects them
+10. Do not pad thin source material. If facts are insufficient, write specific metric-free bullets instead of inventing details
 `;
+};
+var normalizeAtsText = (value) => stringValue(value).toLocaleLowerCase().replace(/[^\p{L}\p{N}+#.]+/gu, " ").replace(/\s+/g, " ").trim();
+var atsChunks = (contentData) => {
+  const chunks = [];
+  const add = (section, value, strength) => {
+    const text2 = stringValue(value).trim();
+    if (text2) chunks.push({ section, text: text2, strength });
+  };
+  add("summary", contentData.summary ?? contentData.bio, 0.35);
+  asStrings(contentData.skills).forEach((value) => add("skills", value, 0.25));
+  asObjects(contentData.experience).forEach((row) => {
+    add("experience", [firstNonEmpty(row.role, row.title), row.company].filter(Boolean).join(" \u2014 "), 0.65);
+    asStrings(row.bullets).forEach((value) => add("experience", value, /\b\d+(?:\.\d+)?%?\b/.test(value) ? 1 : 0.8));
+  });
+  asObjects(contentData.projects).forEach((row) => {
+    add("projects", firstNonEmpty(row.title, row.name), 0.7);
+    add("projects", row.description, /\b\d+(?:\.\d+)?%?\b/.test(stringValue(row.description)) ? 1 : 0.8);
+    asStrings(row.techStack).forEach((value) => add("projects", value, 0.7));
+  });
+  asObjects(contentData.education).forEach((row) => add("education", [firstNonEmpty(row.degree), firstNonEmpty(row.field), firstNonEmpty(row.school, row.institution)].filter(Boolean).join(" "), 0.65));
+  asObjects(contentData.certifications).forEach((row) => add("certifications", [row.name, row.issuer].filter(Boolean).join(" "), 0.7));
+  return chunks;
+};
+var fallbackRequirements = (jobDescription) => {
+  const stop = /* @__PURE__ */ new Set(["and", "the", "with", "for", "that", "this", "from", "will", "your", "you", "our", "are", "have", "has", "years", "work", "role", "team"]);
+  const counts = /* @__PURE__ */ new Map();
+  for (const token of normalizeAtsText(jobDescription).split(" ")) {
+    if (token.length < 3 || stop.has(token)) continue;
+    counts.set(token, (counts.get(token) ?? 0) + 1);
+  }
+  return [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 12).map(([label]) => ({ label, priority: "required", category: "skill", aliases: [] }));
 };
 var buildAtsPrompt = (contentData, jobDescription) => {
   return `
-Analyze this resume against the job description and provide an ATS optimization score.
+Extract structured job requirements and identify semantic evidence candidates. Do not calculate the final score; application code calculates it deterministically.
 
 == RESUME CONTENT ==
 ${JSON.stringify(contentData, null, 2)}
@@ -4516,15 +4213,24 @@ ${JSON.stringify(contentData, null, 2)}
 == JOB DESCRIPTION ==
 ${jobDescription}
 
-Return a JSON with this exact structure:
+Return JSON with this exact structure:
 {
-  "atsScore": <number 0-100>,
-  "matchedKeywords": [<string>],
-  "missingKeywords": [<string>],
+  "requirements": [{
+    "label": "canonical requirement",
+    "priority": "required | responsibility | preferred",
+    "category": "skill | experience | qualification | responsibility | tool | domain",
+    "aliases": ["only genuine aliases from the job description"]
+  }],
+  "semanticMatches": [{
+    "requirement": "exact canonical requirement label",
+    "evidence": "an exact short quote copied from the resume content",
+    "confidence": <number 0.60-0.85>
+  }],
   "suggestions": [
     { "section": "<section name>", "issue": "<issue>", "suggestion": "<improved text>" }
   ]
 }
+Rules: extract at most 20 distinct requirements; distinguish required, responsibilities, and preferred items; never invent resume evidence; evidence must be a verbatim resume quote; do not treat keyword repetition as stronger evidence.
 `;
 };
 var listResumes = async (userId, page2 = 1, limit = 10, type, resumeStatus) => {
@@ -4586,28 +4292,51 @@ var generateResume = async (userId, input) => {
     }
   });
   if (!template) throw new AppError_default(status18.NOT_FOUND, "Template not found.");
+  const [account, projects, confirmedEvidence] = await Promise.all([
+    prisma.user.findUnique({ where: { id: userId }, select: { email: true } }),
+    prisma.project.findMany({ where: { userId }, orderBy: { updatedAt: "desc" }, take: 30 }),
+    prisma.careerEvidence.findMany({ where: { userId, status: { in: ["VERIFIED", "USER_CONFIRMED"] } }, orderBy: { updatedAt: "desc" }, take: 50 })
+  ]);
   const profileData = {
     ...profile,
-    email: (await prisma.user.findUnique({ where: { id: userId }, select: { email: true } }))?.email
+    email: account?.email,
+    projects,
+    confirmedEvidence
   };
   const prompt = buildResumePrompt(profileData, input);
-  const aiResult = await getAiResponse({
-    context: prompt,
-    responseStyle: `Return a JSON object representing a complete resume with these sections:
+  const responseStyle = `Return a JSON object representing a complete grounded career document with these sections:
 {
   "summary": "Professional summary text",
   "experience": [{ "company": "", "role": "", "from": "", "to": "", "current": false, "bullets": [""] }],
   "education": [{ "school": "", "degree": "", "field": "", "from": "", "to": "", "gpa": "" }],
+  "projects": [{ "title": "", "description": "", "techStack": [""], "url": "", "repoUrl": "" }],
   "skills": [""],
   "languages": [""],
   "certifications": [{ "name": "", "issuer": "", "year": "" }],
   "personalInfo": { "firstName": "", "lastName": "", "email": "", "phone": "", "location": "", "headline": "", "website": "", "linkedIn": "", "github": "" }
-}`,
+}`;
+  let aiResult = await getAiResponse({
+    context: prompt,
+    responseStyle,
     responseTime: 3e4,
     retryNumber: 3
   });
   if (!aiResult.success || !aiResult.data) {
     throw new AppError_default(status18.INTERNAL_SERVER_ERROR, "AI generation failed. Please try again.");
+  }
+  const selectedDepth = input.contentDepth ?? "STANDARD";
+  const minimumStrength = selectedDepth === "CONCISE" ? 70 : selectedDepth === "STANDARD" ? 110 : selectedDepth === "DETAILED" ? 150 : 180;
+  if (contentStrength(aiResult.data) < minimumStrength) {
+    const expanded = await getAiResponse({
+      context: `${prompt}
+
+The first draft was too sparse. Produce a fuller version using only the supplied facts. Expand responsibilities into distinct, non-repetitive, metric-free bullets when no confirmed metric exists. Do not add claims merely to reach a length target.`,
+      responseStyle,
+      responseTime: 3e4,
+      retryNumber: 1,
+      aiModel: aiResult.model
+    });
+    if (expanded.success && expanded.data && contentStrength(expanded.data) > contentStrength(aiResult.data)) aiResult = expanded;
   }
   const contentData = mergeGeneratedWithProfile(
     profileData,
@@ -4671,34 +4400,239 @@ var deleteResume = async (userId, resumeId) => {
   return { message: "Resume deleted." };
 };
 var runAtsCheck = async (userId, resumeId, data) => {
-  const resume = await prisma.resume.findFirst({ where: { id: resumeId, userId } });
+  const resume = await prisma.resume.findFirst({ where: { id: resumeId, userId }, include: { template: true } });
   if (!resume) throw new AppError_default(status18.NOT_FOUND, "Resume not found.");
+  const sourceHash = createHash("sha256").update(JSON.stringify({ contentData: resume.contentData, jobDescription: data.jobDescription, templateId: resume.templateId })).digest("hex");
+  const priorAnalysis = asObject(resume.aiSuggestions);
+  if (priorAnalysis.methodologyVersion === "hybrid-v1" && priorAnalysis.analysisMode === "FULL_HYBRID" && priorAnalysis.sourceHash === sourceHash) {
+    return { resume, atsData: priorAnalysis };
+  }
   const limits = await prisma.userLimit.findUnique({ where: { userId } });
-  if (!limits || limits.apiUsed >= limits.apiLimit) {
-    throw new AppError_default(status18.FORBIDDEN, "API call limit reached.", "API_LIMIT_REACHED");
+  let aiData = {};
+  let usedAi = false;
+  if (limits && limits.apiUsed < limits.apiLimit) {
+    try {
+      const aiResult = await getAiResponse({
+        context: buildAtsPrompt(resume.contentData, data.jobDescription),
+        responseStyle: "Return JSON with requirements, semanticMatches, and suggestions. Do not return a final score.",
+        responseTime: 2e4,
+        retryNumber: 2
+      });
+      if (aiResult.success && aiResult.data && Array.isArray(aiResult.data.requirements) && aiResult.data.requirements.length > 0) {
+        aiData = aiResult.data;
+        usedAi = true;
+      }
+    } catch (error) {
+      console.warn("[ATS] AI analysis unavailable; using deterministic fallback.", error);
+    }
   }
-  const prompt = buildAtsPrompt(resume.contentData, data.jobDescription);
-  const aiResult = await getAiResponse({
-    context: prompt,
-    responseStyle: "Return JSON with atsScore, matchedKeywords, missingKeywords, suggestions",
-    responseTime: 2e4,
-    retryNumber: 3
+  const content = asObject(resume.contentData);
+  const chunks = atsChunks(content);
+  const allResumeText = normalizeAtsText(chunks.map((chunk) => chunk.text).join(" "));
+  const rawRequirements = Array.isArray(aiData.requirements) ? aiData.requirements : [];
+  const requirements = rawRequirements.slice(0, 20).map((item) => ({
+    label: stringValue(item?.label).trim(),
+    priority: ["required", "responsibility", "preferred"].includes(item?.priority) ? item.priority : "required",
+    category: ["skill", "experience", "qualification", "responsibility", "tool", "domain"].includes(item?.category) ? item.category : "skill",
+    aliases: asStrings(item?.aliases).slice(0, 8)
+  })).filter((item) => item.label.length >= 2);
+  const finalRequirements = requirements.length ? requirements : fallbackRequirements(data.jobDescription);
+  const semanticCandidates = Array.isArray(aiData.semanticMatches) ? aiData.semanticMatches : [];
+  const priorityWeight = { required: 1, responsibility: 0.8, preferred: 0.5 };
+  const requirementResults = finalRequirements.map((requirement) => {
+    const terms = [requirement.label, ...requirement.aliases].map(normalizeAtsText).filter(Boolean);
+    let bestChunk;
+    let matchType = "missing";
+    let matchConfidence = 0;
+    chunks.forEach((chunk) => {
+      const text2 = normalizeAtsText(chunk.text);
+      terms.forEach((term, index) => {
+        if (term && text2.includes(term)) {
+          const confidence2 = index === 0 ? 1 : 0.9;
+          if (confidence2 > matchConfidence || confidence2 === matchConfidence && chunk.strength > (bestChunk?.strength ?? 0)) {
+            matchConfidence = confidence2;
+            bestChunk = chunk;
+            matchType = index === 0 ? "exact" : "alias";
+          }
+        }
+      });
+    });
+    if (!bestChunk) {
+      const semantic = semanticCandidates.find((candidate) => normalizeAtsText(candidate.requirement) === normalizeAtsText(requirement.label));
+      const quote = normalizeAtsText(semantic?.evidence);
+      const verifiedQuote = quote.length >= 12 && allResumeText.includes(quote);
+      if (semantic && verifiedQuote) {
+        const confidence2 = Math.max(0.6, Math.min(0.85, Number(semantic.confidence) || 0.6));
+        bestChunk = chunks.find((chunk) => normalizeAtsText(chunk.text).includes(quote));
+        matchConfidence = confidence2;
+        matchType = "semantic";
+      }
+    }
+    return {
+      label: requirement.label,
+      priority: requirement.priority,
+      category: requirement.category,
+      matched: matchConfidence > 0,
+      matchType,
+      matchConfidence: Math.round(matchConfidence * 100),
+      evidenceStrength: Math.round((bestChunk?.strength ?? 0) * 100),
+      evidenceSection: bestChunk?.section ?? null,
+      evidence: bestChunk?.text ?? null,
+      weight: priorityWeight[requirement.priority]
+    };
   });
-  if (!aiResult.success || !aiResult.data) {
-    throw new AppError_default(status18.INTERNAL_SERVER_ERROR, "ATS analysis failed. Please try again.");
-  }
+  const weightedAverage = (selector, filter) => {
+    const rows = filter ? requirementResults.filter(filter) : requirementResults;
+    const totalWeight = rows.reduce((sum, item) => sum + item.weight, 0);
+    return totalWeight ? rows.reduce((sum, item) => sum + selector(item) * item.weight, 0) / totalWeight : 0;
+  };
+  const requirementCoverage = weightedAverage((item) => item.matchConfidence);
+  const evidenceStrength = weightedAverage((item) => item.matched ? item.evidenceStrength : 0);
+  const semanticRelevance = usedAi ? weightedAverage((item) => item.matchConfidence) : 0;
+  const experienceAlignment = weightedAverage(
+    (item) => item.evidenceSection === "experience" || item.evidenceSection === "projects" ? item.matchConfidence : 0,
+    (item) => ["experience", "responsibility", "domain"].includes(item.category)
+  );
+  const bullets = asObjects(content.experience).flatMap((row) => asStrings(row.bullets));
+  const actionVerb = /^(achieved|administered|analysed|analyzed|architected|automated|built|collaborated|configured|coordinated|created|debugged|delivered|deployed|designed|developed|directed|documented|enhanced|established|executed|facilitated|implemented|improved|increased|integrated|launched|led|maintained|managed|mentored|migrated|monitored|operated|optimized|orchestrated|performed|planned|produced|refactored|reduced|resolved|reviewed|scaled|secured|streamlined|supported|tested|trained|troubleshot|updated)\b/i;
+  const qualityPoints = bullets.length ? bullets.reduce((sum, bullet) => sum + (actionVerb.test(bullet.trim()) ? 0.45 : 0.15) + (/\b\d+(?:\.\d+)?%?\b/.test(bullet) ? 0.3 : 0) + (bullet.split(/\s+/).length >= 8 ? 0.25 : 0.1), 0) / bullets.length : 0;
+  const contentQuality = Math.min(100, qualityPoints * 100);
+  const personal = asObject(content.personalInfo);
+  const completenessChecks = [
+    Boolean(firstNonEmpty(personal.firstName, personal.lastName)),
+    Boolean(firstNonEmpty(personal.email)),
+    Boolean(firstNonEmpty(content.summary, content.bio)),
+    asObjects(content.experience).length > 0,
+    asObjects(content.education).length > 0,
+    asStrings(content.skills).length > 0
+  ];
+  const completeness = completenessChecks.filter(Boolean).length / completenessChecks.length * 100;
+  let parsingSafety = 100;
+  const templateSource = `${resume.template?.htmlLayout ?? ""} ${resume.template?.cssStyles ?? ""}`;
+  if (/<table\b/i.test(templateSource)) parsingSafety -= 12;
+  if (/position\s*:\s*absolute/i.test(templateSource)) parsingSafety -= 8;
+  if (!firstNonEmpty(personal.email)) parsingSafety -= 15;
+  if (!asObjects(content.experience).length) parsingSafety -= 10;
+  parsingSafety = Math.max(0, parsingSafety);
+  const breakdown = {
+    requirementCoverage: Math.round(requirementCoverage),
+    evidenceStrength: Math.round(evidenceStrength),
+    semanticRelevance: Math.round(semanticRelevance),
+    experienceAlignment: Math.round(experienceAlignment),
+    contentQuality: Math.round(contentQuality),
+    parsingSafety: Math.round(parsingSafety),
+    completeness: Math.round(completeness)
+  };
+  const atsScore = Math.round(
+    breakdown.requirementCoverage * 0.3 + breakdown.evidenceStrength * 0.25 + breakdown.semanticRelevance * 0.15 + breakdown.experienceAlignment * 0.1 + breakdown.contentQuality * 0.1 + breakdown.parsingSafety * 0.05 + breakdown.completeness * 0.05
+  );
+  const confidence = usedAi ? finalRequirements.length >= 8 && allResumeText.split(" ").length >= 120 ? "HIGH" : finalRequirements.length >= 4 ? "MEDIUM" : "LOW" : "LOW";
+  const fallbackSuggestions = requirementResults.filter((item) => !item.matched).slice(0, 6).map((item) => ({
+    section: item.category === "skill" || item.category === "tool" ? "Skills" : "Experience",
+    issue: `No verified evidence found for \u201C${item.label}\u201D.`,
+    suggestion: "Add this only if it is true, and support it with a concrete experience or project example."
+  }));
+  const atsData = {
+    atsScore,
+    confidence,
+    breakdown,
+    requirements: requirementResults.map(({ weight: _weight, ...item }) => item),
+    matchedKeywords: requirementResults.filter((item) => item.matched).map((item) => item.label),
+    missingKeywords: requirementResults.filter((item) => !item.matched).map((item) => item.label),
+    suggestions: usedAi && Array.isArray(aiData.suggestions) ? aiData.suggestions.slice(0, 10) : fallbackSuggestions,
+    methodologyVersion: "hybrid-v1",
+    analysisMode: usedAi ? "FULL_HYBRID" : "DETERMINISTIC_FALLBACK",
+    sourceHash
+  };
   const updated = await prisma.resume.update({
     where: { id: resumeId },
     data: {
-      atsScore: aiResult.data.atsScore,
+      atsScore,
       jobDescription: data.jobDescription,
-      aiSuggestions: aiResult.data
+      aiSuggestions: atsData
     },
     include: { template: true }
   });
-  await prisma.userLimit.update({ where: { userId }, data: { apiUsed: { increment: 1 } } });
-  await recordAiUsage(userId, "ats_analysis");
-  return { resume: updated, atsData: aiResult.data };
+  if (usedAi && limits) {
+    await prisma.userLimit.update({ where: { userId }, data: { apiUsed: { increment: 1 } } });
+    await recordAiUsage(userId, "ats_analysis");
+  }
+  return { resume: updated, atsData };
+};
+var optimizeForAts = async (userId, resumeId) => {
+  const resume = await prisma.resume.findFirst({
+    where: { id: resumeId, userId },
+    include: { template: true }
+  });
+  if (!resume) throw new AppError_default(status18.NOT_FOUND, "Resume not found.");
+  if (!resume.jobDescription || resume.jobDescription.trim().length < 10) {
+    throw new AppError_default(status18.BAD_REQUEST, "Add a target job description before optimizing for ATS.");
+  }
+  const content = asObject(resume.contentData);
+  const jobText = normalizeAtsText(resume.jobDescription);
+  const skills = asStrings(content.skills);
+  const prioritizedSkills = [...skills].sort((a, b) => {
+    const aMatch = jobText.includes(normalizeAtsText(a)) ? 1 : 0;
+    const bMatch = jobText.includes(normalizeAtsText(b)) ? 1 : 0;
+    return bMatch - aMatch;
+  });
+  const cleanText = (value) => stringValue(value).replace(/\s+/g, " ").trim();
+  const cleanBullet = (value) => cleanText(value.replace(/^[\s•·▪◦*-]+/, ""));
+  const experience = asObjects(content.experience).map((row) => ({
+    ...row,
+    bullets: asStrings(row.bullets).map(cleanBullet).filter(Boolean)
+  }));
+  const education = asObjects(content.education).map((row) => ({
+    ...row,
+    ...row.description !== void 0 ? { description: cleanText(row.description) } : {}
+  }));
+  const optimizedContent = {
+    ...content,
+    ...content.summary !== void 0 ? { summary: cleanText(content.summary) } : {},
+    skills: prioritizedSkills,
+    experience,
+    education
+  };
+  const atsTemplate = await prisma.resumeTemplate.findFirst({
+    where: {
+      category: "ATS",
+      documentType: resume.type,
+      isActive: true,
+      reviewStatus: "APPROVED"
+    },
+    orderBy: [{ isDefault: "desc" }, { isFeatured: "desc" }, { displayOrder: "asc" }]
+  });
+  const changes = [];
+  if (JSON.stringify(skills) !== JSON.stringify(prioritizedSkills)) changes.push("Prioritized job-relevant skills");
+  if (JSON.stringify(content.experience) !== JSON.stringify(experience)) changes.push("Normalized experience bullets for parser readability");
+  if (JSON.stringify(content.education) !== JSON.stringify(education)) changes.push("Normalized education descriptions");
+  if (atsTemplate && atsTemplate.id !== resume.templateId) changes.push(`Applied ATS-safe ${atsTemplate.name} template`);
+  if (!changes.length) changes.push("Validated existing ATS-friendly structure");
+  await prisma.$transaction([
+    prisma.resumeHistory.create({
+      data: {
+        resumeId,
+        version: resume.version,
+        snapshot: resume.contentData,
+        changedBy: userId
+      }
+    }),
+    prisma.resume.update({
+      where: { id: resumeId },
+      data: {
+        contentData: optimizedContent,
+        ...atsTemplate ? { templateId: atsTemplate.id } : {},
+        version: { increment: 1 }
+      }
+    })
+  ]);
+  const analysis = await runAtsCheck(userId, resumeId, { jobDescription: resume.jobDescription });
+  return {
+    ...analysis,
+    changes,
+    beforeScore: resume.atsScore,
+    afterScore: analysis.atsData.atsScore
+  };
 };
 var exportPdf = async (userId, resumeId, format = "A4") => {
   const resume = await prisma.resume.findFirst({
@@ -4724,21 +4658,16 @@ var exportPdf = async (userId, resumeId, format = "A4") => {
       try {
         pdfBuffer = await renderPdfWithLocalBrowser(fullHtml, format);
       } catch (localError) {
-        console.warn("[Resume export] Local Chromium unavailable; using PDFKit fallback.", localError);
-        pdfBuffer = await buildResumePdf(
-          asObject2(resume.contentData),
-          resume.template,
-          resume.title,
-          format
-        );
+        console.error("[Resume export] Canonical browser renderer unavailable.", localError);
+        throw new AppError_default(status18.SERVICE_UNAVAILABLE, "The document renderer is temporarily unavailable. Your resume was not changed.");
       }
     }
   } else {
     try {
       pdfBuffer = await renderPdfWithLocalBrowser(fullHtml, format);
     } catch (error) {
-      console.warn("[Resume export] Local Chromium unavailable; using PDFKit fallback.", error);
-      pdfBuffer = await buildResumePdf(asObject2(resume.contentData), resume.template, resume.title, format);
+      console.error("[Resume export] Canonical browser renderer unavailable.", error);
+      throw new AppError_default(status18.SERVICE_UNAVAILABLE, "The document renderer is temporarily unavailable. Your resume was not changed.");
     }
   }
   const objectName = `resumes/${userId}/${resumeId}/resume.pdf`;
@@ -4783,21 +4712,8 @@ var exportDocx = async (userId, resumeId) => {
       "A4"
     );
   } catch (error) {
-    console.warn("[Resume export] Fidelity DOCX renderer unavailable; trying editable HTML conversion.", error);
-    try {
-      const generated = await HTMLtoDOCX(fullHtml, null, {
-        title: resume.title,
-        subject: `Resume using the ${resume.template.name} template`,
-        creator: "ProFile AI",
-        pageSize: { width: 11906, height: 16838 },
-        margins: { top: 0, right: 0, bottom: 0, left: 0 },
-        table: { row: { cantSplit: true } }
-      });
-      docxBuffer = Buffer.from(generated);
-    } catch (conversionError) {
-      console.warn("[Resume export] HTML DOCX conversion failed; using structured fallback.", conversionError);
-      docxBuffer = await buildResumeDocx(asObject2(resume.contentData), resume.template, resume.title);
-    }
+    console.error("[Resume export] Canonical DOCX renderer unavailable.", error);
+    throw new AppError_default(status18.SERVICE_UNAVAILABLE, "The Word document renderer is temporarily unavailable. Your resume was not changed.");
   }
   const objectName = `resumes/${userId}/${resumeId}/resume.docx`;
   const contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
@@ -5019,6 +4935,10 @@ var atsCheck = catchAsync(async (req, res) => {
   const data = await runAtsCheck(req.user.userId, String(req.params.id), req.body);
   sendResponse(res, { status: status19.OK, success: true, message: "ATS analysis complete.", data });
 });
+var optimizeForAts2 = catchAsync(async (req, res) => {
+  const data = await optimizeForAts(req.user.userId, String(req.params.id));
+  sendResponse(res, { status: status19.OK, success: true, message: "Document optimized for ATS.", data });
+});
 var exportPdf2 = catchAsync(async (req, res) => {
   const fileType = req.body.fileType || "PDF";
   const pageSize = req.body.pageSize || "A4";
@@ -5079,6 +4999,7 @@ var generateResumeSchema = z7.object({
     templateId: z7.string().min(1, "Template ID is required"),
     title: z7.string().min(1, "Resume title is required").max(100),
     type: z7.enum(["RESUME", "CV"]).default("RESUME"),
+    contentDepth: z7.enum(["CONCISE", "STANDARD", "DETAILED", "COMPREHENSIVE"]).optional(),
     targetJobTitle: z7.string().min(1, "Target job title is required").max(100),
     jobDescription: z7.string().max(5e3).optional()
   })
@@ -5129,6 +5050,7 @@ router9.get("/:id", getResume2);
 router9.put("/:id", validateRequest(updateResumeSchema), updateResume2);
 router9.delete("/:id", deleteResume2);
 router9.post("/:id/ats-check", validateRequest(atsCheckSchema), atsCheck);
+router9.post("/:id/ats-optimize", optimizeForAts2);
 router9.post("/:id/export", validateRequest(exportResumeSchema), exportPdf2);
 router9.get("/:id/history", getHistory);
 router9.post("/:id/restore/:version", restoreVersion2);
@@ -6389,9 +6311,9 @@ var DEFAULT_HOMEPAGE = {
       title: "Simple plans, no surprises",
       description: "Start free and upgrade only when you need more.",
       items: [
-        { title: "Free", description: "Build your first resume with essential AI tools.", label: "$0", features: "1 resume|3 AI generations / month|ATS score|PDF export", ctaLabel: "Get started", ctaHref: "/register" },
-        { title: "Pro", description: "For active job seekers who want maximum callbacks.", label: "$12", features: "Unlimited resumes|Full ATS suggestions|Cover letters|Application tracker|PDF + DOCX", ctaLabel: "Start Pro", ctaHref: "/register?plan=pro", highlighted: true },
-        { title: "Business", description: "For teams, coaches and recruiting agencies.", label: "$29", features: "Everything in Pro|Team workspace|Custom branding|Priority support", ctaLabel: "Contact sales", ctaHref: "/contact" }
+        { title: "Free", description: "Start building a grounded application.", label: "\u09F30", features: "2 resumes|2 alignment analyses / month|1 tailored resume / month|3 application drafts / month|10 saved applications", ctaLabel: "Get started", ctaHref: "/register" },
+        { title: "Job Seeker", description: "Room for an active job search.", label: "\u09F3299", features: "10 resume versions|25 alignment analyses / month|15 tailored resumes / month|30 application drafts / month|Unlimited application tracking", ctaLabel: "Choose Job Seeker", ctaHref: "/register?plan=pro&billing=monthly", highlighted: true },
+        { title: "Career Pro", description: "Higher allowances for a focused career move.", label: "\u09F3599", features: "Unlimited resume versions|75 alignment analyses / month|50 tailored resumes / month|100 application drafts / month|Advanced interview preparation", ctaLabel: "Choose Career Pro", ctaHref: "/register?plan=business&billing=monthly" }
       ]
     },
     {
@@ -7290,8 +7212,8 @@ var adminProfile = {
     };
   }
 };
-var templateDto = (row, config2) => {
-  const saved = object(config2 ?? {});
+var templateDto = (row, config3) => {
+  const saved = object(config3 ?? {});
   return {
     ...row,
     isAtsFriendly: typeof saved.isAtsFriendly === "boolean" ? saved.isAtsFriendly : true,
@@ -7325,11 +7247,11 @@ var templates = {
         key: { in: rows.map((row) => row.id) }
       }
     });
-    const configMap = new Map(configs.map((config2) => [config2.key, config2.data]));
+    const configMap = new Map(configs.map((config3) => [config3.key, config3.data]));
     return rows.map((row) => templateDto(row, configMap.get(row.id)));
   },
   detail: async (id3) => {
-    const [row, config2] = await Promise.all([
+    const [row, config3] = await Promise.all([
       prisma.resumeTemplate.findUnique({
         where: { id: id3 },
         include: {
@@ -7342,7 +7264,7 @@ var templates = {
       })
     ]);
     if (!row) throw new AppError_default(status25.NOT_FOUND, "Template not found.");
-    return templateDto(row, config2?.data);
+    return templateDto(row, config3?.data);
   },
   history: async (id3) => {
     const rows = await prisma.auditLog.findMany({
@@ -8597,8 +8519,8 @@ var analyzeJd = async (userId, input) => {
     if (!resume) {
       throw new AppError_default(status32.BAD_REQUEST, "Attached resume not found.");
     }
-    const text3 = extractResumeText(resume.contentData);
-    const trimmed = text3.length > 4e3 ? text3.slice(0, 4e3) : text3;
+    const text2 = extractResumeText(resume.contentData);
+    const trimmed = text2.length > 4e3 ? text2.slice(0, 4e3) : text2;
     resumeContext = `
 
 For context, here is the candidate's current resume (truncated to 4000 chars):
@@ -8757,6 +8679,233 @@ import status36 from "http-status";
 // src/modules/billing/billing.service.ts
 import status35 from "http-status";
 import Stripe from "stripe";
+
+// src/modules/billing/bkash.service.ts
+import { randomUUID } from "crypto";
+
+// src/modules/billing/bkash.client.ts
+var cachedToken = null;
+var config = () => {
+  const { BKASH } = envVars;
+  if (!BKASH.ENABLED || !BKASH.USERNAME || !BKASH.PASSWORD || !BKASH.APP_KEY || !BKASH.APP_SECRET) {
+    throw new AppError_default(503, "bKash checkout is not configured.");
+  }
+  return BKASH;
+};
+async function parse(response) {
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const message = String(body.statusMessage ?? body.errorMessage ?? "bKash request failed.");
+    throw new AppError_default(502, message);
+  }
+  return body;
+}
+async function grantToken() {
+  if (cachedToken && cachedToken.expiresAt > Date.now() + 3e4) return cachedToken.value;
+  const cfg = config();
+  const response = await fetch(`${cfg.BASE_URL}/tokenized/checkout/token/grant`, {
+    method: "POST",
+    headers: {
+      accept: "application/json",
+      "content-type": "application/json",
+      username: cfg.USERNAME,
+      password: cfg.PASSWORD
+    },
+    body: JSON.stringify({ app_key: cfg.APP_KEY, app_secret: cfg.APP_SECRET }),
+    signal: AbortSignal.timeout(15e3)
+  });
+  const body = await parse(response);
+  const token = String(body.id_token ?? "");
+  if (!token || String(body.statusCode ?? "0000") !== "0000") {
+    throw new AppError_default(502, String(body.statusMessage ?? "bKash token grant failed."));
+  }
+  const seconds = Number(body.expires_in ?? 3600);
+  cachedToken = { value: token, expiresAt: Date.now() + Math.max(60, seconds) * 1e3 };
+  return token;
+}
+async function request(path2, payload) {
+  const cfg = config();
+  const send = async () => fetch(`${cfg.BASE_URL}${path2}`, {
+    method: "POST",
+    headers: {
+      accept: "application/json",
+      "content-type": "application/json",
+      authorization: await grantToken(),
+      "x-app-key": cfg.APP_KEY
+    },
+    body: JSON.stringify(payload),
+    signal: AbortSignal.timeout(2e4)
+  });
+  let response = await send();
+  if (response.status === 401) {
+    cachedToken = null;
+    response = await send();
+  }
+  return parse(response);
+}
+var bkashClient = {
+  createPayment: (payload) => request("/tokenized/checkout/create", payload),
+  executePayment: (paymentID) => request("/tokenized/checkout/execute", { paymentID }),
+  queryPayment: (paymentID) => request("/tokenized/checkout/payment/status", { paymentID })
+};
+
+// src/modules/billing/bkash.service.ts
+var yearlyAmount = (slug) => slug === "pro" ? 299e3 : slug === "business" ? 599e3 : null;
+var frontendBillingUrl = (result) => `${envVars.FRONTEND_URL.replace(/\/+$/, "")}/dashboard/billing?payment=${result}`;
+async function createBkashCheckout(input) {
+  const plan = await prisma.plan.findUnique({ where: { slug: input.planSlug } });
+  if (!plan || !plan.isActive || plan.amount <= 0) throw new AppError_default(404, "Paid plan not found.");
+  if (plan.currency.toLowerCase() !== "bdt") throw new AppError_default(400, "bKash requires a BDT plan.");
+  let amount = input.billing === "yearly" ? yearlyAmount(plan.slug) : plan.amount;
+  if (amount === null) throw new AppError_default(400, "Yearly billing is not available for this plan.");
+  let couponId = null;
+  if (input.couponCode) {
+    const coupon = await prisma.coupon.findUnique({ where: { code: input.couponCode.trim().toUpperCase() } });
+    const usable = coupon?.isActive && (!coupon.expiresAt || coupon.expiresAt > /* @__PURE__ */ new Date()) && (!coupon.maxRedemptions || coupon.redeemed < coupon.maxRedemptions);
+    if (!usable || !coupon) throw new AppError_default(400, "Coupon is invalid or expired.");
+    if (coupon.percentOff) amount = Math.round(amount * (100 - coupon.percentOff) / 100);
+    else if (coupon.amountOff) amount = Math.max(0, amount - coupon.amountOff);
+    couponId = coupon.id;
+  }
+  if (amount < 100) throw new AppError_default(400, "Payment amount is below the supported minimum.");
+  const merchantInvoiceNumber = `PAI-${Date.now()}-${randomUUID().slice(0, 8)}`;
+  const pending = await prisma.bkashPayment.create({
+    data: {
+      userId: input.userId,
+      planId: plan.id,
+      billingInterval: input.billing === "yearly" ? "YEAR" : "MONTH",
+      merchantInvoiceNumber,
+      amount,
+      expiresAt: new Date(Date.now() + 20 * 60 * 1e3),
+      providerPayload: couponId ? { couponId } : void 0
+    }
+  });
+  const callbackURL = `${envVars.BETTER_AUTH_URL.replace(/\/+$/, "")}/api/v1/billing/bkash/callback`;
+  try {
+    const response = await bkashClient.createPayment({
+      mode: "0011",
+      payerReference: input.userId,
+      callbackURL,
+      amount: (amount / 100).toFixed(2),
+      currency: "BDT",
+      intent: "sale",
+      merchantInvoiceNumber
+    });
+    const paymentId = String(response.paymentID ?? "");
+    const url = String(response.bkashURL ?? "");
+    if (!paymentId || !url || String(response.statusCode ?? "0000") !== "0000") {
+      throw new AppError_default(502, String(response.statusMessage ?? "bKash did not create the payment."));
+    }
+    await prisma.bkashPayment.update({
+      where: { id: pending.id },
+      data: { paymentId, providerPayload: { ...response, ...couponId ? { couponId } : {} } }
+    });
+    return { url, provider: "bkash" };
+  } catch (error) {
+    await prisma.bkashPayment.update({
+      where: { id: pending.id },
+      data: { status: "CREATE_FAILED", providerPayload: { message: error instanceof Error ? error.message : "Unknown error" } }
+    });
+    throw error;
+  }
+}
+async function completeBkashCallback(paymentID, callbackStatus) {
+  const payment = await prisma.bkashPayment.findUnique({
+    where: { paymentId: paymentID },
+    include: { plan: true }
+  });
+  if (!payment) return { redirect: frontendBillingUrl("failure") };
+  if (payment.status === "COMPLETED") return { redirect: frontendBillingUrl("success") };
+  if (callbackStatus === "cancel") {
+    await prisma.bkashPayment.update({ where: { id: payment.id }, data: { status: "CANCELED" } });
+    return { redirect: frontendBillingUrl("cancel") };
+  }
+  if (callbackStatus !== "success" || payment.expiresAt < /* @__PURE__ */ new Date()) {
+    await prisma.bkashPayment.update({ where: { id: payment.id }, data: { status: "FAILED" } });
+    return { redirect: frontendBillingUrl("failure") };
+  }
+  let provider = await bkashClient.executePayment(paymentID);
+  if (String(provider.transactionStatus ?? "").toLowerCase() !== "completed") {
+    provider = await bkashClient.queryPayment(paymentID);
+  }
+  const completed = String(provider.transactionStatus ?? "").toLowerCase() === "completed";
+  const providerAmount = Math.round(Number(provider.amount ?? 0) * 100);
+  const currency = String(provider.currency ?? "").toUpperCase();
+  const trxId = String(provider.trxID ?? "");
+  if (!completed || String(provider.statusCode ?? "0000") !== "0000" || providerAmount !== payment.amount || currency !== "BDT" || !trxId) {
+    await prisma.bkashPayment.update({ where: { id: payment.id }, data: { status: "VERIFICATION_FAILED", providerPayload: provider } });
+    return { redirect: frontendBillingUrl("failure") };
+  }
+  const now = /* @__PURE__ */ new Date();
+  const activeSubscription = await prisma.subscription.findFirst({
+    where: { userId: payment.userId, status: "ACTIVE", currentPeriodEnd: { gt: now } },
+    orderBy: { currentPeriodEnd: "desc" }
+  });
+  const extensionBase = activeSubscription?.planId === payment.planId ? activeSubscription.currentPeriodEnd : now;
+  const periodEnd = new Date(extensionBase.getTime() + (payment.billingInterval === "YEAR" ? 365 : 30) * 864e5);
+  const subscriptionId = `bkash:${paymentID}`;
+  const couponId = payment.providerPayload && typeof payment.providerPayload === "object" && "couponId" in payment.providerPayload ? String(payment.providerPayload.couponId) : null;
+  const activated = await prisma.$transaction(async (tx) => {
+    const claimed = await tx.bkashPayment.updateMany({
+      where: { id: payment.id, status: { not: "COMPLETED" } },
+      data: { trxId, status: "COMPLETED", executedAt: now, providerPayload: provider }
+    });
+    if (!claimed.count) return false;
+    const alreadyUsed = await tx.bkashPayment.findFirst({ where: { trxId } });
+    if (alreadyUsed && alreadyUsed.id !== payment.id) throw new AppError_default(409, "Transaction has already been used.");
+    await tx.subscription.updateMany({
+      where: { userId: payment.userId, status: { in: ["ACTIVE", "TRIALING", "PAST_DUE"] }, stripeSubscriptionId: { not: subscriptionId } },
+      data: { status: "CANCELED", canceledAt: now, cancelAtPeriodEnd: false }
+    });
+    await tx.subscription.upsert({
+      where: { stripeSubscriptionId: subscriptionId },
+      create: {
+        userId: payment.userId,
+        planId: payment.planId,
+        stripeSubscriptionId: subscriptionId,
+        stripeCustomerId: `bkash:${payment.userId}`,
+        status: "ACTIVE",
+        currentPeriodStart: now,
+        currentPeriodEnd: periodEnd,
+        couponId
+      },
+      update: { status: "ACTIVE", planId: payment.planId, currentPeriodStart: now, currentPeriodEnd: periodEnd, couponId }
+    });
+    await tx.invoice.upsert({
+      where: { stripeInvoiceId: `bkash:${trxId}` },
+      create: {
+        userId: payment.userId,
+        stripeInvoiceId: `bkash:${trxId}`,
+        amountPaid: payment.amount,
+        amountDue: payment.amount,
+        currency: "bdt",
+        status: "PAID",
+        issuedAt: now,
+        paidAt: now
+      },
+      update: {}
+    });
+    await tx.userLimit.upsert({
+      where: { userId: payment.userId },
+      create: { userId: payment.userId, apiLimit: payment.plan.apiLimit, resumeLimit: payment.plan.resumeLimit, resetAt: periodEnd },
+      update: { apiLimit: payment.plan.apiLimit, resumeLimit: payment.plan.resumeLimit, resetAt: periodEnd }
+    });
+    if (couponId) await tx.coupon.update({ where: { id: couponId }, data: { redeemed: { increment: 1 } } });
+    return true;
+  });
+  if (!activated) return { redirect: frontendBillingUrl("success") };
+  await bustDashboardCache(payment.userId);
+  await createNotification({
+    userId: payment.userId,
+    type: "BILLING",
+    title: "bKash payment successful",
+    body: `Your ${payment.plan.name} access is active until ${periodEnd.toLocaleDateString("en-BD")}.`,
+    link: "/dashboard/billing"
+  });
+  return { redirect: frontendBillingUrl("success") };
+}
+
+// src/modules/billing/billing.service.ts
 var stripeEnabled = () => Boolean(envVars.STRIPE.STRIPE_SECRET_KEY);
 var stripeClient = null;
 var getStripe = () => {
@@ -8805,11 +8954,11 @@ var getPlanBySlug = async (slug) => {
 var defaultFeatures = (slug) => {
   switch (slug) {
     case "free":
-      return ["Up to 5 resumes", "50 AI credits", "Basic templates"];
+      return ["2 resumes", "2 alignment analyses / month", "1 tailored resume / month", "3 application drafts / month", "10 saved applications"];
     case "pro":
-      return ["25 resumes", "500 AI credits", "All templates", "AI interview prep"];
+      return ["10 resume versions", "25 alignment analyses / month", "15 tailored resumes / month", "30 application drafts / month", "Unlimited application tracking"];
     case "business":
-      return ["100 resumes", "5,000 AI credits", "Priority support", "Team seat add-on"];
+      return ["Unlimited resume versions", "75 alignment analyses / month", "50 tailored resumes / month", "100 application drafts / month", "Advanced interview preparation"];
     default:
       return [];
   }
@@ -8817,16 +8966,16 @@ var defaultFeatures = (slug) => {
 var defaultPlans = () => ["free", "pro", "business"].map((slug) => ({
   id: slug,
   slug,
-  name: slug === "free" ? "Free" : slug === "pro" ? "Pro" : "Business",
+  name: slug === "free" ? "Free" : slug === "pro" ? "Job Seeker" : "Career Pro",
   description: null,
   stripePriceId: null,
   stripeProductId: null,
-  amount: slug === "free" ? 0 : slug === "pro" ? 1499 : 4999,
-  currency: "usd",
+  amount: slug === "free" ? 0 : slug === "pro" ? 29900 : 59900,
+  currency: "bdt",
   interval: "MONTH",
   features: defaultFeatures(slug),
-  apiLimit: slug === "free" ? 50 : slug === "pro" ? 500 : 5e3,
-  resumeLimit: slug === "free" ? 5 : slug === "pro" ? 25 : 100
+  apiLimit: slug === "free" ? 6 : slug === "pro" ? 80 : 265,
+  resumeLimit: slug === "free" ? 2 : slug === "pro" ? 10 : 1e3
 }));
 var serializePlan = (p) => ({
   id: p.id,
@@ -8852,7 +9001,7 @@ var getCurrentSubscription = async (userId) => {
     orderBy: { createdAt: "desc" }
   });
   if (!sub) {
-    return { plan: await getPlanBySlug("free"), subscription: null };
+    return { plan: await getPlanBySlug("free"), subscription: null, paymentProvider: null };
   }
   return {
     plan: serializePlan(sub.plan),
@@ -8862,7 +9011,8 @@ var getCurrentSubscription = async (userId) => {
       currentPeriodEnd: sub.currentPeriodEnd.toISOString(),
       cancelAtPeriodEnd: sub.cancelAtPeriodEnd,
       couponCode: sub.coupon?.code ?? null
-    }
+    },
+    paymentProvider: sub.stripeSubscriptionId.startsWith("bkash:") ? "bkash" : "stripe"
   };
 };
 var rememberedCustomer = async (userId) => {
@@ -8898,6 +9048,14 @@ var findOrCreateCustomer = async (userId, email, name) => {
   return customer.id;
 };
 var createCheckoutSession = async (input) => {
+  if (envVars.BKASH.ENABLED) {
+    return createBkashCheckout({
+      userId: input.userId,
+      planSlug: input.planSlug,
+      billing: input.billing,
+      ...input.couponCode ? { couponCode: input.couponCode } : {}
+    });
+  }
   requireEnabled();
   const plan = await prisma.plan.findUnique({ where: { slug: input.planSlug } });
   if (!plan) throw new AppError_default(404, `Unknown plan: ${input.planSlug}`);
@@ -8932,7 +9090,7 @@ var createCheckoutSession = async (input) => {
     // cancels double-clicks
   );
   if (!session.url) throw new AppError_default(502, "Stripe did not return a checkout URL.");
-  return { url: session.url };
+  return { url: session.url, provider: "stripe" };
 };
 var openBillingPortal = async (userId, email, name) => {
   requireEnabled();
@@ -9241,6 +9399,7 @@ var checkout = catchAsync(async (req, res) => {
     email,
     name: email.split("@")[0] ?? "",
     planSlug: req.body.planSlug,
+    billing: req.body.billing ?? "monthly",
     ...req.body.couponCode ? { couponCode: req.body.couponCode } : {}
   });
   sendResponse(res, {
@@ -9308,6 +9467,7 @@ var billingController = {
 var router17 = Router17();
 var checkoutSchema = z11.object({
   planSlug: z11.string().min(1),
+  billing: z11.enum(["monthly", "yearly"]).optional(),
   couponCode: z11.string().optional()
 });
 var couponSchema = z11.object({
@@ -9324,8 +9484,25 @@ router17.get("/invoices", billingController.invoices);
 router17.post("/coupons/preview", validateRequest(couponSchema), billingController.couponPreview);
 var billingRouter = router17;
 
-// src/modules/content/content.router.ts
+// src/modules/billing/bkash.public.router.ts
 import { Router as Router18 } from "express";
+var router18 = Router18();
+router18.get("/callback", async (req, res, next) => {
+  try {
+    const paymentID = typeof req.query.paymentID === "string" ? req.query.paymentID : "";
+    const status51 = typeof req.query.status === "string" ? req.query.status.toLowerCase() : "";
+    if (!paymentID) return res.redirect(302, "/");
+    const result = await completeBkashCallback(paymentID, status51);
+    return res.redirect(302, result.redirect);
+  } catch (error) {
+    if (res.headersSent) return next(error);
+    return res.redirect(302, `${envVars.FRONTEND_URL.replace(/\/+$/, "")}/dashboard/billing?payment=failure`);
+  }
+});
+var bkashPublicRouter = router18;
+
+// src/modules/content/content.router.ts
+import { Router as Router19 } from "express";
 
 // src/modules/content/content.controller.ts
 import status37 from "http-status";
@@ -9349,13 +9526,13 @@ var page = catchAsync(async (req, res) => {
 });
 
 // src/modules/content/content.router.ts
-var router18 = Router18();
-router18.get("/homepage", homepage2);
-router18.get("/pages/:slug", page);
-var contentRouter = router18;
+var router19 = Router19();
+router19.get("/homepage", homepage2);
+router19.get("/pages/:slug", page);
+var contentRouter = router19;
 
 // src/modules/aiChat/aiChat.router.ts
-import { Router as Router19 } from "express";
+import { Router as Router20 } from "express";
 
 // src/modules/aiChat/aiChat.controller.ts
 import status45 from "http-status";
@@ -9365,7 +9542,7 @@ import status38 from "http-status";
 import { randomBytes as randomBytes2 } from "crypto";
 
 // src/modules/aiChat/aiChat.guardrails.ts
-import { createHash } from "crypto";
+import { createHash as createHash2 } from "crypto";
 var SECRET_PATTERNS = [
   [/\bBearer\s+[A-Za-z0-9._~+\/-]+=*/gi, "Bearer [REDACTED]"],
   [/\b(?:sk|rk|pk)_[A-Za-z0-9_-]{12,}\b/g, "[REDACTED_API_KEY]"],
@@ -9376,8 +9553,8 @@ var SECRET_PATTERNS = [
 var stripHtml = (value) => value.replace(/<script[\s\S]*?<\/script>/gi, " ").replace(/<style[\s\S]*?<\/style>/gi, " ").replace(/<[^>]+>/g, " ").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, " ").replace(/\s+/g, " ").trim();
 var redactSecrets = (value) => SECRET_PATTERNS.reduce((current2, [pattern, replacement]) => current2.replace(pattern, replacement), value);
 var minimizeText = (value, maxLength = 5e3) => {
-  const text3 = redactSecrets(stripHtml(typeof value === "string" ? value : JSON.stringify(value ?? "")));
-  return text3.length <= maxLength ? text3 : `${text3.slice(0, maxLength)}
+  const text2 = redactSecrets(stripHtml(typeof value === "string" ? value : JSON.stringify(value ?? "")));
+  return text2.length <= maxLength ? text2 : `${text2.slice(0, maxLength)}
 [Context truncated by ProFile AI]`;
 };
 var wrapUntrusted = (label, value, maxLength = 5e3) => {
@@ -9386,7 +9563,7 @@ var wrapUntrusted = (label, value, maxLength = 5e3) => {
 ${minimizeText(value, maxLength)}
 </untrusted_${safeLabel}_content>`;
 };
-var hashValue = (value) => createHash("sha256").update(value).digest("hex");
+var hashValue = (value) => createHash2("sha256").update(value).digest("hex");
 var safeInternalUrl = (value) => {
   if (typeof value !== "string" || !value.startsWith("/") || value.startsWith("//")) return void 0;
   if (value.includes("..") || /[\u0000-\u001F]/.test(value)) return void 0;
@@ -9546,7 +9723,7 @@ var cancelPendingAction = async (actor, token) => {
 
 // src/modules/aiChat/aiChat.actor.ts
 import status39 from "http-status";
-import { randomUUID } from "crypto";
+import { randomUUID as randomUUID2 } from "crypto";
 var VISITOR_COOKIE = "profileaiVisitorSession";
 var bearerToken = (req) => {
   const value = req.headers.authorization;
@@ -9554,7 +9731,7 @@ var bearerToken = (req) => {
 };
 var ensureVisitorSession = (req, res) => {
   const existing = req.cookies?.[VISITOR_COOKIE];
-  const sessionId = typeof existing === "string" && /^[0-9a-f-]{36}$/i.test(existing) ? existing : randomUUID();
+  const sessionId = typeof existing === "string" && /^[0-9a-f-]{36}$/i.test(existing) ? existing : randomUUID2();
   if (sessionId !== existing) {
     res.cookie(VISITOR_COOKIE, sessionId, {
       httpOnly: true,
@@ -9681,15 +9858,15 @@ var assertConversationAccess = (actor, conversation) => {
   }
 };
 var findIdempotentResponse = async (actor, clientRequestId) => {
-  const request = await prisma.aiMessage.findUnique({
+  const request2 = await prisma.aiMessage.findUnique({
     where: { clientRequestId },
     include: { conversation: { select: { id: true, userId: true, visitorSessionId: true } } }
   });
-  if (!request) return null;
-  assertConversationAccess(actor, request.conversation);
-  const reply = await prisma.aiMessage.findUnique({ where: { replyToMessageId: request.id } });
-  if (!reply?.structuredData) return { conversation: request.conversation, request, reply: null };
-  return { conversation: request.conversation, request, reply };
+  if (!request2) return null;
+  assertConversationAccess(actor, request2.conversation);
+  const reply = await prisma.aiMessage.findUnique({ where: { replyToMessageId: request2.id } });
+  if (!reply?.structuredData) return { conversation: request2.conversation, request: request2, reply: null };
+  return { conversation: request2.conversation, request: request2, reply };
 };
 var getOrCreateConversation = async (actor, conversationId, route, firstMessage) => {
   if (conversationId) {
@@ -10370,7 +10547,7 @@ var verifyChatOrigin = (req) => {
     throw new AppError_default(status45.FORBIDDEN, "Request origin is not allowed.", "PERMISSION_DENIED");
   }
 };
-var config = catchAsync(async (req, res) => {
+var config2 = catchAsync(async (req, res) => {
   const actor = await resolveAiChatActor(req, res);
   const flags = await getAiChatFlags(actor.role);
   sendResponse(res, {
@@ -10449,7 +10626,7 @@ var cancelAction = catchAsync(async (req, res) => {
 });
 
 // src/modules/aiChat/aiChat.router.ts
-var router19 = Router19();
+var router20 = Router20();
 var rejectOversizedMessage = (req, _res, next) => {
   if (typeof req.body?.message === "string" && req.body.message.length > 6e3) {
     next(new AppError_default(413, "Message must contain at most 6000 characters.", "MESSAGE_TOO_LONG"));
@@ -10457,17 +10634,17 @@ var rejectOversizedMessage = (req, _res, next) => {
   }
   next();
 };
-router19.get("/chat/config", config);
-router19.post("/chat", rejectOversizedMessage, validateRequest(AiChatRequestSchema), sendMessage);
-router19.post("/chat/feedback", validateRequest(FeedbackRequestSchema), feedback);
-router19.post("/chat/actions/confirm", validateRequest(ConfirmActionRequestSchema), confirmAction);
-router19.post("/chat/actions/cancel", validateRequest(CancelActionRequestSchema), cancelAction);
-router19.get("/chat/:conversationId", validateRequest(ConversationParamsSchema), history);
-router19.delete("/chat/:conversationId", validateRequest(ConversationParamsSchema), clear);
-var aiChatRouter = router19;
+router20.get("/chat/config", config2);
+router20.post("/chat", rejectOversizedMessage, validateRequest(AiChatRequestSchema), sendMessage);
+router20.post("/chat/feedback", validateRequest(FeedbackRequestSchema), feedback);
+router20.post("/chat/actions/confirm", validateRequest(ConfirmActionRequestSchema), confirmAction);
+router20.post("/chat/actions/cancel", validateRequest(CancelActionRequestSchema), cancelAction);
+router20.get("/chat/:conversationId", validateRequest(ConversationParamsSchema), history);
+router20.delete("/chat/:conversationId", validateRequest(ConversationParamsSchema), clear);
+var aiChatRouter = router20;
 
 // src/modules/job/job.router.ts
-import { Router as Router20 } from "express";
+import { Router as Router21 } from "express";
 
 // src/modules/job/job.controller.ts
 import status47 from "http-status";
@@ -10603,10 +10780,10 @@ var createApplicationFromJob = async (userId, id3, input) => {
 };
 
 // src/modules/job/job.controller.ts
-var text2 = (value) => typeof value === "string" ? value : "";
+var text = (value) => typeof value === "string" ? value : "";
 var list7 = catchAsync(async (req, res) => {
-  const lifecycle = text2(req.query.lifecycle);
-  const query2 = text2(req.query.query);
+  const lifecycle = text(req.query.lifecycle);
+  const query2 = text(req.query.query);
   const data = await listJobs(req.user.userId, {
     ...lifecycle ? { lifecycle } : {},
     ...query2 ? { query: query2 } : {},
@@ -10615,7 +10792,7 @@ var list7 = catchAsync(async (req, res) => {
   sendResponse(res, { status: status47.OK, success: true, message: "Jobs retrieved.", data });
 });
 var get6 = catchAsync(async (req, res) => {
-  const data = await getJob(req.user.userId, text2(req.params.id));
+  const data = await getJob(req.user.userId, text(req.params.id));
   sendResponse(res, { status: status47.OK, success: true, message: "Job retrieved.", data });
 });
 var create5 = catchAsync(async (req, res) => {
@@ -10623,15 +10800,15 @@ var create5 = catchAsync(async (req, res) => {
   sendResponse(res, { status: status47.CREATED, success: true, message: "Job added to workspace.", data });
 });
 var update5 = catchAsync(async (req, res) => {
-  const data = await updateJob(req.user.userId, text2(req.params.id), req.body);
+  const data = await updateJob(req.user.userId, text(req.params.id), req.body);
   sendResponse(res, { status: status47.OK, success: true, message: "Job updated.", data });
 });
 var remove6 = catchAsync(async (req, res) => {
-  const data = await deleteJob(req.user.userId, text2(req.params.id));
+  const data = await deleteJob(req.user.userId, text(req.params.id));
   sendResponse(res, { status: status47.OK, success: true, message: "Job removed.", data });
 });
 var createApplication2 = catchAsync(async (req, res) => {
-  const data = await createApplicationFromJob(req.user.userId, text2(req.params.id), req.body);
+  const data = await createApplicationFromJob(req.user.userId, text(req.params.id), req.body);
   sendResponse(res, { status: status47.CREATED, success: true, message: "Job added to application tracker.", data });
 });
 
@@ -10685,18 +10862,18 @@ var createApplicationFromJobSchema = z13.object({
 var listJobsSchema = z13.object({ query: z13.object({ lifecycle: jobLifecycleEnum.optional(), query: z13.string().trim().max(200).optional(), limit: z13.coerce.number().int().min(1).max(100).optional() }) });
 
 // src/modules/job/job.router.ts
-var router20 = Router20();
-router20.use(checkAuth());
-router20.get("/", validateRequest(listJobsSchema), list7);
-router20.post("/", validateRequest(createJobSchema), create5);
-router20.get("/:id", validateRequest(jobIdSchema), get6);
-router20.put("/:id", validateRequest(updateJobSchema), update5);
-router20.post("/:id/application", validateRequest(createApplicationFromJobSchema), createApplication2);
-router20.delete("/:id", validateRequest(jobIdSchema), remove6);
-var jobRouter = router20;
+var router21 = Router21();
+router21.use(checkAuth());
+router21.get("/", validateRequest(listJobsSchema), list7);
+router21.post("/", validateRequest(createJobSchema), create5);
+router21.get("/:id", validateRequest(jobIdSchema), get6);
+router21.put("/:id", validateRequest(updateJobSchema), update5);
+router21.post("/:id/application", validateRequest(createApplicationFromJobSchema), createApplication2);
+router21.delete("/:id", validateRequest(jobIdSchema), remove6);
+var jobRouter = router21;
 
 // src/modules/career/career.router.ts
-import { Router as Router21 } from "express";
+import { Router as Router22 } from "express";
 import { z as z15 } from "zod";
 import { rateLimit as rateLimit3 } from "express-rate-limit";
 
@@ -10729,37 +10906,37 @@ var styleBody = z14.object({
 });
 
 // src/modules/career/career.router.ts
-var router21 = Router21();
-router21.use((_req, res, next) => {
+var router22 = Router22();
+router22.use((_req, res, next) => {
   res.setHeader("Cache-Control", "private, no-store");
   next();
 });
 var id2 = (req) => z15.string().min(1).max(200).parse(req.params.id);
-router21.get("/google/callback", catchAsync(async (req, res) => {
+router22.get("/google/callback", catchAsync(async (req, res) => {
   const query2 = z15.object({ code: z15.string().max(4e3), state: z15.string().length(64) }).parse(req.query);
   await oauthCallback(query2.code, query2.state);
   res.redirect(`${process.env.FRONTEND_URL}/dashboard/career?connected=1`);
 }));
-router21.use(checkAuth());
-router21.use(rateLimit3({ windowMs: 6e4, limit: 60, standardHeaders: "draft-8", legacyHeaders: false }));
+router22.use(checkAuth());
+router22.use(rateLimit3({ windowMs: 6e4, limit: 60, standardHeaders: "draft-8", legacyHeaders: false }));
 var respond = (fn) => catchAsync(async (req, res) => {
   const data = await fn(req);
   res.json({ success: true, message: "Career workspace updated.", data });
 });
-router21.get("/", respond((req) => overview(req.user.userId)));
-router21.post("/evidence", respond((req) => saveEvidence(req.user.userId, evidenceBody.parse(req.body))));
-router21.put("/evidence/:id", respond((req) => updateEvidence(req.user.userId, id2(req), evidenceBody.parse(req.body))));
-router21.delete("/evidence/:id", respond((req) => removeEvidence(req.user.userId, id2(req))));
-router21.put("/preferences", respond((req) => savePreferences(req.user.userId, preferenceBody.parse(req.body))));
-router21.put("/style", respond((req) => savePreferences(req.user.userId, { writingStyle: styleBody.parse(req.body) })));
-router21.post("/stories", respond((req) => createStory(req.user.userId, z15.object({ evidenceId: z15.string().min(1).max(200) }).parse(req.body).evidenceId)));
-router21.post("/alignment", respond((req) => {
+router22.get("/", respond((req) => overview(req.user.userId)));
+router22.post("/evidence", respond((req) => saveEvidence(req.user.userId, evidenceBody.parse(req.body))));
+router22.put("/evidence/:id", respond((req) => updateEvidence(req.user.userId, id2(req), evidenceBody.parse(req.body))));
+router22.delete("/evidence/:id", respond((req) => removeEvidence(req.user.userId, id2(req))));
+router22.put("/preferences", respond((req) => savePreferences(req.user.userId, preferenceBody.parse(req.body))));
+router22.put("/style", respond((req) => savePreferences(req.user.userId, { writingStyle: styleBody.parse(req.body) })));
+router22.post("/stories", respond((req) => createStory(req.user.userId, z15.object({ evidenceId: z15.string().min(1).max(200) }).parse(req.body).evidenceId)));
+router22.post("/alignment", respond((req) => {
   const input = z15.object({ jobId: z15.string().min(1), resumeId: z15.string().min(1), documentId: z15.string().optional(), combined: z15.boolean().default(false) }).parse(req.body);
   return alignment(req.user.userId, input.jobId, input.resumeId, input.documentId, input.combined);
 }));
-router21.post("/drafts", respond((req) => createDraft(req.user.userId, draftBody.parse(req.body))));
-router21.put("/drafts/:id", respond((req) => editDraft(req.user.userId, id2(req), editDraftBody.parse(req.body))));
-router21.delete("/drafts/:id", respond(async (req) => {
+router22.post("/drafts", respond((req) => createDraft(req.user.userId, draftBody.parse(req.body))));
+router22.put("/drafts/:id", respond((req) => editDraft(req.user.userId, id2(req), editDraftBody.parse(req.body))));
+router22.delete("/drafts/:id", respond(async (req) => {
   return prisma.$transaction(async (tx) => {
     await ownerLock(tx, req.user.userId);
     const row = await tx.careerDocument.deleteMany({ where: { id: id2(req), userId: req.user.userId } });
@@ -10768,30 +10945,30 @@ router21.delete("/drafts/:id", respond(async (req) => {
     return { deleted: true };
   });
 }));
-router21.post("/tailor", respond((req) => {
+router22.post("/tailor", respond((req) => {
   const body = z15.object({ jobId: z15.string(), resumeId: z15.string(), evidenceIds: z15.array(z15.string()).min(1).max(10), accept: z15.boolean(), previewKey: z15.string().length(64).optional() }).parse(req.body);
   return tailor(req.user.userId, body.resumeId, body.jobId, body.evidenceIds, body.accept, body.previewKey);
 }));
-router21.get("/sources", respond(() => prisma.careerSource.findMany({ where: { enabled: true }, select: { id: true, company: true, provider: true, lastCheckedAt: true } })));
-router21.get("/sources/:id/jobs", respond((req) => discover(id2(req), req.user.userId)));
-router21.post("/sources/:id/import", respond((req) => importPosting(req.user.userId, id2(req), z15.object({ externalId: z15.string().max(160) }).parse(req.body).externalId)));
-router21.post("/jobs/:id/recheck", respond((req) => recheckJob(req.user.userId, id2(req))));
-router21.post("/jobs/:id/report", respond(async (req) => {
+router22.get("/sources", respond(() => prisma.careerSource.findMany({ where: { enabled: true }, select: { id: true, company: true, provider: true, lastCheckedAt: true } })));
+router22.get("/sources/:id/jobs", respond((req) => discover(id2(req), req.user.userId)));
+router22.post("/sources/:id/import", respond((req) => importPosting(req.user.userId, id2(req), z15.object({ externalId: z15.string().max(160) }).parse(req.body).externalId)));
+router22.post("/jobs/:id/recheck", respond((req) => recheckJob(req.user.userId, id2(req))));
+router22.post("/jobs/:id/report", respond(async (req) => {
   const body = z15.object({ lifecycle: z15.enum(["POSSIBLY_EXPIRED", "EXPIRED", "REMOVED"]) }).parse(req.body);
   const result = await prisma.job.updateMany({ where: { id: id2(req), userId: req.user.userId }, data: { lifecycle: body.lifecycle } });
   if (!result.count) throw new AppError_default(404, "Job not found.");
   return { reported: true };
 }));
-router21.get("/integrations", respond(async (req) => ({
+router22.get("/integrations", respond(async (req) => ({
   configured: Boolean(process.env.CAREER_GOOGLE_CLIENT_ID && process.env.CAREER_GOOGLE_CLIENT_SECRET && process.env.CAREER_GOOGLE_REDIRECT_URI && process.env.CAREER_TOKEN_KEY),
   connections: await prisma.careerConnection.findMany({ where: { userId: req.user.userId }, select: { id: true, provider: true, scopes: true, createdAt: true } }),
   deliveries: await prisma.careerDelivery.findMany({ where: { userId: req.user.userId }, select: { id: true, kind: true, state: true, error: true, createdAt: true }, take: 50, orderBy: { createdAt: "desc" } })
 })));
-router21.post("/integrations/connect", respond((req) => connectGoogle(req.user.userId, z15.object({ purpose: z15.enum(["mail", "calendar"]) }).parse(req.body).purpose)));
-router21.post("/integrations/disconnect", respond((req) => disconnectGoogle(req.user.userId, z15.object({ purpose: z15.enum(["mail", "calendar"]) }).parse(req.body).purpose)));
-router21.post("/drafts/:id/send", respond((req) => queueMail(req.user.userId, id2(req), z15.object({ key: z15.uuid(), reviewed: z15.literal(true) }).parse(req.body).key)));
-router21.post("/calendar", respond((req) => queueCalendar(req.user.userId, calendarBody.parse(req.body))));
-router21.get("/export", respond(async (req) => {
+router22.post("/integrations/connect", respond((req) => connectGoogle(req.user.userId, z15.object({ purpose: z15.enum(["mail", "calendar"]) }).parse(req.body).purpose)));
+router22.post("/integrations/disconnect", respond((req) => disconnectGoogle(req.user.userId, z15.object({ purpose: z15.enum(["mail", "calendar"]) }).parse(req.body).purpose)));
+router22.post("/drafts/:id/send", respond((req) => queueMail(req.user.userId, id2(req), z15.object({ key: z15.uuid(), reviewed: z15.literal(true) }).parse(req.body).key)));
+router22.post("/calendar", respond((req) => queueCalendar(req.user.userId, calendarBody.parse(req.body))));
+router22.get("/export", respond(async (req) => {
   const userId = req.user.userId;
   const [profile, evidence, drafts, analyses, preference, jobs, applications, resumes, letters] = await Promise.all([
     prisma.userProfile.findUnique({ where: { userId } }),
@@ -10806,18 +10983,18 @@ router21.get("/export", respond(async (req) => {
   ]);
   return { exportedAt: (/* @__PURE__ */ new Date()).toISOString(), profile, evidence, drafts, analyses, preference, jobs, applications, resumes, letters };
 }));
-router21.get("/admin/sources", checkAuth("ADMIN"), respond(() => prisma.careerSource.findMany({ orderBy: { updatedAt: "desc" } })));
-router21.post("/admin/sources", checkAuth("ADMIN"), respond(async (req) => {
+router22.get("/admin/sources", checkAuth("ADMIN"), respond(() => prisma.careerSource.findMany({ orderBy: { updatedAt: "desc" } })));
+router22.post("/admin/sources", checkAuth("ADMIN"), respond(async (req) => {
   const body = sourceBody.parse(req.body);
   if (body.enabled && !body.policy.storageAllowed) throw new AppError_default(400, "Storage permission is required.");
   const saved = await prisma.careerSource.upsert({ where: { provider_board: { provider: body.provider, board: body.board } }, create: body, update: { ...body, failures: 0, nextCheckAt: null } });
   await prisma.auditLog.create({ data: { actorId: req.user.userId, action: "CAREER_SOURCE_POLICY_UPDATED", entityType: "CareerSource", entityId: saved.id, metadata: { provider: body.provider, board: body.board, enabled: body.enabled } } });
   return saved;
 }));
-var careerRouter = router21;
+var careerRouter = router22;
 
 // src/modules/contact/contact.router.ts
-import { Router as Router22 } from "express";
+import { Router as Router23 } from "express";
 import { rateLimit as rateLimit4 } from "express-rate-limit";
 
 // src/modules/contact/contact.controller.ts
@@ -10923,41 +11100,42 @@ var contactRequestSchema = z16.object({
 });
 
 // src/modules/contact/contact.router.ts
-var router22 = Router22();
+var router23 = Router23();
 var contactLimit = rateLimit4({
   windowMs: 15 * 60 * 1e3,
   limit: 5,
   standardHeaders: "draft-8",
   legacyHeaders: false
 });
-router22.post("/", contactLimit, validateRequest(contactRequestSchema), submit);
-var contactRouter = router22;
+router23.post("/", contactLimit, validateRequest(contactRequestSchema), submit);
+var contactRouter = router23;
 
 // src/index.ts
-var router23 = Router23();
-router23.use("/career", careerRouter);
-router23.use("/contact", contactRouter);
-router23.use("/auth", authRouter);
-router23.use("/user", userRouter);
-router23.use("/user/dashboard", dashboardRouter);
-router23.use("/notifications", notificationRouter);
-router23.use("/applications", applicationRouter);
-router23.use("/jobs", jobRouter);
-router23.use("/user/projects", projectRouter);
-router23.use("/user/references", referenceRouter);
-router23.use("/templates", templateRouter);
-router23.use("/resumes", resumeRouter);
-router23.use("/", exportRouter);
-router23.use("/public/resumes", publicResumeRouter);
-router23.use("/admin", adminRouter);
-router23.use("/analytics", analyticsRouter);
-router23.use("/cover-letters", coverLetterRouter);
-router23.use("/tools", toolsRouter);
-router23.use("/referrals", referralRouter);
-router23.use("/billing", billingRouter);
-router23.use("/content", contentRouter);
-router23.use("/ai", aiChatRouter);
-var indexRouter = router23;
+var router24 = Router24();
+router24.use("/career", careerRouter);
+router24.use("/contact", contactRouter);
+router24.use("/auth", authRouter);
+router24.use("/user", userRouter);
+router24.use("/user/dashboard", dashboardRouter);
+router24.use("/notifications", notificationRouter);
+router24.use("/applications", applicationRouter);
+router24.use("/jobs", jobRouter);
+router24.use("/user/projects", projectRouter);
+router24.use("/user/references", referenceRouter);
+router24.use("/templates", templateRouter);
+router24.use("/resumes", resumeRouter);
+router24.use("/", exportRouter);
+router24.use("/public/resumes", publicResumeRouter);
+router24.use("/admin", adminRouter);
+router24.use("/analytics", analyticsRouter);
+router24.use("/cover-letters", coverLetterRouter);
+router24.use("/tools", toolsRouter);
+router24.use("/referrals", referralRouter);
+router24.use("/billing/bkash", bkashPublicRouter);
+router24.use("/billing", billingRouter);
+router24.use("/content", contentRouter);
+router24.use("/ai", aiChatRouter);
+var indexRouter = router24;
 
 // src/middleware/globalErrorHandler.ts
 import status50 from "http-status";
@@ -11026,9 +11204,9 @@ var globalErrorHandler = async (err, req, res, next) => {
 };
 
 // src/modules/billing/stripe.webhooks.router.ts
-import { Router as Router24, raw } from "express";
-var router24 = Router24();
-router24.post(
+import { Router as Router25, raw } from "express";
+var router25 = Router25();
+router25.post(
   "/stripe",
   raw({ type: "application/json", limit: "1mb" }),
   async (req, res, next) => {
@@ -11044,7 +11222,7 @@ router24.post(
     }
   }
 );
-var stripeWebhookRouter = router24;
+var stripeWebhookRouter = router25;
 
 // src/app.ts
 var app = express();
