@@ -402,6 +402,7 @@ export const ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Plan: 'Plan',
+  BkashPayment: 'BkashPayment',
   Subscription: 'Subscription',
   Invoice: 'Invoice',
   Coupon: 'Coupon',
@@ -452,7 +453,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "aiConversation" | "aiMessage" | "aiToolExecution" | "aiPendingAction" | "aiFeedback" | "analyticsEvent" | "aiUsageEvent" | "auditLog" | "securityAlert" | "jobApplication" | "job" | "jobSourceListing" | "applicationEvent" | "user" | "session" | "account" | "verification" | "plan" | "subscription" | "invoice" | "coupon" | "paymentEvent" | "careerEvidence" | "careerDocument" | "careerAnalysis" | "careerPreference" | "careerUsage" | "careerSource" | "careerConnection" | "careerOAuthState" | "careerDelivery" | "homepageContent" | "contentPage" | "adminResource" | "coverLetter" | "exportJob" | "notification" | "notificationPreference" | "platformConfig" | "userLimit" | "otpCode" | "loginDevice" | "userProfile" | "adminProfile" | "project" | "reference" | "referral" | "rewardLedger" | "referralProgram" | "resumeTemplate" | "resume" | "resumeHistory" | "resumeView"
+    modelProps: "aiConversation" | "aiMessage" | "aiToolExecution" | "aiPendingAction" | "aiFeedback" | "analyticsEvent" | "aiUsageEvent" | "auditLog" | "securityAlert" | "jobApplication" | "job" | "jobSourceListing" | "applicationEvent" | "user" | "session" | "account" | "verification" | "plan" | "bkashPayment" | "subscription" | "invoice" | "coupon" | "paymentEvent" | "careerEvidence" | "careerDocument" | "careerAnalysis" | "careerPreference" | "careerUsage" | "careerSource" | "careerConnection" | "careerOAuthState" | "careerDelivery" | "homepageContent" | "contentPage" | "adminResource" | "coverLetter" | "exportJob" | "notification" | "notificationPreference" | "platformConfig" | "userLimit" | "otpCode" | "loginDevice" | "userProfile" | "adminProfile" | "project" | "reference" | "referral" | "rewardLedger" | "referralProgram" | "resumeTemplate" | "resume" | "resumeHistory" | "resumeView"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1785,6 +1786,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.PlanCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.PlanCountAggregateOutputType> | number
+        }
+      }
+    }
+    BkashPayment: {
+      payload: Prisma.$BkashPaymentPayload<ExtArgs>
+      fields: Prisma.BkashPaymentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BkashPaymentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BkashPaymentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BkashPaymentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BkashPaymentPayload>
+        }
+        findFirst: {
+          args: Prisma.BkashPaymentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BkashPaymentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BkashPaymentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BkashPaymentPayload>
+        }
+        findMany: {
+          args: Prisma.BkashPaymentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BkashPaymentPayload>[]
+        }
+        create: {
+          args: Prisma.BkashPaymentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BkashPaymentPayload>
+        }
+        createMany: {
+          args: Prisma.BkashPaymentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BkashPaymentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BkashPaymentPayload>[]
+        }
+        delete: {
+          args: Prisma.BkashPaymentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BkashPaymentPayload>
+        }
+        update: {
+          args: Prisma.BkashPaymentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BkashPaymentPayload>
+        }
+        deleteMany: {
+          args: Prisma.BkashPaymentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BkashPaymentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BkashPaymentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BkashPaymentPayload>[]
+        }
+        upsert: {
+          args: Prisma.BkashPaymentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BkashPaymentPayload>
+        }
+        aggregate: {
+          args: Prisma.BkashPaymentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBkashPayment>
+        }
+        groupBy: {
+          args: Prisma.BkashPaymentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BkashPaymentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BkashPaymentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BkashPaymentCountAggregateOutputType> | number
         }
       }
     }
@@ -4727,6 +4802,27 @@ export const PlanScalarFieldEnum = {
 export type PlanScalarFieldEnum = (typeof PlanScalarFieldEnum)[keyof typeof PlanScalarFieldEnum]
 
 
+export const BkashPaymentScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  planId: 'planId',
+  billingInterval: 'billingInterval',
+  merchantInvoiceNumber: 'merchantInvoiceNumber',
+  paymentId: 'paymentId',
+  trxId: 'trxId',
+  amount: 'amount',
+  currency: 'currency',
+  status: 'status',
+  providerPayload: 'providerPayload',
+  expiresAt: 'expiresAt',
+  executedAt: 'executedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BkashPaymentScalarFieldEnum = (typeof BkashPaymentScalarFieldEnum)[keyof typeof BkashPaymentScalarFieldEnum]
+
+
 export const SubscriptionScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -5988,6 +6084,7 @@ export type GlobalOmitConfig = {
   account?: Prisma.AccountOmit
   verification?: Prisma.VerificationOmit
   plan?: Prisma.PlanOmit
+  bkashPayment?: Prisma.BkashPaymentOmit
   subscription?: Prisma.SubscriptionOmit
   invoice?: Prisma.InvoiceOmit
   coupon?: Prisma.CouponOmit

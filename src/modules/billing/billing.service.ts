@@ -21,6 +21,7 @@ import { redis } from '../../lib/redis';
 import AppError from '../../errorHelpers/AppError';
 import { bustDashboardCache } from '../dashboard/dashboard.service';
 import { createNotification } from '../notification/notification.service';
+import { createBkashCheckout } from './bkash.service';
 
 const stripeEnabled = (): boolean => Boolean(envVars.STRIPE.STRIPE_SECRET_KEY);
 
@@ -80,13 +81,13 @@ export const seedPlansFromEnv = async (): Promise<void> => {
   // Idempotent upsert of plan rows from STRIPE_PRICE_* env vars so the
   // service can boot on a fresh DB without a manual SQL step.
   const map: Array<[string, string, number, string, number, number]> = [
-    ['free', 'Free', envVars.STRIPE.STRIPE_ENABLED ? 0 : 0, 'MONTH', 50, 5],
+    ['free', 'Free', 0, 'MONTH', 6, 2],
     // Real Stripe mappings come from STRIPE_PRICE_PRO / BUSINESS env.
   ];
   const pro = process.env.STRIPE_PRICE_PRO;
   const biz = process.env.STRIPE_PRICE_BUSINESS;
-  if (pro) map.push(['pro', 'Pro', 1499, 'MONTH', 500, 25]);
-  if (biz) map.push(['business', 'Business', 4999, 'MONTH', 5000, 100]);
+  if (pro) map.push(['pro', 'Job Seeker', 29900, 'MONTH', 80, 10]);
+  if (biz) map.push(['business', 'Career Pro', 59900, 'MONTH', 265, 1000]);
   await Promise.all(
     map.map(([slug, name, amount, interval, apiLimit, resumeLimit]) =>
       prisma.plan.upsert({
@@ -97,12 +98,22 @@ export const seedPlansFromEnv = async (): Promise<void> => {
           stripePriceId: pro && slug === 'pro' ? pro : biz && slug === 'business' ? biz : `${slug}_local`,
           stripeProductId: `${slug}_product`,
           amount,
+          currency: 'bdt',
           interval: interval as 'MONTH' | 'YEAR',
           apiLimit,
           resumeLimit,
           features: defaultFeatures(slug),
         },
-        update: { isActive: true },
+        update: {
+          name,
+          amount,
+          currency: 'bdt',
+          interval: interval as 'MONTH' | 'YEAR',
+          apiLimit,
+          resumeLimit,
+          features: defaultFeatures(slug),
+          isActive: true,
+        },
       })
     )
   );
@@ -111,11 +122,11 @@ export const seedPlansFromEnv = async (): Promise<void> => {
 const defaultFeatures = (slug: string): string[] => {
   switch (slug) {
     case 'free':
-      return ['Up to 5 resumes', '50 AI credits', 'Basic templates'];
+      return ['2 resumes', '2 alignment analyses / month', '1 tailored resume / month', '3 application drafts / month', '10 saved applications'];
     case 'pro':
-      return ['25 resumes', '500 AI credits', 'All templates', 'AI interview prep'];
+      return ['10 resume versions', '25 alignment analyses / month', '15 tailored resumes / month', '30 application drafts / month', 'Unlimited application tracking'];
     case 'business':
-      return ['100 resumes', '5,000 AI credits', 'Priority support', 'Team seat add-on'];
+      return ['Unlimited resume versions', '75 alignment analyses / month', '50 tailored resumes / month', '100 application drafts / month', 'Advanced interview preparation'];
     default:
       return [];
   }
@@ -125,16 +136,16 @@ const defaultPlans = (): Array<ReturnType<typeof serializePlan>> =>
   (['free', 'pro', 'business'] as const).map((slug) => ({
     id: slug,
     slug,
-    name: slug === 'free' ? 'Free' : slug === 'pro' ? 'Pro' : 'Business',
+    name: slug === 'free' ? 'Free' : slug === 'pro' ? 'Job Seeker' : 'Career Pro',
     description: null,
     stripePriceId: null,
     stripeProductId: null,
-    amount: slug === 'free' ? 0 : slug === 'pro' ? 1499 : 4999,
-    currency: 'usd',
+    amount: slug === 'free' ? 0 : slug === 'pro' ? 29900 : 59900,
+    currency: 'bdt',
     interval: 'MONTH',
     features: defaultFeatures(slug),
-    apiLimit: slug === 'free' ? 50 : slug === 'pro' ? 500 : 5000,
-    resumeLimit: slug === 'free' ? 5 : slug === 'pro' ? 25 : 100,
+    apiLimit: slug === 'free' ? 6 : slug === 'pro' ? 80 : 265,
+    resumeLimit: slug === 'free' ? 2 : slug === 'pro' ? 10 : 1000,
   }));
 
 const serializePlan = (p: {
@@ -177,7 +188,7 @@ export const getCurrentSubscription = async (userId: string) => {
     orderBy: { createdAt: 'desc' },
   });
   if (!sub) {
-    return { plan: await getPlanBySlug('free'), subscription: null };
+    return { plan: await getPlanBySlug('free'), subscription: null, paymentProvider: null };
   }
   return {
     plan: serializePlan(sub.plan),
@@ -188,6 +199,7 @@ export const getCurrentSubscription = async (userId: string) => {
       cancelAtPeriodEnd: sub.cancelAtPeriodEnd,
       couponCode: sub.coupon?.code ?? null,
     },
+    paymentProvider: sub.stripeSubscriptionId.startsWith('bkash:') ? 'bkash' : 'stripe',
   };
 };
 
@@ -232,8 +244,17 @@ export const createCheckoutSession = async (input: {
   email: string;
   name: string;
   planSlug: string;
+  billing: 'monthly' | 'yearly';
   couponCode?: string;
-}): Promise<{ url: string }> => {
+}): Promise<{ url: string; provider?: 'bkash' | 'stripe' }> => {
+  if (envVars.BKASH.ENABLED) {
+    return createBkashCheckout({
+      userId: input.userId,
+      planSlug: input.planSlug,
+      billing: input.billing,
+      ...(input.couponCode ? { couponCode: input.couponCode } : {}),
+    });
+  }
   requireEnabled();
   const plan = await prisma.plan.findUnique({ where: { slug: input.planSlug } });
   if (!plan) throw new AppError(404, `Unknown plan: ${input.planSlug}`);
@@ -273,7 +294,7 @@ export const createCheckoutSession = async (input: {
     { idempotencyKey: `co:${input.userId}:${plan.slug}` } // cancels double-clicks
   );
   if (!session.url) throw new AppError(502, 'Stripe did not return a checkout URL.');
-  return { url: session.url };
+  return { url: session.url, provider: 'stripe' };
 };
 
 export const openBillingPortal = async (userId: string, email: string, name: string) => {

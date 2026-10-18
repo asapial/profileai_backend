@@ -261,6 +261,7 @@ export type UserWhereInput = {
   rewardLedger?: Prisma.RewardLedgerListRelationFilter
   subscriptions?: Prisma.SubscriptionListRelationFilter
   invoices?: Prisma.InvoiceListRelationFilter
+  bkashPayments?: Prisma.BkashPaymentListRelationFilter
   aiConversations?: Prisma.AiConversationListRelationFilter
   aiFeedback?: Prisma.AiFeedbackListRelationFilter
 }
@@ -308,6 +309,7 @@ export type UserOrderByWithRelationInput = {
   rewardLedger?: Prisma.RewardLedgerOrderByRelationAggregateInput
   subscriptions?: Prisma.SubscriptionOrderByRelationAggregateInput
   invoices?: Prisma.InvoiceOrderByRelationAggregateInput
+  bkashPayments?: Prisma.BkashPaymentOrderByRelationAggregateInput
   aiConversations?: Prisma.AiConversationOrderByRelationAggregateInput
   aiFeedback?: Prisma.AiFeedbackOrderByRelationAggregateInput
 }
@@ -358,6 +360,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   rewardLedger?: Prisma.RewardLedgerListRelationFilter
   subscriptions?: Prisma.SubscriptionListRelationFilter
   invoices?: Prisma.InvoiceListRelationFilter
+  bkashPayments?: Prisma.BkashPaymentListRelationFilter
   aiConversations?: Prisma.AiConversationListRelationFilter
   aiFeedback?: Prisma.AiFeedbackListRelationFilter
 }, "id" | "email">
@@ -439,6 +442,7 @@ export type UserCreateInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -486,6 +490,7 @@ export type UserUncheckedCreateInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -533,6 +538,7 @@ export type UserUpdateInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -580,6 +586,7 @@ export type UserUncheckedUpdateInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -782,6 +789,20 @@ export type UserUpdateOneRequiredWithoutAccountsNestedInput = {
   upsert?: Prisma.UserUpsertWithoutAccountsInput
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAccountsInput, Prisma.UserUpdateWithoutAccountsInput>, Prisma.UserUncheckedUpdateWithoutAccountsInput>
+}
+
+export type UserCreateNestedOneWithoutBkashPaymentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBkashPaymentsInput, Prisma.UserUncheckedCreateWithoutBkashPaymentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBkashPaymentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutBkashPaymentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBkashPaymentsInput, Prisma.UserUncheckedCreateWithoutBkashPaymentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBkashPaymentsInput
+  upsert?: Prisma.UserUpsertWithoutBkashPaymentsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBkashPaymentsInput, Prisma.UserUpdateWithoutBkashPaymentsInput>, Prisma.UserUncheckedUpdateWithoutBkashPaymentsInput>
 }
 
 export type UserCreateNestedOneWithoutSubscriptionsInput = {
@@ -1193,6 +1214,7 @@ export type UserCreateWithoutAiConversationsInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
 
@@ -1239,6 +1261,7 @@ export type UserUncheckedCreateWithoutAiConversationsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1301,6 +1324,7 @@ export type UserUpdateWithoutAiConversationsInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
 
@@ -1347,6 +1371,7 @@ export type UserUncheckedUpdateWithoutAiConversationsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1393,6 +1418,7 @@ export type UserCreateWithoutAiFeedbackInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
 }
 
@@ -1439,6 +1465,7 @@ export type UserUncheckedCreateWithoutAiFeedbackInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -1501,6 +1528,7 @@ export type UserUpdateWithoutAiFeedbackInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
 }
 
@@ -1547,6 +1575,7 @@ export type UserUncheckedUpdateWithoutAiFeedbackInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -1592,6 +1621,7 @@ export type UserCreateWithoutJobApplicationsInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -1638,6 +1668,7 @@ export type UserUncheckedCreateWithoutJobApplicationsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -1700,6 +1731,7 @@ export type UserUpdateWithoutJobApplicationsInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -1746,6 +1778,7 @@ export type UserUncheckedUpdateWithoutJobApplicationsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -1792,6 +1825,7 @@ export type UserCreateWithoutSavedJobsInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -1838,6 +1872,7 @@ export type UserUncheckedCreateWithoutSavedJobsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -1900,6 +1935,7 @@ export type UserUpdateWithoutSavedJobsInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -1946,6 +1982,7 @@ export type UserUncheckedUpdateWithoutSavedJobsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -1992,6 +2029,7 @@ export type UserCreateWithoutApplicationEventsInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -2038,6 +2076,7 @@ export type UserUncheckedCreateWithoutApplicationEventsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -2100,6 +2139,7 @@ export type UserUpdateWithoutApplicationEventsInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -2146,6 +2186,7 @@ export type UserUncheckedUpdateWithoutApplicationEventsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -2192,6 +2233,7 @@ export type UserCreateWithoutSessionsInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -2238,6 +2280,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -2300,6 +2343,7 @@ export type UserUpdateWithoutSessionsInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -2346,6 +2390,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -2392,6 +2437,7 @@ export type UserCreateWithoutAccountsInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -2438,6 +2484,7 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -2500,6 +2547,7 @@ export type UserUpdateWithoutAccountsInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -2525,6 +2573,211 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
   careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedUpdateManyWithoutOwnerNestedInput
+  otps?: Prisma.OtpCodeUncheckedUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUncheckedUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUncheckedUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUncheckedUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUncheckedUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUncheckedUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUncheckedUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUncheckedUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutBkashPaymentsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateCreateNestedManyWithoutOwnerInput
+  otps?: Prisma.OtpCodeCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutBkashPaymentsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  role?: $Enums.Role
+  isActive?: boolean
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedCreateNestedManyWithoutUserInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedCreateNestedManyWithoutUserInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedCreateNestedManyWithoutUserInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedCreateNestedOneWithoutUserInput
+  careerUsage?: Prisma.CareerUsageUncheckedCreateNestedManyWithoutUserInput
+  careerConnections?: Prisma.CareerConnectionUncheckedCreateNestedManyWithoutUserInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedCreateNestedManyWithoutUserInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  adminProfile?: Prisma.AdminProfileUncheckedCreateNestedOneWithoutUserInput
+  devices?: Prisma.LoginDeviceUncheckedCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  ownedTemplates?: Prisma.ResumeTemplateUncheckedCreateNestedManyWithoutOwnerInput
+  otps?: Prisma.OtpCodeUncheckedCreateNestedManyWithoutUserInput
+  limits?: Prisma.UserLimitUncheckedCreateNestedOneWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  jobApplications?: Prisma.JobApplicationUncheckedCreateNestedManyWithoutUserInput
+  savedJobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
+  coverLetters?: Prisma.CoverLetterUncheckedCreateNestedManyWithoutUserInput
+  applicationEvents?: Prisma.ApplicationEventUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
+  references?: Prisma.ReferenceUncheckedCreateNestedManyWithoutUserInput
+  exportJobs?: Prisma.ExportJobUncheckedCreateNestedManyWithoutUserInput
+  referralsGiven?: Prisma.ReferralUncheckedCreateNestedManyWithoutReferrerInput
+  referralReceived?: Prisma.ReferralUncheckedCreateNestedOneWithoutRefereeInput
+  rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
+  subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
+  aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutBkashPaymentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutBkashPaymentsInput, Prisma.UserUncheckedCreateWithoutBkashPaymentsInput>
+}
+
+export type UserUpsertWithoutBkashPaymentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutBkashPaymentsInput, Prisma.UserUncheckedUpdateWithoutBkashPaymentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutBkashPaymentsInput, Prisma.UserUncheckedCreateWithoutBkashPaymentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutBkashPaymentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutBkashPaymentsInput, Prisma.UserUncheckedUpdateWithoutBkashPaymentsInput>
+}
+
+export type UserUpdateWithoutBkashPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  adminProfile?: Prisma.AdminProfileUpdateOneWithoutUserNestedInput
+  devices?: Prisma.LoginDeviceUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  ownedTemplates?: Prisma.ResumeTemplateUpdateManyWithoutOwnerNestedInput
+  otps?: Prisma.OtpCodeUpdateManyWithoutUserNestedInput
+  limits?: Prisma.UserLimitUpdateOneWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  jobApplications?: Prisma.JobApplicationUpdateManyWithoutUserNestedInput
+  savedJobs?: Prisma.JobUpdateManyWithoutUserNestedInput
+  coverLetters?: Prisma.CoverLetterUpdateManyWithoutUserNestedInput
+  applicationEvents?: Prisma.ApplicationEventUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
+  references?: Prisma.ReferenceUpdateManyWithoutUserNestedInput
+  exportJobs?: Prisma.ExportJobUpdateManyWithoutUserNestedInput
+  referralsGiven?: Prisma.ReferralUpdateManyWithoutReferrerNestedInput
+  referralReceived?: Prisma.ReferralUpdateOneWithoutRefereeNestedInput
+  rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
+  subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
+  aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutBkashPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  careerEvidence?: Prisma.CareerEvidenceUncheckedUpdateManyWithoutUserNestedInput
+  careerDocuments?: Prisma.CareerDocumentUncheckedUpdateManyWithoutUserNestedInput
+  careerAnalyses?: Prisma.CareerAnalysisUncheckedUpdateManyWithoutUserNestedInput
+  careerPreference?: Prisma.CareerPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  careerUsage?: Prisma.CareerUsageUncheckedUpdateManyWithoutUserNestedInput
+  careerConnections?: Prisma.CareerConnectionUncheckedUpdateManyWithoutUserNestedInput
+  careerOAuthStates?: Prisma.CareerOAuthStateUncheckedUpdateManyWithoutUserNestedInput
+  careerDeliveries?: Prisma.CareerDeliveryUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
   adminProfile?: Prisma.AdminProfileUncheckedUpdateOneWithoutUserNestedInput
   devices?: Prisma.LoginDeviceUncheckedUpdateManyWithoutUserNestedInput
@@ -2592,6 +2845,7 @@ export type UserCreateWithoutSubscriptionsInput = {
   referralReceived?: Prisma.ReferralCreateNestedOneWithoutRefereeInput
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -2638,6 +2892,7 @@ export type UserUncheckedCreateWithoutSubscriptionsInput = {
   referralReceived?: Prisma.ReferralUncheckedCreateNestedOneWithoutRefereeInput
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -2700,6 +2955,7 @@ export type UserUpdateWithoutSubscriptionsInput = {
   referralReceived?: Prisma.ReferralUpdateOneWithoutRefereeNestedInput
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -2746,6 +3002,7 @@ export type UserUncheckedUpdateWithoutSubscriptionsInput = {
   referralReceived?: Prisma.ReferralUncheckedUpdateOneWithoutRefereeNestedInput
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -2792,6 +3049,7 @@ export type UserCreateWithoutInvoicesInput = {
   referralReceived?: Prisma.ReferralCreateNestedOneWithoutRefereeInput
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -2838,6 +3096,7 @@ export type UserUncheckedCreateWithoutInvoicesInput = {
   referralReceived?: Prisma.ReferralUncheckedCreateNestedOneWithoutRefereeInput
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -2900,6 +3159,7 @@ export type UserUpdateWithoutInvoicesInput = {
   referralReceived?: Prisma.ReferralUpdateOneWithoutRefereeNestedInput
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -2946,6 +3206,7 @@ export type UserUncheckedUpdateWithoutInvoicesInput = {
   referralReceived?: Prisma.ReferralUncheckedUpdateOneWithoutRefereeNestedInput
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -2992,6 +3253,7 @@ export type UserCreateWithoutCareerEvidenceInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -3038,6 +3300,7 @@ export type UserUncheckedCreateWithoutCareerEvidenceInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -3100,6 +3363,7 @@ export type UserUpdateWithoutCareerEvidenceInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -3146,6 +3410,7 @@ export type UserUncheckedUpdateWithoutCareerEvidenceInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -3192,6 +3457,7 @@ export type UserCreateWithoutCareerDocumentsInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -3238,6 +3504,7 @@ export type UserUncheckedCreateWithoutCareerDocumentsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -3300,6 +3567,7 @@ export type UserUpdateWithoutCareerDocumentsInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -3346,6 +3614,7 @@ export type UserUncheckedUpdateWithoutCareerDocumentsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -3392,6 +3661,7 @@ export type UserCreateWithoutCareerAnalysesInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -3438,6 +3708,7 @@ export type UserUncheckedCreateWithoutCareerAnalysesInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -3500,6 +3771,7 @@ export type UserUpdateWithoutCareerAnalysesInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -3546,6 +3818,7 @@ export type UserUncheckedUpdateWithoutCareerAnalysesInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -3592,6 +3865,7 @@ export type UserCreateWithoutCareerPreferenceInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -3638,6 +3912,7 @@ export type UserUncheckedCreateWithoutCareerPreferenceInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -3700,6 +3975,7 @@ export type UserUpdateWithoutCareerPreferenceInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -3746,6 +4022,7 @@ export type UserUncheckedUpdateWithoutCareerPreferenceInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -3792,6 +4069,7 @@ export type UserCreateWithoutCareerUsageInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -3838,6 +4116,7 @@ export type UserUncheckedCreateWithoutCareerUsageInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -3900,6 +4179,7 @@ export type UserUpdateWithoutCareerUsageInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -3946,6 +4226,7 @@ export type UserUncheckedUpdateWithoutCareerUsageInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -3992,6 +4273,7 @@ export type UserCreateWithoutCareerConnectionsInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -4038,6 +4320,7 @@ export type UserUncheckedCreateWithoutCareerConnectionsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -4100,6 +4383,7 @@ export type UserUpdateWithoutCareerConnectionsInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -4146,6 +4430,7 @@ export type UserUncheckedUpdateWithoutCareerConnectionsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -4192,6 +4477,7 @@ export type UserCreateWithoutCareerOAuthStatesInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -4238,6 +4524,7 @@ export type UserUncheckedCreateWithoutCareerOAuthStatesInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -4300,6 +4587,7 @@ export type UserUpdateWithoutCareerOAuthStatesInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -4346,6 +4634,7 @@ export type UserUncheckedUpdateWithoutCareerOAuthStatesInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -4392,6 +4681,7 @@ export type UserCreateWithoutCareerDeliveriesInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -4438,6 +4728,7 @@ export type UserUncheckedCreateWithoutCareerDeliveriesInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -4500,6 +4791,7 @@ export type UserUpdateWithoutCareerDeliveriesInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -4546,6 +4838,7 @@ export type UserUncheckedUpdateWithoutCareerDeliveriesInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -4592,6 +4885,7 @@ export type UserCreateWithoutCoverLettersInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -4638,6 +4932,7 @@ export type UserUncheckedCreateWithoutCoverLettersInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -4700,6 +4995,7 @@ export type UserUpdateWithoutCoverLettersInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -4746,6 +5042,7 @@ export type UserUncheckedUpdateWithoutCoverLettersInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -4792,6 +5089,7 @@ export type UserCreateWithoutExportJobsInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -4838,6 +5136,7 @@ export type UserUncheckedCreateWithoutExportJobsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -4900,6 +5199,7 @@ export type UserUpdateWithoutExportJobsInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -4946,6 +5246,7 @@ export type UserUncheckedUpdateWithoutExportJobsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -4992,6 +5293,7 @@ export type UserCreateWithoutNotificationsInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -5038,6 +5340,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -5100,6 +5403,7 @@ export type UserUpdateWithoutNotificationsInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -5146,6 +5450,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -5192,6 +5497,7 @@ export type UserCreateWithoutNotificationPreferenceInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -5238,6 +5544,7 @@ export type UserUncheckedCreateWithoutNotificationPreferenceInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -5300,6 +5607,7 @@ export type UserUpdateWithoutNotificationPreferenceInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -5346,6 +5654,7 @@ export type UserUncheckedUpdateWithoutNotificationPreferenceInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -5392,6 +5701,7 @@ export type UserCreateWithoutLimitsInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -5438,6 +5748,7 @@ export type UserUncheckedCreateWithoutLimitsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -5500,6 +5811,7 @@ export type UserUpdateWithoutLimitsInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -5546,6 +5858,7 @@ export type UserUncheckedUpdateWithoutLimitsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -5592,6 +5905,7 @@ export type UserCreateWithoutOtpsInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -5638,6 +5952,7 @@ export type UserUncheckedCreateWithoutOtpsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -5700,6 +6015,7 @@ export type UserUpdateWithoutOtpsInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -5746,6 +6062,7 @@ export type UserUncheckedUpdateWithoutOtpsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -5792,6 +6109,7 @@ export type UserCreateWithoutDevicesInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -5838,6 +6156,7 @@ export type UserUncheckedCreateWithoutDevicesInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -5900,6 +6219,7 @@ export type UserUpdateWithoutDevicesInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -5946,6 +6266,7 @@ export type UserUncheckedUpdateWithoutDevicesInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -5992,6 +6313,7 @@ export type UserCreateWithoutProfileInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -6038,6 +6360,7 @@ export type UserUncheckedCreateWithoutProfileInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -6100,6 +6423,7 @@ export type UserUpdateWithoutProfileInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -6146,6 +6470,7 @@ export type UserUncheckedUpdateWithoutProfileInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -6192,6 +6517,7 @@ export type UserCreateWithoutAdminProfileInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -6238,6 +6564,7 @@ export type UserUncheckedCreateWithoutAdminProfileInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -6300,6 +6627,7 @@ export type UserUpdateWithoutAdminProfileInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -6346,6 +6674,7 @@ export type UserUncheckedUpdateWithoutAdminProfileInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -6392,6 +6721,7 @@ export type UserCreateWithoutProjectsInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -6438,6 +6768,7 @@ export type UserUncheckedCreateWithoutProjectsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -6500,6 +6831,7 @@ export type UserUpdateWithoutProjectsInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -6546,6 +6878,7 @@ export type UserUncheckedUpdateWithoutProjectsInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -6592,6 +6925,7 @@ export type UserCreateWithoutReferencesInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -6638,6 +6972,7 @@ export type UserUncheckedCreateWithoutReferencesInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -6700,6 +7035,7 @@ export type UserUpdateWithoutReferencesInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -6746,6 +7082,7 @@ export type UserUncheckedUpdateWithoutReferencesInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -6792,6 +7129,7 @@ export type UserCreateWithoutReferralsGivenInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -6838,6 +7176,7 @@ export type UserUncheckedCreateWithoutReferralsGivenInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -6889,6 +7228,7 @@ export type UserCreateWithoutReferralReceivedInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -6935,6 +7275,7 @@ export type UserUncheckedCreateWithoutReferralReceivedInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -6997,6 +7338,7 @@ export type UserUpdateWithoutReferralsGivenInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -7043,6 +7385,7 @@ export type UserUncheckedUpdateWithoutReferralsGivenInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -7100,6 +7443,7 @@ export type UserUpdateWithoutReferralReceivedInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -7146,6 +7490,7 @@ export type UserUncheckedUpdateWithoutReferralReceivedInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -7192,6 +7537,7 @@ export type UserCreateWithoutRewardLedgerInput = {
   referralReceived?: Prisma.ReferralCreateNestedOneWithoutRefereeInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -7238,6 +7584,7 @@ export type UserUncheckedCreateWithoutRewardLedgerInput = {
   referralReceived?: Prisma.ReferralUncheckedCreateNestedOneWithoutRefereeInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -7300,6 +7647,7 @@ export type UserUpdateWithoutRewardLedgerInput = {
   referralReceived?: Prisma.ReferralUpdateOneWithoutRefereeNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -7346,6 +7694,7 @@ export type UserUncheckedUpdateWithoutRewardLedgerInput = {
   referralReceived?: Prisma.ReferralUncheckedUpdateOneWithoutRefereeNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -7392,6 +7741,7 @@ export type UserCreateWithoutOwnedTemplatesInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -7438,6 +7788,7 @@ export type UserUncheckedCreateWithoutOwnedTemplatesInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -7500,6 +7851,7 @@ export type UserUpdateWithoutOwnedTemplatesInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -7546,6 +7898,7 @@ export type UserUncheckedUpdateWithoutOwnedTemplatesInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -7592,6 +7945,7 @@ export type UserCreateWithoutResumesInput = {
   rewardLedger?: Prisma.RewardLedgerCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackCreateNestedManyWithoutUserInput
 }
@@ -7638,6 +7992,7 @@ export type UserUncheckedCreateWithoutResumesInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedCreateNestedManyWithoutUserInput
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutUserInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutUserInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutUserInput
   aiConversations?: Prisma.AiConversationUncheckedCreateNestedManyWithoutUserInput
   aiFeedback?: Prisma.AiFeedbackUncheckedCreateNestedManyWithoutUserInput
 }
@@ -7700,6 +8055,7 @@ export type UserUpdateWithoutResumesInput = {
   rewardLedger?: Prisma.RewardLedgerUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUpdateManyWithoutUserNestedInput
 }
@@ -7746,6 +8102,7 @@ export type UserUncheckedUpdateWithoutResumesInput = {
   rewardLedger?: Prisma.RewardLedgerUncheckedUpdateManyWithoutUserNestedInput
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutUserNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutUserNestedInput
   aiConversations?: Prisma.AiConversationUncheckedUpdateManyWithoutUserNestedInput
   aiFeedback?: Prisma.AiFeedbackUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -7781,6 +8138,7 @@ export type UserCountOutputType = {
   rewardLedger: number
   subscriptions: number
   invoices: number
+  bkashPayments: number
   aiConversations: number
   aiFeedback: number
 }
@@ -7811,6 +8169,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   rewardLedger?: boolean | UserCountOutputTypeCountRewardLedgerArgs
   subscriptions?: boolean | UserCountOutputTypeCountSubscriptionsArgs
   invoices?: boolean | UserCountOutputTypeCountInvoicesArgs
+  bkashPayments?: boolean | UserCountOutputTypeCountBkashPaymentsArgs
   aiConversations?: boolean | UserCountOutputTypeCountAiConversationsArgs
   aiFeedback?: boolean | UserCountOutputTypeCountAiFeedbackArgs
 }
@@ -8003,6 +8362,13 @@ export type UserCountOutputTypeCountInvoicesArgs<ExtArgs extends runtime.Types.E
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountBkashPaymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BkashPaymentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountAiConversationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.AiConversationWhereInput
 }
@@ -8058,6 +8424,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   rewardLedger?: boolean | Prisma.User$rewardLedgerArgs<ExtArgs>
   subscriptions?: boolean | Prisma.User$subscriptionsArgs<ExtArgs>
   invoices?: boolean | Prisma.User$invoicesArgs<ExtArgs>
+  bkashPayments?: boolean | Prisma.User$bkashPaymentsArgs<ExtArgs>
   aiConversations?: boolean | Prisma.User$aiConversationsArgs<ExtArgs>
   aiFeedback?: boolean | Prisma.User$aiFeedbackArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -8138,6 +8505,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   rewardLedger?: boolean | Prisma.User$rewardLedgerArgs<ExtArgs>
   subscriptions?: boolean | Prisma.User$subscriptionsArgs<ExtArgs>
   invoices?: boolean | Prisma.User$invoicesArgs<ExtArgs>
+  bkashPayments?: boolean | Prisma.User$bkashPaymentsArgs<ExtArgs>
   aiConversations?: boolean | Prisma.User$aiConversationsArgs<ExtArgs>
   aiFeedback?: boolean | Prisma.User$aiFeedbackArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -8179,6 +8547,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     rewardLedger: Prisma.$RewardLedgerPayload<ExtArgs>[]
     subscriptions: Prisma.$SubscriptionPayload<ExtArgs>[]
     invoices: Prisma.$InvoicePayload<ExtArgs>[]
+    bkashPayments: Prisma.$BkashPaymentPayload<ExtArgs>[]
     aiConversations: Prisma.$AiConversationPayload<ExtArgs>[]
     aiFeedback: Prisma.$AiFeedbackPayload<ExtArgs>[]
   }
@@ -8619,6 +8988,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   rewardLedger<T extends Prisma.User$rewardLedgerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$rewardLedgerArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RewardLedgerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   subscriptions<T extends Prisma.User$subscriptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$subscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   invoices<T extends Prisma.User$invoicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  bkashPayments<T extends Prisma.User$bkashPaymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$bkashPaymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BkashPaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   aiConversations<T extends Prisma.User$aiConversationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$aiConversationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AiConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   aiFeedback<T extends Prisma.User$aiFeedbackArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$aiFeedbackArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AiFeedbackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -9765,6 +10135,30 @@ export type User$invoicesArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.InvoiceScalarFieldEnum | Prisma.InvoiceScalarFieldEnum[]
+}
+
+/**
+ * User.bkashPayments
+ */
+export type User$bkashPaymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BkashPayment
+   */
+  select?: Prisma.BkashPaymentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BkashPayment
+   */
+  omit?: Prisma.BkashPaymentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BkashPaymentInclude<ExtArgs> | null
+  where?: Prisma.BkashPaymentWhereInput
+  orderBy?: Prisma.BkashPaymentOrderByWithRelationInput | Prisma.BkashPaymentOrderByWithRelationInput[]
+  cursor?: Prisma.BkashPaymentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BkashPaymentScalarFieldEnum | Prisma.BkashPaymentScalarFieldEnum[]
 }
 
 /**

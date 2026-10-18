@@ -16,8 +16,8 @@ model Plan {
   description     String?
   stripePriceId   String          @unique
   stripeProductId String
-  amount          Int // cents
-  currency        String          @default("usd")
+  amount          Int // smallest currency unit (poisha for BDT)
+  currency        String          @default("bdt")
   interval        BillingInterval @default(MONTH)
   isActive        Boolean         @default(true)
   features        Json
@@ -27,9 +27,35 @@ model Plan {
   updatedAt       DateTime        @updatedAt
 
   subscriptions Subscription[]
+  bkashPayments BkashPayment[]
 
   @@index([slug])
   @@map("plan")
+}
+
+model BkashPayment {
+  id                    String   @id @default(cuid())
+  userId                String
+  planId                String
+  billingInterval       BillingInterval @default(MONTH)
+  merchantInvoiceNumber String   @unique
+  paymentId             String?  @unique
+  trxId                 String?  @unique
+  amount                Int      // poisha
+  currency              String   @default("BDT")
+  status                String   @default("PENDING")
+  providerPayload       Json?
+  expiresAt             DateTime
+  executedAt            DateTime?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan Plan @relation(fields: [planId], references: [id])
+
+  @@index([userId, createdAt])
+  @@index([status, expiresAt])
+  @@map("bkash_payment")
 }
 
 // One row per user (a user has at most one *active* subscription;
@@ -66,7 +92,7 @@ model Invoice {
   stripeInvoiceId  String        @unique
   amountPaid       Int
   amountDue        Int
-  currency         String        @default("usd")
+  currency         String        @default("bdt")
   status           InvoiceStatus @default(PAID)
   hostedInvoiceUrl String?
   invoicePdfUrl    String?
@@ -87,7 +113,7 @@ model Coupon {
   stripeCouponId String?        @unique
   percentOff     Int?
   amountOff      Int?
-  currency       String         @default("usd")
+  currency       String         @default("bdt")
   duration       CouponDuration @default(ONCE)
   durationMonths Int?
   maxRedemptions Int?

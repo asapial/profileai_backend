@@ -268,9 +268,9 @@ export const DEFAULT_HOMEPAGE: HomepageConfig = {
       title: "Simple plans, no surprises",
       description: "Start free and upgrade only when you need more.",
       items: [
-        { title: "Free", description: "Build your first resume with essential AI tools.", label: "$0", features: "1 resume|3 AI generations / month|ATS score|PDF export", ctaLabel: "Get started", ctaHref: "/register" },
-        { title: "Pro", description: "For active job seekers who want maximum callbacks.", label: "$12", features: "Unlimited resumes|Full ATS suggestions|Cover letters|Application tracker|PDF + DOCX", ctaLabel: "Start Pro", ctaHref: "/register?plan=pro", highlighted: true },
-        { title: "Business", description: "For teams, coaches and recruiting agencies.", label: "$29", features: "Everything in Pro|Team workspace|Custom branding|Priority support", ctaLabel: "Contact sales", ctaHref: "/contact" },
+        { title: "Free", description: "Start building a grounded application.", label: "৳0", features: "2 resumes|2 alignment analyses / month|1 tailored resume / month|3 application drafts / month|10 saved applications", ctaLabel: "Get started", ctaHref: "/register" },
+        { title: "Job Seeker", description: "Room for an active job search.", label: "৳299", features: "10 resume versions|25 alignment analyses / month|15 tailored resumes / month|30 application drafts / month|Unlimited application tracking", ctaLabel: "Choose Job Seeker", ctaHref: "/register?plan=pro&billing=monthly", highlighted: true },
+        { title: "Career Pro", description: "Higher allowances for a focused career move.", label: "৳599", features: "Unlimited resume versions|75 alignment analyses / month|50 tailored resumes / month|100 application drafts / month|Advanced interview preparation", ctaLabel: "Choose Career Pro", ctaHref: "/register?plan=business&billing=monthly" },
       ],
     },
     {

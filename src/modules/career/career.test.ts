@@ -118,7 +118,7 @@ test('MIME spoofing and mail header injection are rejected', () => {
   assert.throws(() => imageExtension(Buffer.from('<script>alert(1)</script>'), 'image/png'));
   assert.equal(imageExtension(Buffer.from('89504e470d0a1a0a0000', 'hex'), 'image/png'), 'png');
   assert.equal(editDraftBody.safeParse({ subject: 'Subject\r\nBcc: stolen@example.com', body: 'Hello' }).success, false);
-  assert.equal(ENTITLEMENTS.free.draft, 5);
+  assert.equal(ENTITLEMENTS.free.draft, 3);
 });
 
 

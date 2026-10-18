@@ -54,6 +54,14 @@ interface EnvConfig {
     STRIPE_WEBHOOK_SECRET: string | undefined;
     STRIPE_PORTAL_RETURN_URL: string;
   };
+  BKASH: {
+    ENABLED: boolean;
+    BASE_URL: string;
+    USERNAME: string | undefined;
+    PASSWORD: string | undefined;
+    APP_KEY: string | undefined;
+    APP_SECRET: string | undefined;
+  };
 }
 
 const loadEnvVariables = (): EnvConfig => {
@@ -152,6 +160,14 @@ const loadEnvVariables = (): EnvConfig => {
       STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY as string | undefined,
       STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET as string | undefined,
       STRIPE_PORTAL_RETURN_URL: process.env.STRIPE_PORTAL_RETURN_URL ?? '/dashboard/billing',
+    },
+    BKASH: {
+      ENABLED: (process.env.BKASH_ENABLED ?? 'false').toLowerCase() === 'true',
+      BASE_URL: (process.env.BKASH_BASE_URL ?? 'https://tokenized.sandbox.bka.sh/v1.2.0-beta').replace(/\/+$/, ''),
+      USERNAME: process.env.BKASH_USERNAME,
+      PASSWORD: process.env.BKASH_PASSWORD,
+      APP_KEY: process.env.BKASH_APP_KEY,
+      APP_SECRET: process.env.BKASH_APP_SECRET,
     },
   };
 };

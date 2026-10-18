@@ -48,6 +48,7 @@ model User {
   rewardLedger           RewardLedger[]
   subscriptions          Subscription[]
   invoices               Invoice[]
+  bkashPayments          BkashPayment[]
   aiConversations        AiConversation[]
   aiFeedback             AiFeedback[]
 

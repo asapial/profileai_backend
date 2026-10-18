@@ -301,6 +301,7 @@ export type PlanWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Plan"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Plan"> | Date | string
   subscriptions?: Prisma.SubscriptionListRelationFilter
+  bkashPayments?: Prisma.BkashPaymentListRelationFilter
 }
 
 export type PlanOrderByWithRelationInput = {
@@ -320,6 +321,7 @@ export type PlanOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   subscriptions?: Prisma.SubscriptionOrderByRelationAggregateInput
+  bkashPayments?: Prisma.BkashPaymentOrderByRelationAggregateInput
 }
 
 export type PlanWhereUniqueInput = Prisma.AtLeast<{
@@ -342,6 +344,7 @@ export type PlanWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Plan"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Plan"> | Date | string
   subscriptions?: Prisma.SubscriptionListRelationFilter
+  bkashPayments?: Prisma.BkashPaymentListRelationFilter
 }, "id" | "slug" | "stripePriceId">
 
 export type PlanOrderByWithAggregationInput = {
@@ -405,6 +408,7 @@ export type PlanCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutPlanInput
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutPlanInput
 }
 
 export type PlanUncheckedCreateInput = {
@@ -424,6 +428,7 @@ export type PlanUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutPlanInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutPlanInput
 }
 
 export type PlanUpdateInput = {
@@ -443,6 +448,7 @@ export type PlanUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutPlanNestedInput
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutPlanNestedInput
 }
 
 export type PlanUncheckedUpdateInput = {
@@ -462,6 +468,7 @@ export type PlanUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutPlanNestedInput
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutPlanNestedInput
 }
 
 export type PlanCreateManyInput = {
@@ -591,6 +598,20 @@ export type EnumBillingIntervalFieldUpdateOperationsInput = {
   set?: $Enums.BillingInterval
 }
 
+export type PlanCreateNestedOneWithoutBkashPaymentsInput = {
+  create?: Prisma.XOR<Prisma.PlanCreateWithoutBkashPaymentsInput, Prisma.PlanUncheckedCreateWithoutBkashPaymentsInput>
+  connectOrCreate?: Prisma.PlanCreateOrConnectWithoutBkashPaymentsInput
+  connect?: Prisma.PlanWhereUniqueInput
+}
+
+export type PlanUpdateOneRequiredWithoutBkashPaymentsNestedInput = {
+  create?: Prisma.XOR<Prisma.PlanCreateWithoutBkashPaymentsInput, Prisma.PlanUncheckedCreateWithoutBkashPaymentsInput>
+  connectOrCreate?: Prisma.PlanCreateOrConnectWithoutBkashPaymentsInput
+  upsert?: Prisma.PlanUpsertWithoutBkashPaymentsInput
+  connect?: Prisma.PlanWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PlanUpdateToOneWithWhereWithoutBkashPaymentsInput, Prisma.PlanUpdateWithoutBkashPaymentsInput>, Prisma.PlanUncheckedUpdateWithoutBkashPaymentsInput>
+}
+
 export type PlanCreateNestedOneWithoutSubscriptionsInput = {
   create?: Prisma.XOR<Prisma.PlanCreateWithoutSubscriptionsInput, Prisma.PlanUncheckedCreateWithoutSubscriptionsInput>
   connectOrCreate?: Prisma.PlanCreateOrConnectWithoutSubscriptionsInput
@@ -603,6 +624,98 @@ export type PlanUpdateOneRequiredWithoutSubscriptionsNestedInput = {
   upsert?: Prisma.PlanUpsertWithoutSubscriptionsInput
   connect?: Prisma.PlanWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.PlanUpdateToOneWithWhereWithoutSubscriptionsInput, Prisma.PlanUpdateWithoutSubscriptionsInput>, Prisma.PlanUncheckedUpdateWithoutSubscriptionsInput>
+}
+
+export type PlanCreateWithoutBkashPaymentsInput = {
+  id?: string
+  slug: string
+  name: string
+  description?: string | null
+  stripePriceId: string
+  stripeProductId: string
+  amount: number
+  currency?: string
+  interval?: $Enums.BillingInterval
+  isActive?: boolean
+  features: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  apiLimit?: number
+  resumeLimit?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutPlanInput
+}
+
+export type PlanUncheckedCreateWithoutBkashPaymentsInput = {
+  id?: string
+  slug: string
+  name: string
+  description?: string | null
+  stripePriceId: string
+  stripeProductId: string
+  amount: number
+  currency?: string
+  interval?: $Enums.BillingInterval
+  isActive?: boolean
+  features: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  apiLimit?: number
+  resumeLimit?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutPlanInput
+}
+
+export type PlanCreateOrConnectWithoutBkashPaymentsInput = {
+  where: Prisma.PlanWhereUniqueInput
+  create: Prisma.XOR<Prisma.PlanCreateWithoutBkashPaymentsInput, Prisma.PlanUncheckedCreateWithoutBkashPaymentsInput>
+}
+
+export type PlanUpsertWithoutBkashPaymentsInput = {
+  update: Prisma.XOR<Prisma.PlanUpdateWithoutBkashPaymentsInput, Prisma.PlanUncheckedUpdateWithoutBkashPaymentsInput>
+  create: Prisma.XOR<Prisma.PlanCreateWithoutBkashPaymentsInput, Prisma.PlanUncheckedCreateWithoutBkashPaymentsInput>
+  where?: Prisma.PlanWhereInput
+}
+
+export type PlanUpdateToOneWithWhereWithoutBkashPaymentsInput = {
+  where?: Prisma.PlanWhereInput
+  data: Prisma.XOR<Prisma.PlanUpdateWithoutBkashPaymentsInput, Prisma.PlanUncheckedUpdateWithoutBkashPaymentsInput>
+}
+
+export type PlanUpdateWithoutBkashPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePriceId?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeProductId?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.IntFieldUpdateOperationsInput | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  interval?: Prisma.EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  features?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  apiLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  resumeLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscriptions?: Prisma.SubscriptionUpdateManyWithoutPlanNestedInput
+}
+
+export type PlanUncheckedUpdateWithoutBkashPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripePriceId?: Prisma.StringFieldUpdateOperationsInput | string
+  stripeProductId?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.IntFieldUpdateOperationsInput | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  interval?: Prisma.EnumBillingIntervalFieldUpdateOperationsInput | $Enums.BillingInterval
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  features?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  apiLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  resumeLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutPlanNestedInput
 }
 
 export type PlanCreateWithoutSubscriptionsInput = {
@@ -621,6 +734,7 @@ export type PlanCreateWithoutSubscriptionsInput = {
   resumeLimit?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  bkashPayments?: Prisma.BkashPaymentCreateNestedManyWithoutPlanInput
 }
 
 export type PlanUncheckedCreateWithoutSubscriptionsInput = {
@@ -639,6 +753,7 @@ export type PlanUncheckedCreateWithoutSubscriptionsInput = {
   resumeLimit?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  bkashPayments?: Prisma.BkashPaymentUncheckedCreateNestedManyWithoutPlanInput
 }
 
 export type PlanCreateOrConnectWithoutSubscriptionsInput = {
@@ -673,6 +788,7 @@ export type PlanUpdateWithoutSubscriptionsInput = {
   resumeLimit?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bkashPayments?: Prisma.BkashPaymentUpdateManyWithoutPlanNestedInput
 }
 
 export type PlanUncheckedUpdateWithoutSubscriptionsInput = {
@@ -691,6 +807,7 @@ export type PlanUncheckedUpdateWithoutSubscriptionsInput = {
   resumeLimit?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  bkashPayments?: Prisma.BkashPaymentUncheckedUpdateManyWithoutPlanNestedInput
 }
 
 
@@ -700,10 +817,12 @@ export type PlanUncheckedUpdateWithoutSubscriptionsInput = {
 
 export type PlanCountOutputType = {
   subscriptions: number
+  bkashPayments: number
 }
 
 export type PlanCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   subscriptions?: boolean | PlanCountOutputTypeCountSubscriptionsArgs
+  bkashPayments?: boolean | PlanCountOutputTypeCountBkashPaymentsArgs
 }
 
 /**
@@ -721,6 +840,13 @@ export type PlanCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
  */
 export type PlanCountOutputTypeCountSubscriptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.SubscriptionWhereInput
+}
+
+/**
+ * PlanCountOutputType without action
+ */
+export type PlanCountOutputTypeCountBkashPaymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BkashPaymentWhereInput
 }
 
 
@@ -741,6 +867,7 @@ export type PlanSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   updatedAt?: boolean
   subscriptions?: boolean | Prisma.Plan$subscriptionsArgs<ExtArgs>
+  bkashPayments?: boolean | Prisma.Plan$bkashPaymentsArgs<ExtArgs>
   _count?: boolean | Prisma.PlanCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["plan"]>
 
@@ -801,6 +928,7 @@ export type PlanSelectScalar = {
 export type PlanOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "name" | "description" | "stripePriceId" | "stripeProductId" | "amount" | "currency" | "interval" | "isActive" | "features" | "apiLimit" | "resumeLimit" | "createdAt" | "updatedAt", ExtArgs["result"]["plan"]>
 export type PlanInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   subscriptions?: boolean | Prisma.Plan$subscriptionsArgs<ExtArgs>
+  bkashPayments?: boolean | Prisma.Plan$bkashPaymentsArgs<ExtArgs>
   _count?: boolean | Prisma.PlanCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PlanIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -810,6 +938,7 @@ export type $PlanPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name: "Plan"
   objects: {
     subscriptions: Prisma.$SubscriptionPayload<ExtArgs>[]
+    bkashPayments: Prisma.$BkashPaymentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1222,6 +1351,7 @@ readonly fields: PlanFieldRefs;
 export interface Prisma__PlanClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   subscriptions<T extends Prisma.Plan$subscriptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Plan$subscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  bkashPayments<T extends Prisma.Plan$bkashPaymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Plan$bkashPaymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BkashPaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1680,6 +1810,30 @@ export type Plan$subscriptionsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.SubscriptionScalarFieldEnum | Prisma.SubscriptionScalarFieldEnum[]
+}
+
+/**
+ * Plan.bkashPayments
+ */
+export type Plan$bkashPaymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BkashPayment
+   */
+  select?: Prisma.BkashPaymentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BkashPayment
+   */
+  omit?: Prisma.BkashPaymentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BkashPaymentInclude<ExtArgs> | null
+  where?: Prisma.BkashPaymentWhereInput
+  orderBy?: Prisma.BkashPaymentOrderByWithRelationInput | Prisma.BkashPaymentOrderByWithRelationInput[]
+  cursor?: Prisma.BkashPaymentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BkashPaymentScalarFieldEnum | Prisma.BkashPaymentScalarFieldEnum[]
 }
 
 /**

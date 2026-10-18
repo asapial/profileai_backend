@@ -69,6 +69,7 @@ export const ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Plan: 'Plan',
+  BkashPayment: 'BkashPayment',
   Subscription: 'Subscription',
   Invoice: 'Invoice',
   Coupon: 'Coupon',
@@ -430,6 +431,27 @@ export const PlanScalarFieldEnum = {
 } as const
 
 export type PlanScalarFieldEnum = (typeof PlanScalarFieldEnum)[keyof typeof PlanScalarFieldEnum]
+
+
+export const BkashPaymentScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  planId: 'planId',
+  billingInterval: 'billingInterval',
+  merchantInvoiceNumber: 'merchantInvoiceNumber',
+  paymentId: 'paymentId',
+  trxId: 'trxId',
+  amount: 'amount',
+  currency: 'currency',
+  status: 'status',
+  providerPayload: 'providerPayload',
+  expiresAt: 'expiresAt',
+  executedAt: 'executedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BkashPaymentScalarFieldEnum = (typeof BkashPaymentScalarFieldEnum)[keyof typeof BkashPaymentScalarFieldEnum]
 
 
 export const SubscriptionScalarFieldEnum = {

@@ -39,6 +39,7 @@ const checkout = catchAsync(async (req: Request, res: Response) => {
     email,
     name: email.split('@')[0] ?? '',
     planSlug: req.body.planSlug as string,
+    billing: (req.body.billing as 'monthly' | 'yearly' | undefined) ?? 'monthly',
     ...(req.body.couponCode
       ? { couponCode: req.body.couponCode as string }
       : {}),

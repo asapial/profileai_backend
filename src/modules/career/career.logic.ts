@@ -132,9 +132,9 @@ export function composeDraft(input: { kind: string; tone: string; length: string
 }
 
 export const ENTITLEMENTS = {
-  free: { alignment: 3, draft: 5, tailor: 2, applications: 15, recommendations: 10, interview: 0 },
-  pro: { alignment: 50, draft: 50, tailor: 20, applications: null, recommendations: 100, interview: 20 },
-  'career-plus': { alignment: 150, draft: 150, tailor: 60, applications: null, recommendations: 300, interview: 60 },
+  free: { alignment: 2, draft: 3, tailor: 1, applications: 10, recommendations: 10, interview: 0 },
+  pro: { alignment: 25, draft: 30, tailor: 15, applications: null, recommendations: 100, interview: 10 },
+  'career-plus': { alignment: 75, draft: 100, tailor: 50, applications: null, recommendations: 300, interview: 40 },
 } as const;
 
 export function composeStory(evidence: { id: string; title: string; statement: string; status: string; source: string; details: unknown }) {

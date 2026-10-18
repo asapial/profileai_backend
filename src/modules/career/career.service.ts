@@ -12,7 +12,7 @@ export const ownerLock = (tx: Prisma.TransactionClient, userId: string) => tx.$q
 export async function checkApplicationQuota(tx: Prisma.TransactionClient, userId: string) {
   await ownerLock(tx, userId);
   const subscription = await tx.subscription.findFirst({ where: { userId, status: 'ACTIVE', currentPeriodEnd: { gt: new Date() }, plan: { slug: { in: ['pro', 'career-plus', 'business'] } } } });
-  if (!subscription && await tx.jobApplication.count({ where: { userId } }) >= 15) throw new AppError(429, 'Free plans include 15 saved applications.');
+  if (!subscription && await tx.jobApplication.count({ where: { userId } }) >= 10) throw new AppError(429, 'Free plans include 10 saved applications.');
 }
 export async function entitlements(userId: string, db = prisma) {
   const subscription = await db.subscription.findFirst({ where: { userId, status: 'ACTIVE', currentPeriodEnd: { gt: new Date() } }, include: { plan: true }, orderBy: { currentPeriodEnd: 'desc' } });

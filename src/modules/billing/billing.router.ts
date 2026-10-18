@@ -13,6 +13,7 @@ const router = Router();
 
 const checkoutSchema = z.object({
   planSlug: z.string().min(1),
+  billing: z.enum(['monthly', 'yearly']).optional(),
   couponCode: z.string().optional(),
 });
 

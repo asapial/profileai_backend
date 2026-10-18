@@ -108,6 +108,11 @@ export type Verification = Prisma.VerificationModel
  */
 export type Plan = Prisma.PlanModel
 /**
+ * Model BkashPayment
+ * 
+ */
+export type BkashPayment = Prisma.BkashPaymentModel
+/**
  * Model Subscription
  * 
  */
