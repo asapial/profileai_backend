@@ -46,6 +46,10 @@ export interface AiRequestParams {
   conversationMessages?: AiConversationMessage[];
   /** Limit provider fallbacks for latency-sensitive features. */
   maxModels?: number;
+  /** Optional completion cap for bounded structured responses. */
+  maxTokens?: number;
+  /** Disable long reasoning on latency-sensitive structured extraction. */
+  reasoningEffort?: 'none' | 'minimal' | 'low';
   /** Optional caller cancellation signal. */
   signal?: AbortSignal;
 }
@@ -94,6 +98,7 @@ async function fetchFromModel(
   timeoutMs: number,
   conversationMessages: AiConversationMessage[] = [],
   externalSignal?: AbortSignal,
+  generation: { maxTokens?: number; reasoningEffort?: 'none' | 'minimal' | 'low' } = {},
 ): Promise<string> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -118,6 +123,8 @@ async function fetchFromModel(
             { role: "user", content: userMessage },
           ],
           response_format: { type: "json_object" },
+          ...(generation.maxTokens ? { max_tokens: generation.maxTokens } : {}),
+          ...(generation.reasoningEffort ? { reasoning: { effort: generation.reasoningEffort } } : {}),
         }),
         signal: controller.signal,
       }
@@ -186,6 +193,8 @@ export async function getAiResponse<T = unknown>(
     systemPrompt: trustedSystemPrompt,
     conversationMessages = [],
     maxModels,
+    maxTokens,
+    reasoningEffort,
     signal,
   } = params;
 
@@ -216,6 +225,7 @@ export async function getAiResponse<T = unknown>(
           responseTime,
           conversationMessages,
           signal,
+          { ...(maxTokens ? { maxTokens } : {}), ...(reasoningEffort ? { reasoningEffort } : {}) },
         );
 
         const parsed = safeParseJson<T>(rawText);

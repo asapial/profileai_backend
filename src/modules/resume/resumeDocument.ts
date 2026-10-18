@@ -120,7 +120,7 @@ function experienceChildren(data: JsonObject, accent: string): Paragraph[] {
       }),
     );
     const bullets = asStrings(row.bullets);
-    const fallback = text(row.desc);
+    const fallback = text(row.description ?? row.desc);
     for (const bullet of bullets.length ? bullets : fallback ? fallback.split(/\r?\n/).filter(Boolean) : []) {
       children.push(
         new Paragraph({
@@ -274,6 +274,7 @@ export async function buildResumeDocx(
   const main = [
     ...summaryChildren(contentData, accent),
     ...experienceChildren(contentData, accent),
+    ...projectChildren(contentData, accent),
   ];
   const supporting = [
     ...stringListChildren('Skills', asStrings(contentData.skills), accent),
@@ -330,6 +331,16 @@ export async function buildResumeDocx(
   });
 
   return Packer.toBuffer(document);
+}
+
+function projectChildren(data: JsonObject, accent: string): Paragraph[] {
+  const projects = asObjects(data.projects);
+  if (!projects.length) return [];
+  return [sectionTitle('Projects', accent), ...projects.flatMap((row) => [
+    new Paragraph({ keepNext: true, children: [new TextRun({ text: text(row.title ?? row.name), bold: true, size: 20 })] }),
+    ...[text(row.description), asStrings(row.techStack).join(', '), text(row.url), text(row.repoUrl)]
+      .filter(Boolean).map((value) => new Paragraph({ spacing: { after: 50 }, children: [new TextRun({ text: value, size: 19 })] })),
+  ])];
 }
 
 /**
