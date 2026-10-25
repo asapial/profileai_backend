@@ -21,8 +21,8 @@ afterEach(() => {
   mock.restoreAll();
 });
 
-const original = 'Worked on JavaScript dashboards for internal reporting across the team.';
-const improved = 'Developed JavaScript dashboards for internal reporting across the team.';
+const original = 'Maintained JavaScript dashboards internal reporting team.';
+const improved = 'Maintained JavaScript dashboards for internal reporting across the team.';
 const patch = { path: 'experience.0.bullets.0', before: original, after: improved };
 const assessment = { requirements: [{ label: 'JavaScript', sourceQuote: 'JavaScript is required', priority: 'required', category: 'skill', aliases: [] }], semanticMatches: [] };
 const verification = { verdicts: [{ path: patch.path, supported: true, preservesMeaning: true, unsupportedClaims: [] }] };
@@ -111,13 +111,13 @@ test('verification failure does not apply proposed wording', async () => {
   assert.ok(result.warnings.some((warning) => /skipped/.test(warning)));
 });
 test('lower-scoring candidates are discarded under the fixed rubric', async () => {
-  const weaker = { ...patch, after: 'Worked on JS reports.' };
+  const weaker = { ...patch, after: 'Maintained JavaScript dashboards.' };
   const f = fixture([assessment, { patches: [weaker] }, verification]);
   const result = await optimizeForAts('u', 'r');
   assert.equal(result.afterScore, result.beforeScore);
   assert.equal(f.history.length, 0);
   assert.equal(f.saved.contentData.experience[0].bullets[0], original);
-  assert.ok(result.warnings.some((warning) => /scored lower/.test(warning)));
+  assert.ok(result.warnings.some((warning) => /did not improve/.test(warning)));
 });
 test('analysis refuses to save a score when the document changed during the request', async () => {
   fixture([assessment], { conflict: true });
@@ -149,11 +149,11 @@ test('rechecking unchanged fallback analysis retains the optimization receipt', 
 
 test('a lower-scoring AI candidate cannot discard a valid conservative correction', async () => {
   const before = 'Participated in remote collaboration with JavaScript teams building internal reports across departments.';
-  const f = fixture([assessment, { patches: [{ ...patch, before, after: 'Worked on JS reports.' }] }, verification]);
+  const f = fixture([assessment, { patches: [{ ...patch, before, after: 'JavaScript reports.' }] }, verification]);
   f.saved.contentData.experience[0].bullets[0] = before;
   const result = await optimizeForAts('u', 'r');
   assert.equal(f.saved.contentData.experience[0].bullets[0], 'Collaborated remotely with JavaScript teams building internal reports across departments.');
   assert.ok(result.afterScore >= result.beforeScore);
   assert.equal(result.diagnostics.conservativeCorrections, 1);
-  assert.ok(result.warnings.some((warning) => /only conservative corrections/.test(warning)));
+  assert.ok(result.warnings.some((warning) => /did not improve/.test(warning)));
 });

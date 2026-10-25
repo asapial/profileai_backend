@@ -11,6 +11,7 @@ import {
   UpdateCoverLetterInput,
 } from './coverLetter.schema';
 import { enqueueCoverLetterExport } from '../export/export.service';
+import { coverLetterDocument, coverLetterText, editableCoverLetterText } from './coverLetter.document';
 
 const RESUME_SELECT = { id: true, title: true } as const;
 
@@ -29,14 +30,14 @@ export const listCoverLetters = async (
   userId: string,
   input: ListCoverLettersInput,
 ) => {
-  const { limit = 20, cursor, search } = input;
+  const { limit = 20, cursor, search, status: letterStatus } = input;
   const take = Math.min(Math.max(limit, 1), 100);
 
   // Cursor is the updatedAt+id of the last record on the previous page.
   let cursorRecord: { updatedAt: Date; id: string } | null = null;
   if (cursor) {
     cursorRecord = await prisma.coverLetter.findFirst({
-      where: { id: cursor, userId },
+      where: { id: cursor, userId, deletedAt: null },
       select: { updatedAt: true, id: true },
     });
     if (!cursorRecord) {
@@ -47,6 +48,7 @@ export const listCoverLetters = async (
   const where = {
     userId,
     deletedAt: null,
+    ...(letterStatus ? { status: letterStatus } : {}),
     ...(search
       ? {
           OR: [
@@ -58,13 +60,10 @@ export const listCoverLetters = async (
       : {}),
     ...(cursorRecord
       ? {
-          OR: [
+          AND: [{ OR: [
             { updatedAt: { lt: cursorRecord.updatedAt } },
-            {
-              updatedAt: cursorRecord.updatedAt,
-              id: { lt: cursorRecord.id },
-            },
-          ],
+            { updatedAt: cursorRecord.updatedAt, id: { lt: cursorRecord.id } },
+          ] }],
         }
       : {}),
   };
@@ -78,8 +77,8 @@ export const listCoverLetters = async (
 
   let nextCursor: string | null = null;
   if (items.length > take) {
-    const next = items.pop()!;
-    nextCursor = next.id;
+    items.pop();
+    nextCursor = items[items.length - 1]!.id;
   }
 
   return { items, nextCursor };
@@ -92,7 +91,7 @@ export const getCoverLetter = async (userId: string, id: string) => {
     include: { resume: { select: RESUME_SELECT } },
   });
   if (!item) throw new AppError(status.NOT_FOUND, 'Cover letter not found.');
-  return item;
+  return { ...item, contentText: editableCoverLetterText(item.contentText, item.contentJson) };
 };
 
 // ─── Create ────────────────────────────────────────────────────
@@ -114,15 +113,15 @@ export const createCoverLetter = async (
     userId,
     resumeId: input.resumeId,
     title: input.title,
-    contentJson: input.contentJson ?? {
+    contentJson: input.contentJson ?? (input.contentText !== undefined ? coverLetterDocument(input.contentText) : {
       type: 'doc',
       content: [{ type: 'paragraph' }],
-    },
+    }),
   };
 
   if (input.targetJobTitle) data.targetJobTitle = input.targetJobTitle;
   if (input.targetCompany) data.targetCompany = input.targetCompany;
-  if (input.contentText) data.contentText = input.contentText;
+  data.contentText = input.contentJson !== undefined ? coverLetterText(input.contentJson) : input.contentText ?? '';
 
   const created = await prisma.coverLetter.create({ data });
   return prisma.coverLetter.findUniqueOrThrow({
@@ -152,15 +151,20 @@ export const updateCoverLetter = async (
   if (input.targetCompany !== undefined)
     data.targetCompany =
       input.targetCompany === null ? null : input.targetCompany;
-  if (input.contentJson !== undefined) data.contentJson = input.contentJson;
-  if (input.contentText !== undefined) data.contentText = input.contentText;
+  if (input.contentJson !== undefined) {
+    data.contentJson = input.contentJson;
+    data.contentText = coverLetterText(input.contentJson);
+  } else if (input.contentText !== undefined) {
+    data.contentText = input.contentText;
+    data.contentJson = coverLetterDocument(input.contentText);
+  }
   if (input.status !== undefined) data.status = input.status;
 
   // Promote DRAFT -> GENERATED once content is non-trivial.
   if (
     existing.status === 'DRAFT' &&
     input.status === undefined &&
-    (input.contentJson !== undefined || input.contentText !== undefined)
+    typeof data.contentText === 'string' && data.contentText.trim().length > 0
   ) {
     data.status = 'GENERATED';
   }
@@ -251,7 +255,7 @@ export const regenerateCoverLetter = async (
 
   const newContentText =
     typeof newContentJson === 'object'
-      ? JSON.stringify(newContentJson).slice(0, 20000)
+      ? coverLetterText(newContentJson).slice(0, 20000)
       : existing.contentText;
 
   const preservePrior = input.preservePrior ?? true;

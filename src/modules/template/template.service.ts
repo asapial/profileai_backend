@@ -23,6 +23,7 @@ export const SAMPLE_RESUME_DATA = {
   website: 'https://alexjohnson.dev',
   linkedIn: 'https://linkedin.com/in/alexjohnson',
   headline: 'Senior Full-Stack Engineer',
+  summary: 'Passionate software engineer with 6+ years of experience building scalable web applications.',
   bio: 'Passionate software engineer with 6+ years of experience building scalable web applications.',
   skills: ['TypeScript', 'React', 'Node.js', 'PostgreSQL', 'Docker', 'AWS'],
   languages: ['English', 'Spanish'],

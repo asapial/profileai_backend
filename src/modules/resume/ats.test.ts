@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { containsTerm, validateAssessment, fallbackAssessment, scoreResume, sourceHash, safePatches, applyVerifiedPatches, carryEvidence, conservativeRewrite, type Assessment, type Content } from './ats.logic';
+import { containsTerm, validateAssessment, fallbackAssessment, mergeAssessments, scoreResume, sourceHash, safePatches, applyVerifiedPatches, carryEvidence, conservativeRewrite, type Assessment, type Content } from './ats.logic';
 import { checkExtractedText, extractDocxText, verifyExport } from './ats.export';
 import { buildResumeDocx, buildResumePdf, buildTemplateSnapshotDocx } from './resumeDocument';
 
@@ -13,7 +13,7 @@ const assessment: Assessment = { usedAi: true, semanticMatches: [], requirements
 const content: Content = {
   personalInfo: { firstName: 'Alex', lastName: 'Example', email: 'alex@example.test', phone: '555123456' },
   summary: 'Developer building useful web applications with JavaScript.',
-  skills: ['JavaScript'], experience: [{ company: 'Example Ltd', role: 'Developer', from: '2021', to: '2024', bullets: ['Worked on JavaScript dashboards for internal reporting across the team.'] }],
+  skills: ['JavaScript'], experience: [{ company: 'Example Ltd', role: 'Developer', from: '2021', to: '2024', bullets: ['Responsible for maintaining JavaScript dashboards for internal reporting across the team.'] }],
   education: [{ school: 'Example University', degree: 'BSc', field: 'Computing' }],
   projects: [{ title: 'Portal', description: 'Built a JavaScript portal for customer account management.', techStack: ['JavaScript'] }],
   languages: ['English'],
@@ -38,6 +38,13 @@ test('fallback preserves required/preferred distinctions and experience constrai
   assert.ok(result.requirements.some((r) => r.label.includes('5 years')));
   assert.equal(result.requirements.some((r) => r.label === 'Java'), false);
 });
+test('hybrid assessment preserves deterministic required terms missed by AI', () => {
+  const ai: Assessment = { usedAi: true, semanticMatches: [], requirements: [assessment.requirements[1]!] };
+  const merged = mergeAssessments(ai, fallbackAssessment(jd));
+  assert.ok(merged.requirements.some((requirement) => requirement.label === 'JavaScript' && requirement.priority === 'required'));
+  assert.ok(merged.requirements.some((requirement) => requirement.label === 'Python'));
+  assert.equal(merged.usedAi, true);
+});
 test('same inputs always give the same score; required evidence outweighs preferred', () => {
   assert.deepEqual(scoreResume(content, jd, template, assessment), scoreResume(content, jd, template, assessment));
   const requiredOnly = scoreResume({ skills: ['JavaScript'] }, jd, template, assessment);
@@ -47,8 +54,42 @@ test('same inputs always give the same score; required evidence outweighs prefer
 test('repetition cannot improve evidence strength and actual experience outweighs a keyword list', () => {
   const base = scoreResume({ skills: ['JavaScript'] }, jd, template, assessment);
   const stuffed = scoreResume({ skills: ['JavaScript', 'JavaScript', 'JavaScript'] }, jd, template, assessment);
-  assert.equal(base.atsScore, stuffed.atsScore);
+  assert.ok(stuffed.atsScore < base.atsScore);
+  assert.ok(stuffed.penalties.keywordStuffing > 0);
   assert.ok(scoreResume(content, jd, template, assessment).breakdown.evidenceStrength > base.breakdown.evidenceStrength);
+});
+test('experience alignment requires demonstrated evidence, not a skills-list match', () => {
+  const keywordOnly = scoreResume({ personalInfo: { email: 'alex@example.test' }, skills: ['JavaScript'] }, jd, template, assessment);
+  const demonstrated = scoreResume(content, jd, template, assessment);
+  assert.equal(keywordOnly.breakdown.experienceAlignment, 0);
+  assert.ok(demonstrated.breakdown.experienceAlignment > keywordOnly.breakdown.experienceAlignment);
+});
+test('a required keyword in Skills alone does not clear the demonstrated-evidence ceiling', () => {
+  const inventoryOnly = scoreResume({ personalInfo: { email: 'alex@example.test' }, skills: ['JavaScript'], experience: [{ company: 'Example', role: 'Analyst', from: '2024', current: true, bullets: ['Analyzed monthly financial reports for leadership.'] }] }, jd, template, assessment);
+  assert.equal(inventoryOnly.breakdown.experienceAlignment, 0);
+  assert.ok(inventoryOnly.scoreCeiling <= 59);
+  assert.ok(inventoryOnly.criticalIssues.some((issue) => issue.code === 'REQUIRED_GAP'));
+  assert.ok(scoreResume(content, jd, template, assessment).scoreCeiling > inventoryOnly.scoreCeiling);
+});
+test('incomplete role chronology lowers completeness and produces an actionable warning', () => {
+  const incomplete = structuredClone(content);
+  delete (incomplete.experience as Content[])[0]!.to;
+  const completeScore = scoreResume(content, jd, template, assessment);
+  const incompleteScore = scoreResume(incomplete, jd, template, assessment);
+  assert.equal(completeScore.qualitySignals.structuredExperience, 1);
+  assert.equal(incompleteScore.qualitySignals.structuredExperience, 0);
+  assert.ok(incompleteScore.breakdown.completeness < completeScore.breakdown.completeness);
+  assert.ok(incompleteScore.criticalIssues.some((issue) => issue.code === 'EXPERIENCE_STRUCTURE'));
+  assert.ok(incompleteScore.topActions.some((action) => /role\(s\) have incomplete/.test(action.issue)));
+});
+test('critical blockers cap the score and produce ranked actions', () => {
+  const missing = scoreResume({ summary: 'Python developer', skills: ['Python'] }, jd, { ...template, htmlLayout: '<table><tr><td>x</td></tr></table>', cssStyles: 'position:absolute; columns: 2; float:left' }, assessment);
+  assert.ok(missing.scoreCeiling <= 59);
+  assert.ok(missing.atsScore <= missing.scoreCeiling);
+  assert.ok(missing.criticalIssues.some((issue) => issue.code === 'CONTACT_EMAIL'));
+  assert.ok(missing.criticalIssues.some((issue) => issue.code === 'REQUIRED_GAP'));
+  assert.equal(missing.topActions[0]?.impact, 'HIGH');
+  assert.ok(missing.topActions.some((action) => /JavaScript/.test(action.issue)));
 });
 test('negative statements do not count as keyword evidence', () => {
   assert.equal(scoreResume({ summary: 'No experience with JavaScript.' }, jd, template, assessment).requirements[0]!.matched, false);
@@ -71,7 +112,7 @@ test('cache includes template source and scoring methodology, not just its ID', 
   assert.notEqual(sourceHash(content, jd, template), sourceHash(content, jd, { ...template, cssStyles: 'position:absolute' }));
   assert.notEqual(sourceHash(content, jd, template), sourceHash(content, `${jd} SQL`, template));
 });
-const before = 'Worked on JavaScript dashboards for internal reporting across the team.';
+const before = 'Responsible for maintaining JavaScript dashboards for internal reporting across the team.';
 test('conservative rewrites preserve metrics, qualifiers and facts and are idempotent', () => {
   const input = { experience: [{ bullets: ['Participated in remote collaboration with 3 teams using JS to deliver reporting.', 'Assisted with JS reports.', 'Worked on JavaScript reports.'] }] };
   const result = conservativeRewrite(input, assessment.requirements);
@@ -99,7 +140,7 @@ test('matching aliases do not replace grammatical forms or invent technology ver
   assert.deepEqual(conservativeRewrite(input, requirements).content, input);
 });
 
-const after = 'Developed JavaScript dashboards for internal reporting across the team.';
+const after = 'Maintained JavaScript dashboards for internal reporting across the team.';
 const patch = { path: 'experience.0.bullets.0', before, after };
 test('rewrite rejects invented metrics, cross-job metrics, tools, unsupported paths and stale originals', () => {
   for (const p of [
@@ -111,6 +152,8 @@ test('rewrite rejects invented metrics, cross-job metrics, tools, unsupported pa
   const metricContent = { experience: [{ bullets: ['Reduced latency by 10%.', 'Raised revenue by 25%.'] }] };
   assert.equal(safePatches(metricContent, { patches: [{ path: 'experience.0.bullets.0', before: 'Reduced latency by 10%.', after: 'Reduced latency by 25%.' }] }, []).length, 0);
   assert.equal(safePatches(metricContent, { patches: [{ path: 'experience.0.bullets.0', before: 'Reduced latency by 10%.', after: 'Reduced latency by 10.' }] }, []).length, 0);
+  const swapped = { experience: [{ bullets: ['Reduced latency by 10% and errors by 25%.'] }] };
+  assert.equal(safePatches(swapped, { patches: [{ path: 'experience.0.bullets.0', before: 'Reduced latency by 10% and errors by 25%.', after: 'Reduced latency by 25% and errors by 10%.' }] }, []).length, 0);
 });
 test('rewrite cannot remove uncertainty or upgrade assisted work into leadership', () => {
   const c = { summary: 'Assisted with JavaScript reports.' };
@@ -128,12 +171,14 @@ test('verification fails closed and only changes whitelisted text, preserving fa
   assert.equal((verified.content.experience as any[])[0].bullets[0], after);
   assert.ok(scoreResume(verified.content, jd, template, assessment).atsScore >= scoreResume(content, jd, template, assessment).atsScore);
 });
-test('verified rewrites preserve semantic support without extracting a new requirement set', () => {
-  const original: Assessment = { ...assessment, semanticMatches: [{ requirement: 'JavaScript', sourceId: patch.path, evidence: before, confidence: 0.8 }] };
+test('rewrites retain only semantic evidence that remains literally present', () => {
+  const original: Assessment = { ...assessment, semanticMatches: [{ requirement: 'JavaScript', sourceId: patch.path, evidence: 'JavaScript dashboards', confidence: 0.8 }] };
   const carried = carryEvidence(original, [patch]);
   assert.deepEqual(carried.requirements, original.requirements);
-  assert.equal(carried.semanticMatches[0]!.evidence, after);
+  assert.equal(carried.semanticMatches[0]!.evidence, 'JavaScript dashboards');
   assert.equal(carried.semanticMatches[0]!.confidence, 0.8);
+  const removed = carryEvidence(original, [{ ...patch, after: 'Maintained reporting dashboards across the team.' }]);
+  assert.equal(removed.semanticMatches.length, 0);
 });
 test('actual ATS Word export contains contact, experience, projects, skills, education and languages', async () => {
   const buffer = await buildResumeDocx(content, template, 'Test resume');
