@@ -4,6 +4,7 @@ import { prisma } from '../lib/prisma';
 import { redis } from '../lib/redis';
 
 import { processDeliveries } from '../modules/career/career.integrations';
+import { processHarnessRuns } from '../modules/harness/harness.engine';
 
 const QUEUE_NAME = 'profileai-scheduler';
 
@@ -22,6 +23,7 @@ export const schedulerWorker = new Worker(
   async (job) => {
     if (job.name === 'career-maintenance') await purgeCareerData();
     if (job.name === 'career-deliveries') await processDeliveries();
+    if (job.name === 'harness-runs') await processHarnessRuns();
     if (job.name === 'monthly-limit-reset') {
       console.log('[Scheduler] Running monthly limit reset...');
 
@@ -44,6 +46,7 @@ export const schedulerWorker = new Worker(
 export const scheduleMonthlyReset = async (): Promise<void> => {
   if (process.env.CAREER_MAINTENANCE_ENABLED === 'true') await schedulerQueue.add('career-maintenance', {}, { repeat: { every: 3600000 }, jobId: 'career-maintenance', removeOnComplete: 20, removeOnFail: 20 });
   await schedulerQueue.add('career-deliveries', {}, { repeat: { every: 60000 }, jobId: 'career-deliveries', removeOnComplete: 20, removeOnFail: 20 });
+  await schedulerQueue.add('harness-runs', {}, { repeat: { every: 30000 }, jobId: 'harness-runs', removeOnComplete: 20, removeOnFail: 20 });
   // Remove existing repeatable job if any
   await schedulerQueue.removeRepeatable('monthly-limit-reset', {
     pattern: '0 0 1 * *', // 1st of every month at midnight

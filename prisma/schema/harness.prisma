@@ -1,0 +1,247 @@
+// Hybrid Agentic Harness
+// User-owned Google data, deterministic run steps, browser handoff and audit history.
+
+model GoogleAccountConnection {
+  id                   String             @id @default(cuid())
+  userId               String             @unique
+  googleSubjectId      String
+  googleEmail          String
+  encryptedTokens      String
+  grantedScopes        String[]
+  status               String             @default("CONNECTED")
+  accessTokenExpiresAt DateTime
+  connectedAt          DateTime           @default(now())
+  lastSuccessfulUseAt  DateTime?
+  revokedAt            DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  capabilities         GoogleCapability[]
+
+  @@index([userId, status])
+  @@map("google_account_connection")
+}
+
+model GoogleCapability {
+  id           String                  @id @default(cuid())
+  connectionId String
+  capability   String
+  enabled      Boolean                 @default(true)
+  grantedAt    DateTime                @default(now())
+  lastUsedAt   DateTime?
+  connection   GoogleAccountConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+
+  @@unique([connectionId, capability])
+  @@index([connectionId, enabled])
+  @@map("google_capability")
+}
+
+model HarnessOAuthState {
+  id           String   @id
+  userId       String
+  verifier     String
+  capabilities String[]
+  popupOrigin  String
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+
+  @@index([userId, expiresAt])
+  @@map("harness_oauth_state")
+}
+
+model HarnessPreferenceVersion {
+  id          String   @id @default(cuid())
+  userId      String
+  version     Int
+  preferences Json
+  createdAt   DateTime @default(now())
+
+  @@unique([userId, version])
+  @@index([userId, createdAt])
+  @@map("harness_preference_version")
+}
+
+model HarnessRun {
+  id                  String        @id @default(cuid())
+  userId              String
+  preferenceVersionId String
+  mode                String        @default("PREPARE")
+  state               String        @default("SCHEDULED")
+  requestedAt         DateTime      @default(now())
+  startedAt           DateTime?
+  finishedAt          DateTime?
+  pausedAt            DateTime?
+  stoppedAt           DateTime?
+  summary             Json          @default("{}")
+  error               String?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  steps               HarnessStep[]
+
+  @@index([userId, createdAt])
+  @@index([state, requestedAt])
+  @@map("harness_run")
+}
+
+model HarnessStep {
+  id            String     @id @default(cuid())
+  runId         String
+  userId        String
+  key           String
+  position      Int
+  state         String     @default("PENDING")
+  attempt       Int        @default(0)
+  input         Json       @default("{}")
+  output        Json       @default("{}")
+  blocker       String?
+  error         String?
+  startedAt     DateTime?
+  finishedAt    DateTime?
+  nextAttemptAt DateTime   @default(now())
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  run           HarnessRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+
+  @@unique([runId, key])
+  @@index([state, nextAttemptAt])
+  @@index([userId, createdAt])
+  @@map("harness_step")
+}
+
+model ConsentGrant {
+  id         String   @id @default(cuid())
+  userId     String
+  kind       String
+  scope      Json
+  grantedAt  DateTime @default(now())
+  expiresAt  DateTime?
+  revokedAt  DateTime?
+  sourceIp   String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  @@index([userId, kind, revokedAt])
+  @@map("consent_grant")
+}
+
+model HarnessCandidateDecision {
+  id               String   @id @default(cuid())
+  userId           String
+  runId             String
+  jobId             String
+  decision          String
+  score             Int
+  reasons           Json
+  missing           Json
+  preferenceVersion Int
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([runId, jobId])
+  @@index([userId, decision, score])
+  @@map("harness_candidate_decision")
+}
+
+model HarnessArtifact {
+  id         String   @id @default(cuid())
+  userId     String
+  runId      String?
+  jobId      String?
+  kind       String
+  name       String
+  state      String   @default("GENERATED")
+  localRef   String?
+  providerId String?
+  providerUrl String?
+  metadata   Json     @default("{}")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([userId, jobId, kind])
+  @@map("harness_artifact")
+}
+
+model HarnessExternalSync {
+  id          String   @id @default(cuid())
+  userId      String
+  jobId       String?
+  kind        String
+  externalId  String
+  externalUrl String?
+  state       String   @default("SYNCED")
+  syncKey     String
+  metadata    Json     @default("{}")
+  lastSyncedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, kind, syncKey])
+  @@index([userId, kind, lastSyncedAt])
+  @@map("harness_external_sync")
+}
+
+model BrowserCompanion {
+  id           String   @id @default(cuid())
+  userId       String
+  name         String
+  tokenHash    String   @unique
+  status       String   @default("ACTIVE")
+  lastSeenAt   DateTime?
+  expiresAt    DateTime
+  revokedAt    DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([userId, status])
+  @@map("browser_companion")
+}
+
+model BrowserTask {
+  id             String   @id @default(cuid())
+  userId         String
+  runId          String?
+  jobId          String?
+  applicationId  String?
+  deviceId       String?
+  adapter        String
+  source         String?
+  targetUrl      String
+  mode           String   @default("PREPARE")
+  state          String   @default("QUEUED")
+  priority       Int      @default(50)
+  expiresAt      DateTime?
+  signature      String?
+  revision       Int      @default(0)
+  progress       Int      @default(0)
+  attempt        Int      @default(0)
+  policyVersion  String?
+  payload        Json
+  result         Json     @default("{}")
+  approvedAt     DateTime?
+  claimedAt      DateTime?
+  finishedAt     DateTime?
+  error          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([userId, state, createdAt])
+  @@index([state, createdAt])
+  @@index([userId, deviceId, state])
+  @@index([expiresAt])
+  @@map("browser_task")
+}
+
+model HarnessAuditEvent {
+  id        String   @id @default(cuid())
+  userId    String
+  runId     String?
+  action    String
+  entityType String
+  entityId  String?
+  outcome   String
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([runId, createdAt])
+  @@map("harness_audit_event")
+}
