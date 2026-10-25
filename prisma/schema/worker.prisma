@@ -1,0 +1,215 @@
+// Local browser worker trust, task transport, approvals and source policy.
+// Additive to the hybrid harness; no existing record is rewritten by the
+// migration that introduces these models.
+
+model WorkerDevice {
+  id                 String           @id @default(cuid())
+  userId             String
+  name               String
+  platform           String           @default("windows")
+  appVersion         String
+  publicKey          String
+  publicKeyFingerprint String         @unique
+  capabilities       Json             @default("[]")
+  status             String           @default("ACTIVE")
+  pairedAt           DateTime         @default(now())
+  lastSeenAt         DateTime?
+  lastIp             String?
+  revokedAt          DateTime?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  sessions           WorkerSession[]
+  approvals          WorkerApproval[]
+
+  @@index([userId, status, lastSeenAt])
+  @@map("worker_device")
+}
+
+model WorkerPairingCode {
+  id        String    @id @default(cuid())
+  userId    String
+  codeHash  String    @unique
+  nameHint  String?
+  expiresAt DateTime
+  usedAt    DateTime?
+  deviceId  String?
+  attempts  Int       @default(0)
+  createdAt DateTime  @default(now())
+
+  @@index([userId, expiresAt])
+  @@map("worker_pairing_code")
+}
+
+model WorkerSession {
+  id               String       @id @default(cuid())
+  deviceId         String
+  accessTokenHash  String       @unique
+  refreshTokenHash String       @unique
+  accessExpiresAt  DateTime
+  refreshExpiresAt DateTime
+  lastUsedAt       DateTime?
+  rotatedAt        DateTime?
+  revokedAt        DateTime?
+  createdAt        DateTime     @default(now())
+  device           WorkerDevice @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+
+  @@index([deviceId, revokedAt])
+  @@index([refreshExpiresAt])
+  @@map("worker_session")
+}
+
+model BrowserTaskEvent {
+  id        String   @id @default(cuid())
+  taskId    String
+  userId    String
+  seq       Int
+  type      String
+  message   String   @default("")
+  data      Json     @default("{}")
+  redacted  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@unique([taskId, seq])
+  @@index([userId, createdAt])
+  @@index([taskId, seq])
+  @@map("browser_task_event")
+}
+
+model BrowserTaskCheckpoint {
+  id               String   @id @default(cuid())
+  taskId           String
+  deviceId         String
+  userId           String
+  sequence         Int
+  state            String
+  url              String     @default("")
+  step             String     @default("")
+  observationHash  String     @default("")
+  completedActions Json       @default("[]")
+  submitted        Boolean    @default(false)
+  metadata         Json       @default("{}")
+  createdAt        DateTime   @default(now())
+
+  @@unique([taskId, sequence])
+  @@index([userId, createdAt])
+  @@index([taskId, sequence])
+  @@map("browser_task_checkpoint")
+}
+
+model WorkerApproval {
+  id           String   @id @default(cuid())
+  userId       String
+  deviceId     String
+  taskId       String
+  kind         String
+  state        String   @default("PENDING")
+  summary      String
+  targetUrl    String   @default("")
+  risk         String   @default("MEDIUM")
+  actionHash   String
+  evidence     Json     @default("{}")
+  requestedAt  DateTime @default(now())
+  expiresAt    DateTime
+  decidedAt    DateTime?
+  decidedBy    String?
+  decisionNote String?
+  device       WorkerDevice @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+
+  @@index([userId, state, requestedAt])
+  @@index([taskId, state])
+  @@index([expiresAt])
+  @@map("worker_approval")
+}
+
+model SitePolicy {
+  id                   String   @id @default(cuid())
+  source               String
+  name                 String
+  version              String
+  level                String
+  domains              Json     @default("[]")
+  discovery            Boolean  @default(false)
+  search               Boolean  @default(false)
+  scroll               Boolean  @default(false)
+  extraction           Boolean  @default(false)
+  formFill             Boolean  @default(false)
+  submit               Boolean  @default(false)
+  userPresenceRequired Boolean  @default(true)
+  maxPagesPerRun       Int      @default(12)
+  maxRequestsPerMinute Int      @default(10)
+  reviewedAt           DateTime
+  reviewReference      String
+  notes                String   @default("")
+  enabled              Boolean  @default(true)
+  reviewedBy           String   @default("security")
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@unique([source, version])
+  @@index([enabled, source])
+  @@map("site_policy")
+}
+
+model CapturedListing {
+  id           String   @id @default(cuid())
+  userId       String
+  deviceId     String
+  source       String
+  externalId   String   @default("")
+  fingerprint  String
+  canonicalUrl String
+  payload      Json     @default("{}")
+  capturedAt   DateTime @default(now())
+  createdAt    DateTime @default(now())
+
+  @@unique([userId, fingerprint])
+  @@index([userId, capturedAt])
+  @@index([source, capturedAt])
+  @@map("captured_listing")
+}
+
+// Browser-based desktop sign-in. The desktop asks for a request, the user
+// approves it in an authenticated browser tab, and the desktop polls until it
+// can exchange the request for device tokens. The raw request secret never
+// leaves the desktop.
+model WorkerAuthRequest {
+  id                   String    @id @default(cuid())
+  requestHash          String    @unique
+  deviceName           String
+  platform             String    @default("windows")
+  appVersion           String
+  publicKey            String
+  publicKeyFingerprint String
+  capabilities         Json      @default("[]")
+  status               String    @default("PENDING")
+  userId               String?
+  approvedAt           DateTime?
+  usedAt               DateTime?
+  expiresAt            DateTime
+  createdAt            DateTime  @default(now())
+
+  @@index([status, expiresAt])
+  @@index([userId, createdAt])
+  @@map("worker_auth_request")
+}
+
+// Per-user, per-source permission for job search, scrolling and page capture.
+// Search and scroll are never implied by a source policy: the account owner
+// has to grant them explicitly, and the worker enforces the same record.
+model WorkerSiteConsent {
+  id               String    @id @default(cuid())
+  userId           String
+  source           String
+  search           Boolean   @default(false)
+  scroll           Boolean   @default(false)
+  capture          Boolean   @default(false)
+  maxPages         Int       @default(1)
+  acknowledgedRisk Boolean   @default(false)
+  grantedAt        DateTime  @default(now())
+  revokedAt        DateTime?
+  updatedAt        DateTime  @updatedAt
+
+  @@unique([userId, source])
+  @@index([userId, revokedAt])
+  @@map("worker_site_consent")
+}

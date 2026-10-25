@@ -3,6 +3,7 @@ import { prisma } from './lib/prisma';
 import { closeRedis, prepareRedisForBullMq } from './lib/redis';
 import { ensureBucketExists } from './lib/minio';
 import { notificationGateway } from './modules/notification/notification.gateway';
+import { workerGateway } from './modules/worker/worker.gateway';
 
 const PORT = Number(process.env.PORT || 5000);
 
@@ -54,6 +55,7 @@ const shutdown = async (reason: string, exitCode = 0): Promise<void> => {
   console.log(`[Server] Shutting down (${reason})...`);
 
   notificationGateway.close();
+  workerGateway.close();
   const closeHttpServer = new Promise<void>((resolve) => {
     if (!httpServer?.listening) return resolve();
     httpServer.close(() => resolve());
@@ -107,10 +109,12 @@ async function main() {
 
     httpServer = createServer(app);
     notificationGateway.attach(httpServer);
+    workerGateway.attach(httpServer);
     await listen(httpServer, PORT);
 
     console.log(`[Server] ProFile AI API running on http://localhost:${PORT}`);
     console.log(`[WebSocket] Notifications available at ws://localhost:${PORT}/ws/notifications`);
+    console.log(`[WebSocket] Worker gateway available at ws://localhost:${PORT}/ws/worker`);
     console.log(`[Server] Environment: ${process.env.NODE_ENV || 'development'}`);
 
     for (const signal of ['SIGINT', 'SIGTERM'] as const) {
