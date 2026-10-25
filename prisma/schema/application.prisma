@@ -67,6 +67,7 @@ model Job {
   sourceName        String        @default("Manual import")
   sourceType        JobSourceType @default(MANUAL)
   lifecycle         JobLifecycle  @default(ACTIVE)
+  disposition       JobDisposition @default(NEW)
   publishedAt       DateTime?
   expiresAt         DateTime?
   lastVerifiedAt    DateTime?
@@ -80,6 +81,7 @@ model Job {
   listings     JobSourceListing[]
 
   @@index([userId, lifecycle, updatedAt])
+  @@index([userId, disposition, updatedAt])
   @@index([userId, company, title])
   @@index([contentHash])
   @@map("job")
@@ -116,6 +118,12 @@ enum JobLifecycle {
   EXPIRED
   REMOVED
   UNKNOWN
+}
+
+enum JobDisposition {
+  NEW
+  SHORTLISTED
+  DISMISSED
 }
 
 enum JobSourceType {

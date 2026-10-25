@@ -27,6 +27,10 @@ export const update = catchAsync(async (req: Request, res: Response) => {
   const data = await jobService.updateJob(req.user.userId, text(req.params.id), req.body);
   sendResponse(res, { status: status.OK, success: true, message: 'Job updated.', data });
 });
+export const setDisposition = catchAsync(async (req: Request, res: Response) => {
+  const data = await jobService.setJobDisposition(req.user.userId, text(req.params.id), req.body.disposition);
+  sendResponse(res, { status: status.OK, success: true, message: 'Job decision saved.', data });
+});
 export const remove = catchAsync(async (req: Request, res: Response) => {
   const data = await jobService.deleteJob(req.user.userId, text(req.params.id));
   sendResponse(res, { status: status.OK, success: true, message: 'Job removed.', data });

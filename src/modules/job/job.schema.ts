@@ -3,6 +3,7 @@ import { normalizeJobUrl } from './job.identity';
 
 export const jobLifecycleEnum = z.enum(['ACTIVE', 'POSSIBLY_EXPIRED', 'EXPIRED', 'REMOVED', 'UNKNOWN']);
 export const workplaceTypeEnum = z.enum(['REMOTE', 'HYBRID', 'ON_SITE', 'UNSPECIFIED']);
+export const jobDispositionEnum = z.enum(['NEW', 'SHORTLISTED', 'DISMISSED']);
 
 const jobBody = z.object({
   title: z.string().trim().min(2).max(160),
@@ -41,6 +42,10 @@ export const createApplicationFromJobSchema = z.object({
     resumeId: z.string().optional(),
     notes: z.string().max(2000).optional(),
   }),
+});
+export const setJobDispositionSchema = z.object({
+  params: z.object({ id: z.string().min(1) }),
+  body: z.object({ disposition: jobDispositionEnum }),
 });
 
 export type CreateJobInput = z.infer<typeof jobBody>;

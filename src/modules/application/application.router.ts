@@ -6,13 +6,14 @@ import {
   createApplicationSchema,
   updateApplicationSchema,
   patchStatusSchema,
+  listApplicationsSchema,
 } from './application.schema';
 
 const router = Router();
 
 router.use(checkAuth());
 
-router.get('/', applicationController.list);
+router.get('/', validateRequest(listApplicationsSchema), applicationController.list);
 router.get('/:id', applicationController.get);
 router.get('/:id/timeline', applicationController.timeline);
 router.post('/', validateRequest(createApplicationSchema), applicationController.create);

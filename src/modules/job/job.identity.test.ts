@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { duplicateReason, jobFreshness, normalizeJobUrl } from './job.identity';
-import { createJobSchema, listJobsSchema, updateJobSchema } from './job.schema';
+import { createJobSchema, listJobsSchema, setJobDispositionSchema, updateJobSchema } from './job.schema';
 
 const job = { company: 'Example', title: 'Engineer', location: 'Dhaka', description: 'Build reliable software for customers.' };
 test('URL identity ignores tracking but preserves job identifiers', () => {
@@ -29,4 +29,6 @@ test('request validation rejects unsafe URLs and malformed list inputs', () => {
   assert.equal(listJobsSchema.safeParse({ query: { limit: 'NaN' } }).success, false);
   assert.equal(listJobsSchema.safeParse({ query: { lifecycle: 'made-up' } }).success, false);
   assert.equal(updateJobSchema.safeParse({ params: { id: 'job' }, body: { title: 'Updated role' } }).success, true);
+  assert.equal(setJobDispositionSchema.safeParse({ params: { id: 'job' }, body: { disposition: 'SHORTLISTED' } }).success, true);
+  assert.equal(setJobDispositionSchema.safeParse({ params: { id: 'job' }, body: { disposition: 'APPLIED' } }).success, false);
 });

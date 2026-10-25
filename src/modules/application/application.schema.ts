@@ -14,6 +14,14 @@ export const applicationStatusEnum = z.enum([
   'WITHDRAWN',
 ]);
 
+export const listApplicationsSchema = z.object({
+  query: z.object({
+    limit: z.coerce.number().int().min(1).max(100).optional(),
+    status: applicationStatusEnum.optional(),
+    cursor: z.string().min(1).max(200).optional(),
+  }),
+});
+
 export const createApplicationSchema = z.object({
   body: z.object({
     company: z.string().min(1).max(120),

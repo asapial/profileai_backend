@@ -107,6 +107,12 @@ export const deleteJob = async (userId: string, id: string) => {
   return { id };
 };
 
+export const setJobDisposition = async (userId: string, id: string, disposition: 'NEW' | 'SHORTLISTED' | 'DISMISSED') => {
+  const updated = await prisma.job.updateMany({ where: { id, userId }, data: { disposition } });
+  if (!updated.count) throw new AppError(status.NOT_FOUND, 'Job not found.');
+  return prisma.job.findUniqueOrThrow({ where: { id } });
+};
+
 export const createApplicationFromJob = async (
   userId: string,
   id: string,
