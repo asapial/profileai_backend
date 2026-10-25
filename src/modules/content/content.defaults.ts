@@ -134,7 +134,7 @@ export const DEFAULT_HOMEPAGE: HomepageConfig = {
       items: [
         { title: "AI resume generation", description: "Create a focused resume from your experience and the job description.", label: "Tailored to the JD" },
         { title: "Instant ATS score", description: "See a clear score and practical improvements before you apply.", label: "Beat the bots" },
-        { title: "Premium templates", description: "Choose from 30 résumé and 30 CV designs, each editable and recruiter-friendly.", label: "60 designs" },
+        { title: "Premium templates", description: "Choose from 50 résumé and 50 CV designs, including 40 new layouts with distinct structures and palettes.", label: "100 designs" },
         { title: "One-click export", description: "Export polished PDF and DOCX files for people and ATS parsers.", label: "PDF · DOCX" },
         { title: "Cover letters that match", description: "Generate a role-specific letter aligned with your resume.", label: "Pairs with resume" },
         { title: "Application tracker", description: "Track statuses, follow-ups, notes and interview reminders.", label: "Stay organized" },
@@ -180,7 +180,7 @@ export const DEFAULT_HOMEPAGE: HomepageConfig = {
       enabled: true,
       eyebrow: "Template gallery",
       title: "A template for every kind of role",
-      description: "Explore 30 professional résumés and 30 detailed CVs, all instantly customizable.",
+      description: "Explore 50 professional résumés and 50 detailed CVs, all instantly customizable.",
       items: [
         { title: "Modern", description: "Clean, two-column and recruiter-friendly." },
         { title: "Classic", description: "Traditional, single-column and ATS-perfect." },

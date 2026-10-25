@@ -32,8 +32,8 @@ const resourceDto = (row: {
   createdAt: string;
   updatedAt: string;
 } => ({
-  id: row.id,
   ...object(row.data),
+  id: row.id,
   createdAt: row.createdAt.toISOString(),
   updatedAt: row.updatedAt.toISOString(),
 });
@@ -71,7 +71,11 @@ const updateResource = async (
   const existing = await getResource(type, id);
   const row = await prisma.adminResource.update({
     where: { id },
-    data: { data: json({ ...object(existing.data), ...patch }) },
+    data: {
+      data: json({ ...object(existing.data), ...patch }),
+      ...(type === "FEATURE_FLAG" && patch.key !== undefined ? { key: String(patch.key) } : {}),
+      ...(type === "HELP_ARTICLE" && patch.slug !== undefined ? { key: String(patch.slug) } : {}),
+    },
   });
   return resourceDto(row);
 };
@@ -310,6 +314,11 @@ export const helpArticles = {
     ),
   update: (id: string, payload: Record<string, unknown>) =>
     updateResource("HELP_ARTICLE", id, payload),
+  remove: async (id: string) => {
+    await getResource("HELP_ARTICLE", id);
+    await prisma.adminResource.delete({ where: { id } });
+    return { ok: true as const };
+  },
 };
 
 export const moderation = {

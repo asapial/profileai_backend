@@ -58,6 +58,7 @@ router.post('/help-articles', operations.createHelpArticle);
 router.get('/help-articles/:id', operations.getHelpArticle);
 router.put('/help-articles/:id', operations.updateHelpArticle);
 router.patch('/help-articles/:id', operations.updateHelpArticle);
+router.delete('/help-articles/:id', operations.deleteHelpArticle);
 
 router.get('/moderation', operations.listModeration);
 router.post('/moderation/:id/resolve', operations.resolveModeration);

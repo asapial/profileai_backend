@@ -11,9 +11,9 @@ import { seedTemplates } from "./seedTemplates";
 
 const json = (value: unknown) => value as Prisma.InputJsonValue;
 const HOMEPAGE_SCHEMA_KEY = "homepage_content_schema_version";
-const HOMEPAGE_SCHEMA_VERSION = 3;
+const HOMEPAGE_SCHEMA_VERSION = 4;
 const TEMPLATE_CATALOG_SCHEMA_KEY = "template_catalog_schema_version";
-const TEMPLATE_CATALOG_SCHEMA_VERSION = 2;
+const TEMPLATE_CATALOG_SCHEMA_VERSION = 3;
 
 const DEFAULT_SETTINGS = [
   ["default_resume_limit", "5", "Default monthly resume allowance"],
@@ -52,11 +52,12 @@ function upgradeHomepageConfig(value: unknown): HomepageConfig {
         ...(section.items
           ? {
               items: section.items.map((item) =>
-                item.title === "Premium templates" && item.label === "20+ designs"
+                item.title === "Premium templates" &&
+                (item.label === "20+ designs" || item.label === "60 designs")
                   ? {
                       ...item,
-                      label: "60 designs",
-                      description: "Choose from 30 résumé and 30 CV designs, each editable and recruiter-friendly.",
+                      label: "100 designs",
+                      description: "Choose from 50 résumé and 50 CV designs, including 40 new layouts with distinct structures and palettes.",
                     }
                   : item,
               ),
@@ -66,11 +67,14 @@ function upgradeHomepageConfig(value: unknown): HomepageConfig {
     }
     if (
       section.id === "templateGallery" &&
-      section.description === "From classic single-column to bold creative layouts, all instantly customizable."
+      (
+        section.description === "From classic single-column to bold creative layouts, all instantly customizable." ||
+        section.description === "Explore 30 professional résumés and 30 detailed CVs, all instantly customizable."
+      )
     ) {
       return {
         ...section,
-        description: "Explore 30 professional résumés and 30 detailed CVs, all instantly customizable.",
+        description: "Explore 50 professional résumés and 50 detailed CVs, all instantly customizable.",
       };
     }
     return section;
@@ -254,14 +258,14 @@ export async function ensureCoreData(): Promise<{
         data: {
           draft: json(upgradeHomepageConfig(homepage.draft)),
           published: json(upgradeHomepageConfig(homepage.published)),
-          updatedBy: "system:homepage-v3",
+          updatedBy: "system:homepage-v4",
         },
       }),
       prisma.platformConfig.update({
         where: { key: HOMEPAGE_SCHEMA_KEY },
         data: {
           value: String(HOMEPAGE_SCHEMA_VERSION),
-          updatedBy: "system:homepage-v3",
+          updatedBy: "system:homepage-v4",
         },
       }),
     ]);
@@ -354,14 +358,14 @@ export async function ensureCoreData(): Promise<{
   const systemTemplateCount = await prisma.resumeTemplate.count({ where: { ownerId: null } });
   if (
     Number(templateCatalogSchema?.value ?? 0) < TEMPLATE_CATALOG_SCHEMA_VERSION ||
-    systemTemplateCount < 60
+    systemTemplateCount < 100
   ) {
     await seedTemplates("system");
     await prisma.platformConfig.update({
       where: { key: TEMPLATE_CATALOG_SCHEMA_KEY },
       data: {
         value: String(TEMPLATE_CATALOG_SCHEMA_VERSION),
-        updatedBy: "system:template-catalog-v2",
+        updatedBy: "system:template-catalog-v3",
       },
     });
   }

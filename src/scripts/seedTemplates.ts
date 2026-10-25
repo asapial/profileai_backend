@@ -2,6 +2,7 @@
 import "dotenv/config";
 import { pathToFileURL } from "node:url";
 import { prisma } from "../lib/prisma";
+import { UNIQUE_TEMPLATE_CATALOG } from "./uniqueTemplateCatalog";
 
 type Category = "MODERN" | "CLASSIC" | "CREATIVE" | "ATS";
 type DocumentType = "RESUME" | "CV";
@@ -16,6 +17,8 @@ type TemplateSpec = {
   surface: string;
   description: string;
   documentType: DocumentType;
+  htmlLayout?: string;
+  cssStyles?: string;
 };
 
 const FEATURED = new Set([
@@ -27,6 +30,12 @@ const FEATURED = new Set([
   "clinical-clarity",
   "lab-notes",
   "executive-vitae",
+  "orbit",
+  "editorial-cut",
+  "observatory",
+  "clinical-journal",
+  "policy-memo",
+  "boardfolio",
 ]);
 
 const CONTACT = `<div class="tpl-contact">
@@ -147,7 +156,11 @@ const cvSpecs: TemplateSpec[] = [
   ["Monograph","monograph","CLASSIC","classic","#3f3f46","#fafafa","A polished long-form CV for authors and senior researchers."],
 ].map(([name,slug,category,family,accent,surface,description]) => ({ name,slug,category,family,accent,surface,description,documentType:"CV" })) as TemplateSpec[];
 
-export const TEMPLATE_CATALOG = [...resumeSpecs, ...cvSpecs];
+export const TEMPLATE_CATALOG: TemplateSpec[] = [
+  ...resumeSpecs,
+  ...cvSpecs,
+  ...UNIQUE_TEMPLATE_CATALOG,
+];
 
 async function upsertTemplate(spec: TemplateSpec, createdBy: string, displayOrder: number) {
   const existing = await prisma.resumeTemplate.findFirst({ where: { name: spec.name, ownerId: null } });
@@ -155,8 +168,8 @@ async function upsertTemplate(spec: TemplateSpec, createdBy: string, displayOrde
     name: spec.name,
     description: spec.description,
     thumbnailUrl: "/brand/template-fallback.svg",
-    htmlLayout: layoutFor(spec),
-    cssStyles: cssFor(spec, displayOrder),
+    htmlLayout: spec.htmlLayout ?? layoutFor(spec),
+    cssStyles: spec.cssStyles ?? cssFor(spec, displayOrder),
     category: spec.category,
     documentType: spec.documentType,
     reviewStatus: "APPROVED" as const,

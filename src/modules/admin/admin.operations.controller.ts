@@ -101,6 +101,9 @@ export const createHelpArticle = catchAsync(async (req, res) =>
 export const updateHelpArticle = catchAsync(async (req, res) =>
   ok(res, await ops.helpArticles.update(id(req), req.body)),
 );
+export const deleteHelpArticle = catchAsync(async (req, res) =>
+  ok(res, await ops.helpArticles.remove(id(req))),
+);
 
 export const listModeration = catchAsync(async (req, res) =>
   ok(
