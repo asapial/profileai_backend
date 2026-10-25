@@ -24,7 +24,11 @@ app.use('/webhooks', stripeWebhookRouter);
 
 
 // ─── CORS Setup ───────────────────────────────────────
-const allowedOrigins = [envVars.FRONTEND_URL, "http://localhost:3000"].filter(Boolean);
+const allowedOrigins = [
+  envVars.FRONTEND_URL,
+  "http://localhost:3000",
+  ...(process.env.BROWSER_COMPANION_ORIGINS ?? '').split(',').map(value => value.trim()).filter(Boolean),
+].filter(Boolean);
 
 app.use(
   cors({
@@ -54,6 +58,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // ─── Health Check ─────────────────────────────────────
 app.get("/", (_req, res) => {
+  console.log("Hello World");
   res.status(200).json({
     success: true,
     message: "ProFile AI API is running",

@@ -88,6 +88,19 @@ export const ModelName = {
   AdminResource: 'AdminResource',
   CoverLetter: 'CoverLetter',
   ExportJob: 'ExportJob',
+  GoogleAccountConnection: 'GoogleAccountConnection',
+  GoogleCapability: 'GoogleCapability',
+  HarnessOAuthState: 'HarnessOAuthState',
+  HarnessPreferenceVersion: 'HarnessPreferenceVersion',
+  HarnessRun: 'HarnessRun',
+  HarnessStep: 'HarnessStep',
+  ConsentGrant: 'ConsentGrant',
+  HarnessCandidateDecision: 'HarnessCandidateDecision',
+  HarnessArtifact: 'HarnessArtifact',
+  HarnessExternalSync: 'HarnessExternalSync',
+  BrowserCompanion: 'BrowserCompanion',
+  BrowserTask: 'BrowserTask',
+  HarnessAuditEvent: 'HarnessAuditEvent',
   Notification: 'Notification',
   NotificationPreference: 'NotificationPreference',
   PlatformConfig: 'PlatformConfig',
@@ -104,7 +117,17 @@ export const ModelName = {
   ResumeTemplate: 'ResumeTemplate',
   Resume: 'Resume',
   ResumeHistory: 'ResumeHistory',
-  ResumeView: 'ResumeView'
+  ResumeView: 'ResumeView',
+  WorkerDevice: 'WorkerDevice',
+  WorkerPairingCode: 'WorkerPairingCode',
+  WorkerSession: 'WorkerSession',
+  BrowserTaskEvent: 'BrowserTaskEvent',
+  BrowserTaskCheckpoint: 'BrowserTaskCheckpoint',
+  WorkerApproval: 'WorkerApproval',
+  SitePolicy: 'SitePolicy',
+  CapturedListing: 'CapturedListing',
+  WorkerAuthRequest: 'WorkerAuthRequest',
+  WorkerSiteConsent: 'WorkerSiteConsent'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -303,6 +326,7 @@ export const JobScalarFieldEnum = {
   sourceName: 'sourceName',
   sourceType: 'sourceType',
   lifecycle: 'lifecycle',
+  disposition: 'disposition',
   publishedAt: 'publishedAt',
   expiresAt: 'expiresAt',
   lastVerifiedAt: 'lastVerifiedAt',
@@ -728,6 +752,236 @@ export const ExportJobScalarFieldEnum = {
 export type ExportJobScalarFieldEnum = (typeof ExportJobScalarFieldEnum)[keyof typeof ExportJobScalarFieldEnum]
 
 
+export const GoogleAccountConnectionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  googleSubjectId: 'googleSubjectId',
+  googleEmail: 'googleEmail',
+  encryptedTokens: 'encryptedTokens',
+  grantedScopes: 'grantedScopes',
+  status: 'status',
+  accessTokenExpiresAt: 'accessTokenExpiresAt',
+  connectedAt: 'connectedAt',
+  lastSuccessfulUseAt: 'lastSuccessfulUseAt',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GoogleAccountConnectionScalarFieldEnum = (typeof GoogleAccountConnectionScalarFieldEnum)[keyof typeof GoogleAccountConnectionScalarFieldEnum]
+
+
+export const GoogleCapabilityScalarFieldEnum = {
+  id: 'id',
+  connectionId: 'connectionId',
+  capability: 'capability',
+  enabled: 'enabled',
+  grantedAt: 'grantedAt',
+  lastUsedAt: 'lastUsedAt'
+} as const
+
+export type GoogleCapabilityScalarFieldEnum = (typeof GoogleCapabilityScalarFieldEnum)[keyof typeof GoogleCapabilityScalarFieldEnum]
+
+
+export const HarnessOAuthStateScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  verifier: 'verifier',
+  capabilities: 'capabilities',
+  popupOrigin: 'popupOrigin',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type HarnessOAuthStateScalarFieldEnum = (typeof HarnessOAuthStateScalarFieldEnum)[keyof typeof HarnessOAuthStateScalarFieldEnum]
+
+
+export const HarnessPreferenceVersionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  version: 'version',
+  preferences: 'preferences',
+  createdAt: 'createdAt'
+} as const
+
+export type HarnessPreferenceVersionScalarFieldEnum = (typeof HarnessPreferenceVersionScalarFieldEnum)[keyof typeof HarnessPreferenceVersionScalarFieldEnum]
+
+
+export const HarnessRunScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  preferenceVersionId: 'preferenceVersionId',
+  mode: 'mode',
+  state: 'state',
+  requestedAt: 'requestedAt',
+  startedAt: 'startedAt',
+  finishedAt: 'finishedAt',
+  pausedAt: 'pausedAt',
+  stoppedAt: 'stoppedAt',
+  summary: 'summary',
+  error: 'error',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HarnessRunScalarFieldEnum = (typeof HarnessRunScalarFieldEnum)[keyof typeof HarnessRunScalarFieldEnum]
+
+
+export const HarnessStepScalarFieldEnum = {
+  id: 'id',
+  runId: 'runId',
+  userId: 'userId',
+  key: 'key',
+  position: 'position',
+  state: 'state',
+  attempt: 'attempt',
+  input: 'input',
+  output: 'output',
+  blocker: 'blocker',
+  error: 'error',
+  startedAt: 'startedAt',
+  finishedAt: 'finishedAt',
+  nextAttemptAt: 'nextAttemptAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HarnessStepScalarFieldEnum = (typeof HarnessStepScalarFieldEnum)[keyof typeof HarnessStepScalarFieldEnum]
+
+
+export const ConsentGrantScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  kind: 'kind',
+  scope: 'scope',
+  grantedAt: 'grantedAt',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt',
+  sourceIp: 'sourceIp',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt'
+} as const
+
+export type ConsentGrantScalarFieldEnum = (typeof ConsentGrantScalarFieldEnum)[keyof typeof ConsentGrantScalarFieldEnum]
+
+
+export const HarnessCandidateDecisionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  runId: 'runId',
+  jobId: 'jobId',
+  decision: 'decision',
+  score: 'score',
+  reasons: 'reasons',
+  missing: 'missing',
+  preferenceVersion: 'preferenceVersion',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HarnessCandidateDecisionScalarFieldEnum = (typeof HarnessCandidateDecisionScalarFieldEnum)[keyof typeof HarnessCandidateDecisionScalarFieldEnum]
+
+
+export const HarnessArtifactScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  runId: 'runId',
+  jobId: 'jobId',
+  kind: 'kind',
+  name: 'name',
+  state: 'state',
+  localRef: 'localRef',
+  providerId: 'providerId',
+  providerUrl: 'providerUrl',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HarnessArtifactScalarFieldEnum = (typeof HarnessArtifactScalarFieldEnum)[keyof typeof HarnessArtifactScalarFieldEnum]
+
+
+export const HarnessExternalSyncScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  jobId: 'jobId',
+  kind: 'kind',
+  externalId: 'externalId',
+  externalUrl: 'externalUrl',
+  state: 'state',
+  syncKey: 'syncKey',
+  metadata: 'metadata',
+  lastSyncedAt: 'lastSyncedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HarnessExternalSyncScalarFieldEnum = (typeof HarnessExternalSyncScalarFieldEnum)[keyof typeof HarnessExternalSyncScalarFieldEnum]
+
+
+export const BrowserCompanionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  name: 'name',
+  tokenHash: 'tokenHash',
+  status: 'status',
+  lastSeenAt: 'lastSeenAt',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BrowserCompanionScalarFieldEnum = (typeof BrowserCompanionScalarFieldEnum)[keyof typeof BrowserCompanionScalarFieldEnum]
+
+
+export const BrowserTaskScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  runId: 'runId',
+  jobId: 'jobId',
+  applicationId: 'applicationId',
+  deviceId: 'deviceId',
+  adapter: 'adapter',
+  source: 'source',
+  targetUrl: 'targetUrl',
+  mode: 'mode',
+  state: 'state',
+  priority: 'priority',
+  expiresAt: 'expiresAt',
+  signature: 'signature',
+  revision: 'revision',
+  progress: 'progress',
+  attempt: 'attempt',
+  policyVersion: 'policyVersion',
+  payload: 'payload',
+  result: 'result',
+  approvedAt: 'approvedAt',
+  claimedAt: 'claimedAt',
+  finishedAt: 'finishedAt',
+  error: 'error',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BrowserTaskScalarFieldEnum = (typeof BrowserTaskScalarFieldEnum)[keyof typeof BrowserTaskScalarFieldEnum]
+
+
+export const HarnessAuditEventScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  runId: 'runId',
+  action: 'action',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  outcome: 'outcome',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type HarnessAuditEventScalarFieldEnum = (typeof HarnessAuditEventScalarFieldEnum)[keyof typeof HarnessAuditEventScalarFieldEnum]
+
+
 export const NotificationScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -1021,6 +1275,195 @@ export const ResumeViewScalarFieldEnum = {
 } as const
 
 export type ResumeViewScalarFieldEnum = (typeof ResumeViewScalarFieldEnum)[keyof typeof ResumeViewScalarFieldEnum]
+
+
+export const WorkerDeviceScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  name: 'name',
+  platform: 'platform',
+  appVersion: 'appVersion',
+  publicKey: 'publicKey',
+  publicKeyFingerprint: 'publicKeyFingerprint',
+  capabilities: 'capabilities',
+  status: 'status',
+  pairedAt: 'pairedAt',
+  lastSeenAt: 'lastSeenAt',
+  lastIp: 'lastIp',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WorkerDeviceScalarFieldEnum = (typeof WorkerDeviceScalarFieldEnum)[keyof typeof WorkerDeviceScalarFieldEnum]
+
+
+export const WorkerPairingCodeScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  codeHash: 'codeHash',
+  nameHint: 'nameHint',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  deviceId: 'deviceId',
+  attempts: 'attempts',
+  createdAt: 'createdAt'
+} as const
+
+export type WorkerPairingCodeScalarFieldEnum = (typeof WorkerPairingCodeScalarFieldEnum)[keyof typeof WorkerPairingCodeScalarFieldEnum]
+
+
+export const WorkerSessionScalarFieldEnum = {
+  id: 'id',
+  deviceId: 'deviceId',
+  accessTokenHash: 'accessTokenHash',
+  refreshTokenHash: 'refreshTokenHash',
+  accessExpiresAt: 'accessExpiresAt',
+  refreshExpiresAt: 'refreshExpiresAt',
+  lastUsedAt: 'lastUsedAt',
+  rotatedAt: 'rotatedAt',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type WorkerSessionScalarFieldEnum = (typeof WorkerSessionScalarFieldEnum)[keyof typeof WorkerSessionScalarFieldEnum]
+
+
+export const BrowserTaskEventScalarFieldEnum = {
+  id: 'id',
+  taskId: 'taskId',
+  userId: 'userId',
+  seq: 'seq',
+  type: 'type',
+  message: 'message',
+  data: 'data',
+  redacted: 'redacted',
+  createdAt: 'createdAt'
+} as const
+
+export type BrowserTaskEventScalarFieldEnum = (typeof BrowserTaskEventScalarFieldEnum)[keyof typeof BrowserTaskEventScalarFieldEnum]
+
+
+export const BrowserTaskCheckpointScalarFieldEnum = {
+  id: 'id',
+  taskId: 'taskId',
+  deviceId: 'deviceId',
+  userId: 'userId',
+  sequence: 'sequence',
+  state: 'state',
+  url: 'url',
+  step: 'step',
+  observationHash: 'observationHash',
+  completedActions: 'completedActions',
+  submitted: 'submitted',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type BrowserTaskCheckpointScalarFieldEnum = (typeof BrowserTaskCheckpointScalarFieldEnum)[keyof typeof BrowserTaskCheckpointScalarFieldEnum]
+
+
+export const WorkerApprovalScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  deviceId: 'deviceId',
+  taskId: 'taskId',
+  kind: 'kind',
+  state: 'state',
+  summary: 'summary',
+  targetUrl: 'targetUrl',
+  risk: 'risk',
+  actionHash: 'actionHash',
+  evidence: 'evidence',
+  requestedAt: 'requestedAt',
+  expiresAt: 'expiresAt',
+  decidedAt: 'decidedAt',
+  decidedBy: 'decidedBy',
+  decisionNote: 'decisionNote'
+} as const
+
+export type WorkerApprovalScalarFieldEnum = (typeof WorkerApprovalScalarFieldEnum)[keyof typeof WorkerApprovalScalarFieldEnum]
+
+
+export const SitePolicyScalarFieldEnum = {
+  id: 'id',
+  source: 'source',
+  name: 'name',
+  version: 'version',
+  level: 'level',
+  domains: 'domains',
+  discovery: 'discovery',
+  search: 'search',
+  scroll: 'scroll',
+  extraction: 'extraction',
+  formFill: 'formFill',
+  submit: 'submit',
+  userPresenceRequired: 'userPresenceRequired',
+  maxPagesPerRun: 'maxPagesPerRun',
+  maxRequestsPerMinute: 'maxRequestsPerMinute',
+  reviewedAt: 'reviewedAt',
+  reviewReference: 'reviewReference',
+  notes: 'notes',
+  enabled: 'enabled',
+  reviewedBy: 'reviewedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SitePolicyScalarFieldEnum = (typeof SitePolicyScalarFieldEnum)[keyof typeof SitePolicyScalarFieldEnum]
+
+
+export const CapturedListingScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  deviceId: 'deviceId',
+  source: 'source',
+  externalId: 'externalId',
+  fingerprint: 'fingerprint',
+  canonicalUrl: 'canonicalUrl',
+  payload: 'payload',
+  capturedAt: 'capturedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type CapturedListingScalarFieldEnum = (typeof CapturedListingScalarFieldEnum)[keyof typeof CapturedListingScalarFieldEnum]
+
+
+export const WorkerAuthRequestScalarFieldEnum = {
+  id: 'id',
+  requestHash: 'requestHash',
+  deviceName: 'deviceName',
+  platform: 'platform',
+  appVersion: 'appVersion',
+  publicKey: 'publicKey',
+  publicKeyFingerprint: 'publicKeyFingerprint',
+  capabilities: 'capabilities',
+  status: 'status',
+  userId: 'userId',
+  approvedAt: 'approvedAt',
+  usedAt: 'usedAt',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type WorkerAuthRequestScalarFieldEnum = (typeof WorkerAuthRequestScalarFieldEnum)[keyof typeof WorkerAuthRequestScalarFieldEnum]
+
+
+export const WorkerSiteConsentScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  source: 'source',
+  search: 'search',
+  scroll: 'scroll',
+  capture: 'capture',
+  maxPages: 'maxPages',
+  acknowledgedRisk: 'acknowledgedRisk',
+  grantedAt: 'grantedAt',
+  revokedAt: 'revokedAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WorkerSiteConsentScalarFieldEnum = (typeof WorkerSiteConsentScalarFieldEnum)[keyof typeof WorkerSiteConsentScalarFieldEnum]
 
 
 export const SortOrder = {

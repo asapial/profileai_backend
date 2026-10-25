@@ -203,6 +203,71 @@ export type CoverLetter = Prisma.CoverLetterModel
  */
 export type ExportJob = Prisma.ExportJobModel
 /**
+ * Model GoogleAccountConnection
+ * 
+ */
+export type GoogleAccountConnection = Prisma.GoogleAccountConnectionModel
+/**
+ * Model GoogleCapability
+ * 
+ */
+export type GoogleCapability = Prisma.GoogleCapabilityModel
+/**
+ * Model HarnessOAuthState
+ * 
+ */
+export type HarnessOAuthState = Prisma.HarnessOAuthStateModel
+/**
+ * Model HarnessPreferenceVersion
+ * 
+ */
+export type HarnessPreferenceVersion = Prisma.HarnessPreferenceVersionModel
+/**
+ * Model HarnessRun
+ * 
+ */
+export type HarnessRun = Prisma.HarnessRunModel
+/**
+ * Model HarnessStep
+ * 
+ */
+export type HarnessStep = Prisma.HarnessStepModel
+/**
+ * Model ConsentGrant
+ * 
+ */
+export type ConsentGrant = Prisma.ConsentGrantModel
+/**
+ * Model HarnessCandidateDecision
+ * 
+ */
+export type HarnessCandidateDecision = Prisma.HarnessCandidateDecisionModel
+/**
+ * Model HarnessArtifact
+ * 
+ */
+export type HarnessArtifact = Prisma.HarnessArtifactModel
+/**
+ * Model HarnessExternalSync
+ * 
+ */
+export type HarnessExternalSync = Prisma.HarnessExternalSyncModel
+/**
+ * Model BrowserCompanion
+ * 
+ */
+export type BrowserCompanion = Prisma.BrowserCompanionModel
+/**
+ * Model BrowserTask
+ * 
+ */
+export type BrowserTask = Prisma.BrowserTaskModel
+/**
+ * Model HarnessAuditEvent
+ * 
+ */
+export type HarnessAuditEvent = Prisma.HarnessAuditEventModel
+/**
  * Model Notification
  * 
  */
@@ -287,3 +352,53 @@ export type ResumeHistory = Prisma.ResumeHistoryModel
  * 
  */
 export type ResumeView = Prisma.ResumeViewModel
+/**
+ * Model WorkerDevice
+ * 
+ */
+export type WorkerDevice = Prisma.WorkerDeviceModel
+/**
+ * Model WorkerPairingCode
+ * 
+ */
+export type WorkerPairingCode = Prisma.WorkerPairingCodeModel
+/**
+ * Model WorkerSession
+ * 
+ */
+export type WorkerSession = Prisma.WorkerSessionModel
+/**
+ * Model BrowserTaskEvent
+ * 
+ */
+export type BrowserTaskEvent = Prisma.BrowserTaskEventModel
+/**
+ * Model BrowserTaskCheckpoint
+ * 
+ */
+export type BrowserTaskCheckpoint = Prisma.BrowserTaskCheckpointModel
+/**
+ * Model WorkerApproval
+ * 
+ */
+export type WorkerApproval = Prisma.WorkerApprovalModel
+/**
+ * Model SitePolicy
+ * 
+ */
+export type SitePolicy = Prisma.SitePolicyModel
+/**
+ * Model CapturedListing
+ * 
+ */
+export type CapturedListing = Prisma.CapturedListingModel
+/**
+ * Model WorkerAuthRequest
+ * 
+ */
+export type WorkerAuthRequest = Prisma.WorkerAuthRequestModel
+/**
+ * Model WorkerSiteConsent
+ * 
+ */
+export type WorkerSiteConsent = Prisma.WorkerSiteConsentModel

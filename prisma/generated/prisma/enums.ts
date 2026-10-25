@@ -82,6 +82,15 @@ export const JobLifecycle = {
 export type JobLifecycle = (typeof JobLifecycle)[keyof typeof JobLifecycle]
 
 
+export const JobDisposition = {
+  NEW: 'NEW',
+  SHORTLISTED: 'SHORTLISTED',
+  DISMISSED: 'DISMISSED'
+} as const
+
+export type JobDisposition = (typeof JobDisposition)[keyof typeof JobDisposition]
+
+
 export const JobSourceType = {
   MANUAL: 'MANUAL',
   USER_URL: 'USER_URL',

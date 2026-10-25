@@ -1,12 +1,18 @@
 import {
   notificationGateway
-} from "./chunk-2SD54OD4.js";
+} from "./chunk-TDKUG4NJ.js";
+import {
+  workerGateway
+} from "./chunk-S56OP7Q2.js";
+import "./chunk-MYX6NV4L.js";
 import {
   closeRedis,
   ensureBucketExists,
-  prepareRedisForBullMq,
+  prepareRedisForBullMq
+} from "./chunk-VYXJWAWZ.js";
+import {
   prisma
-} from "./chunk-ZLOG52RV.js";
+} from "./chunk-3LRSKYRB.js";
 
 // src/server.ts
 import { createServer } from "http";
@@ -48,6 +54,7 @@ var shutdown = async (reason, exitCode = 0) => {
   shutdownStarted = true;
   console.log(`[Server] Shutting down (${reason})...`);
   notificationGateway.close();
+  workerGateway.close();
   const closeHttpServer = new Promise((resolve) => {
     if (!httpServer?.listening) return resolve();
     httpServer.close(() => resolve());
@@ -74,9 +81,9 @@ async function main() {
       }
     }
     const [{ default: app }, scheduler, exports] = await Promise.all([
-      import("./app-4DUP55CC.js"),
-      import("./scheduler-65X3J2IC.js"),
-      import("./exportQueue-ULLQUUXE.js")
+      import("./app-5CTSYT6I.js"),
+      import("./scheduler-3AITGBQF.js"),
+      import("./exportQueue-FQ7JMBBM.js")
     ]);
     await scheduler.scheduleMonthlyReset();
     void exports.exportWorker;
@@ -88,9 +95,11 @@ async function main() {
     };
     httpServer = createServer(app);
     notificationGateway.attach(httpServer);
+    workerGateway.attach(httpServer);
     await listen(httpServer, PORT);
     console.log(`[Server] ProFile AI API running on http://localhost:${PORT}`);
     console.log(`[WebSocket] Notifications available at ws://localhost:${PORT}/ws/notifications`);
+    console.log(`[WebSocket] Worker gateway available at ws://localhost:${PORT}/ws/worker`);
     console.log(`[Server] Environment: ${process.env.NODE_ENV || "development"}`);
     for (const signal of ["SIGINT", "SIGTERM"]) {
       process.once(signal, () => void shutdown(signal));

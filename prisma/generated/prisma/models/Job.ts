@@ -54,6 +54,7 @@ export type JobMinAggregateOutputType = {
   sourceName: string | null
   sourceType: $Enums.JobSourceType | null
   lifecycle: $Enums.JobLifecycle | null
+  disposition: $Enums.JobDisposition | null
   publishedAt: Date | null
   expiresAt: Date | null
   lastVerifiedAt: Date | null
@@ -81,6 +82,7 @@ export type JobMaxAggregateOutputType = {
   sourceName: string | null
   sourceType: $Enums.JobSourceType | null
   lifecycle: $Enums.JobLifecycle | null
+  disposition: $Enums.JobDisposition | null
   publishedAt: Date | null
   expiresAt: Date | null
   lastVerifiedAt: Date | null
@@ -108,6 +110,7 @@ export type JobCountAggregateOutputType = {
   sourceName: number
   sourceType: number
   lifecycle: number
+  disposition: number
   publishedAt: number
   expiresAt: number
   lastVerifiedAt: number
@@ -147,6 +150,7 @@ export type JobMinAggregateInputType = {
   sourceName?: true
   sourceType?: true
   lifecycle?: true
+  disposition?: true
   publishedAt?: true
   expiresAt?: true
   lastVerifiedAt?: true
@@ -174,6 +178,7 @@ export type JobMaxAggregateInputType = {
   sourceName?: true
   sourceType?: true
   lifecycle?: true
+  disposition?: true
   publishedAt?: true
   expiresAt?: true
   lastVerifiedAt?: true
@@ -201,6 +206,7 @@ export type JobCountAggregateInputType = {
   sourceName?: true
   sourceType?: true
   lifecycle?: true
+  disposition?: true
   publishedAt?: true
   expiresAt?: true
   lastVerifiedAt?: true
@@ -315,6 +321,7 @@ export type JobGroupByOutputType = {
   sourceName: string
   sourceType: $Enums.JobSourceType
   lifecycle: $Enums.JobLifecycle
+  disposition: $Enums.JobDisposition
   publishedAt: Date | null
   expiresAt: Date | null
   lastVerifiedAt: Date | null
@@ -365,6 +372,7 @@ export type JobWhereInput = {
   sourceName?: Prisma.StringFilter<"Job"> | string
   sourceType?: Prisma.EnumJobSourceTypeFilter<"Job"> | $Enums.JobSourceType
   lifecycle?: Prisma.EnumJobLifecycleFilter<"Job"> | $Enums.JobLifecycle
+  disposition?: Prisma.EnumJobDispositionFilter<"Job"> | $Enums.JobDisposition
   publishedAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
   expiresAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
   lastVerifiedAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
@@ -395,6 +403,7 @@ export type JobOrderByWithRelationInput = {
   sourceName?: Prisma.SortOrder
   sourceType?: Prisma.SortOrder
   lifecycle?: Prisma.SortOrder
+  disposition?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastVerifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -428,6 +437,7 @@ export type JobWhereUniqueInput = Prisma.AtLeast<{
   sourceName?: Prisma.StringFilter<"Job"> | string
   sourceType?: Prisma.EnumJobSourceTypeFilter<"Job"> | $Enums.JobSourceType
   lifecycle?: Prisma.EnumJobLifecycleFilter<"Job"> | $Enums.JobLifecycle
+  disposition?: Prisma.EnumJobDispositionFilter<"Job"> | $Enums.JobDisposition
   publishedAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
   expiresAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
   lastVerifiedAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
@@ -458,6 +468,7 @@ export type JobOrderByWithAggregationInput = {
   sourceName?: Prisma.SortOrder
   sourceType?: Prisma.SortOrder
   lifecycle?: Prisma.SortOrder
+  disposition?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastVerifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -493,6 +504,7 @@ export type JobScalarWhereWithAggregatesInput = {
   sourceName?: Prisma.StringWithAggregatesFilter<"Job"> | string
   sourceType?: Prisma.EnumJobSourceTypeWithAggregatesFilter<"Job"> | $Enums.JobSourceType
   lifecycle?: Prisma.EnumJobLifecycleWithAggregatesFilter<"Job"> | $Enums.JobLifecycle
+  disposition?: Prisma.EnumJobDispositionWithAggregatesFilter<"Job"> | $Enums.JobDisposition
   publishedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
   expiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
   lastVerifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
@@ -519,6 +531,7 @@ export type JobCreateInput = {
   sourceName?: string
   sourceType?: $Enums.JobSourceType
   lifecycle?: $Enums.JobLifecycle
+  disposition?: $Enums.JobDisposition
   publishedAt?: Date | string | null
   expiresAt?: Date | string | null
   lastVerifiedAt?: Date | string | null
@@ -549,6 +562,7 @@ export type JobUncheckedCreateInput = {
   sourceName?: string
   sourceType?: $Enums.JobSourceType
   lifecycle?: $Enums.JobLifecycle
+  disposition?: $Enums.JobDisposition
   publishedAt?: Date | string | null
   expiresAt?: Date | string | null
   lastVerifiedAt?: Date | string | null
@@ -577,6 +591,7 @@ export type JobUpdateInput = {
   sourceName?: Prisma.StringFieldUpdateOperationsInput | string
   sourceType?: Prisma.EnumJobSourceTypeFieldUpdateOperationsInput | $Enums.JobSourceType
   lifecycle?: Prisma.EnumJobLifecycleFieldUpdateOperationsInput | $Enums.JobLifecycle
+  disposition?: Prisma.EnumJobDispositionFieldUpdateOperationsInput | $Enums.JobDisposition
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -607,6 +622,7 @@ export type JobUncheckedUpdateInput = {
   sourceName?: Prisma.StringFieldUpdateOperationsInput | string
   sourceType?: Prisma.EnumJobSourceTypeFieldUpdateOperationsInput | $Enums.JobSourceType
   lifecycle?: Prisma.EnumJobLifecycleFieldUpdateOperationsInput | $Enums.JobLifecycle
+  disposition?: Prisma.EnumJobDispositionFieldUpdateOperationsInput | $Enums.JobDisposition
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -636,6 +652,7 @@ export type JobCreateManyInput = {
   sourceName?: string
   sourceType?: $Enums.JobSourceType
   lifecycle?: $Enums.JobLifecycle
+  disposition?: $Enums.JobDisposition
   publishedAt?: Date | string | null
   expiresAt?: Date | string | null
   lastVerifiedAt?: Date | string | null
@@ -662,6 +679,7 @@ export type JobUpdateManyMutationInput = {
   sourceName?: Prisma.StringFieldUpdateOperationsInput | string
   sourceType?: Prisma.EnumJobSourceTypeFieldUpdateOperationsInput | $Enums.JobSourceType
   lifecycle?: Prisma.EnumJobLifecycleFieldUpdateOperationsInput | $Enums.JobLifecycle
+  disposition?: Prisma.EnumJobDispositionFieldUpdateOperationsInput | $Enums.JobDisposition
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -689,6 +707,7 @@ export type JobUncheckedUpdateManyInput = {
   sourceName?: Prisma.StringFieldUpdateOperationsInput | string
   sourceType?: Prisma.EnumJobSourceTypeFieldUpdateOperationsInput | $Enums.JobSourceType
   lifecycle?: Prisma.EnumJobLifecycleFieldUpdateOperationsInput | $Enums.JobLifecycle
+  disposition?: Prisma.EnumJobDispositionFieldUpdateOperationsInput | $Enums.JobDisposition
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -721,6 +740,7 @@ export type JobCountOrderByAggregateInput = {
   sourceName?: Prisma.SortOrder
   sourceType?: Prisma.SortOrder
   lifecycle?: Prisma.SortOrder
+  disposition?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   lastVerifiedAt?: Prisma.SortOrder
@@ -753,6 +773,7 @@ export type JobMaxOrderByAggregateInput = {
   sourceName?: Prisma.SortOrder
   sourceType?: Prisma.SortOrder
   lifecycle?: Prisma.SortOrder
+  disposition?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   lastVerifiedAt?: Prisma.SortOrder
@@ -780,6 +801,7 @@ export type JobMinOrderByAggregateInput = {
   sourceName?: Prisma.SortOrder
   sourceType?: Prisma.SortOrder
   lifecycle?: Prisma.SortOrder
+  disposition?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   lastVerifiedAt?: Prisma.SortOrder
@@ -847,6 +869,10 @@ export type EnumJobSourceTypeFieldUpdateOperationsInput = {
 
 export type EnumJobLifecycleFieldUpdateOperationsInput = {
   set?: $Enums.JobLifecycle
+}
+
+export type EnumJobDispositionFieldUpdateOperationsInput = {
+  set?: $Enums.JobDisposition
 }
 
 export type JobCreateNestedOneWithoutListingsInput = {
@@ -922,6 +948,7 @@ export type JobCreateWithoutApplicationsInput = {
   sourceName?: string
   sourceType?: $Enums.JobSourceType
   lifecycle?: $Enums.JobLifecycle
+  disposition?: $Enums.JobDisposition
   publishedAt?: Date | string | null
   expiresAt?: Date | string | null
   lastVerifiedAt?: Date | string | null
@@ -951,6 +978,7 @@ export type JobUncheckedCreateWithoutApplicationsInput = {
   sourceName?: string
   sourceType?: $Enums.JobSourceType
   lifecycle?: $Enums.JobLifecycle
+  disposition?: $Enums.JobDisposition
   publishedAt?: Date | string | null
   expiresAt?: Date | string | null
   lastVerifiedAt?: Date | string | null
@@ -994,6 +1022,7 @@ export type JobUpdateWithoutApplicationsInput = {
   sourceName?: Prisma.StringFieldUpdateOperationsInput | string
   sourceType?: Prisma.EnumJobSourceTypeFieldUpdateOperationsInput | $Enums.JobSourceType
   lifecycle?: Prisma.EnumJobLifecycleFieldUpdateOperationsInput | $Enums.JobLifecycle
+  disposition?: Prisma.EnumJobDispositionFieldUpdateOperationsInput | $Enums.JobDisposition
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1023,6 +1052,7 @@ export type JobUncheckedUpdateWithoutApplicationsInput = {
   sourceName?: Prisma.StringFieldUpdateOperationsInput | string
   sourceType?: Prisma.EnumJobSourceTypeFieldUpdateOperationsInput | $Enums.JobSourceType
   lifecycle?: Prisma.EnumJobLifecycleFieldUpdateOperationsInput | $Enums.JobLifecycle
+  disposition?: Prisma.EnumJobDispositionFieldUpdateOperationsInput | $Enums.JobDisposition
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1050,6 +1080,7 @@ export type JobCreateWithoutListingsInput = {
   sourceName?: string
   sourceType?: $Enums.JobSourceType
   lifecycle?: $Enums.JobLifecycle
+  disposition?: $Enums.JobDisposition
   publishedAt?: Date | string | null
   expiresAt?: Date | string | null
   lastVerifiedAt?: Date | string | null
@@ -1079,6 +1110,7 @@ export type JobUncheckedCreateWithoutListingsInput = {
   sourceName?: string
   sourceType?: $Enums.JobSourceType
   lifecycle?: $Enums.JobLifecycle
+  disposition?: $Enums.JobDisposition
   publishedAt?: Date | string | null
   expiresAt?: Date | string | null
   lastVerifiedAt?: Date | string | null
@@ -1122,6 +1154,7 @@ export type JobUpdateWithoutListingsInput = {
   sourceName?: Prisma.StringFieldUpdateOperationsInput | string
   sourceType?: Prisma.EnumJobSourceTypeFieldUpdateOperationsInput | $Enums.JobSourceType
   lifecycle?: Prisma.EnumJobLifecycleFieldUpdateOperationsInput | $Enums.JobLifecycle
+  disposition?: Prisma.EnumJobDispositionFieldUpdateOperationsInput | $Enums.JobDisposition
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1151,6 +1184,7 @@ export type JobUncheckedUpdateWithoutListingsInput = {
   sourceName?: Prisma.StringFieldUpdateOperationsInput | string
   sourceType?: Prisma.EnumJobSourceTypeFieldUpdateOperationsInput | $Enums.JobSourceType
   lifecycle?: Prisma.EnumJobLifecycleFieldUpdateOperationsInput | $Enums.JobLifecycle
+  disposition?: Prisma.EnumJobDispositionFieldUpdateOperationsInput | $Enums.JobDisposition
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1178,6 +1212,7 @@ export type JobCreateWithoutUserInput = {
   sourceName?: string
   sourceType?: $Enums.JobSourceType
   lifecycle?: $Enums.JobLifecycle
+  disposition?: $Enums.JobDisposition
   publishedAt?: Date | string | null
   expiresAt?: Date | string | null
   lastVerifiedAt?: Date | string | null
@@ -1206,6 +1241,7 @@ export type JobUncheckedCreateWithoutUserInput = {
   sourceName?: string
   sourceType?: $Enums.JobSourceType
   lifecycle?: $Enums.JobLifecycle
+  disposition?: $Enums.JobDisposition
   publishedAt?: Date | string | null
   expiresAt?: Date | string | null
   lastVerifiedAt?: Date | string | null
@@ -1264,6 +1300,7 @@ export type JobScalarWhereInput = {
   sourceName?: Prisma.StringFilter<"Job"> | string
   sourceType?: Prisma.EnumJobSourceTypeFilter<"Job"> | $Enums.JobSourceType
   lifecycle?: Prisma.EnumJobLifecycleFilter<"Job"> | $Enums.JobLifecycle
+  disposition?: Prisma.EnumJobDispositionFilter<"Job"> | $Enums.JobDisposition
   publishedAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
   expiresAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
   lastVerifiedAt?: Prisma.DateTimeNullableFilter<"Job"> | Date | string | null
@@ -1290,6 +1327,7 @@ export type JobCreateManyUserInput = {
   sourceName?: string
   sourceType?: $Enums.JobSourceType
   lifecycle?: $Enums.JobLifecycle
+  disposition?: $Enums.JobDisposition
   publishedAt?: Date | string | null
   expiresAt?: Date | string | null
   lastVerifiedAt?: Date | string | null
@@ -1316,6 +1354,7 @@ export type JobUpdateWithoutUserInput = {
   sourceName?: Prisma.StringFieldUpdateOperationsInput | string
   sourceType?: Prisma.EnumJobSourceTypeFieldUpdateOperationsInput | $Enums.JobSourceType
   lifecycle?: Prisma.EnumJobLifecycleFieldUpdateOperationsInput | $Enums.JobLifecycle
+  disposition?: Prisma.EnumJobDispositionFieldUpdateOperationsInput | $Enums.JobDisposition
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1344,6 +1383,7 @@ export type JobUncheckedUpdateWithoutUserInput = {
   sourceName?: Prisma.StringFieldUpdateOperationsInput | string
   sourceType?: Prisma.EnumJobSourceTypeFieldUpdateOperationsInput | $Enums.JobSourceType
   lifecycle?: Prisma.EnumJobLifecycleFieldUpdateOperationsInput | $Enums.JobLifecycle
+  disposition?: Prisma.EnumJobDispositionFieldUpdateOperationsInput | $Enums.JobDisposition
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1372,6 +1412,7 @@ export type JobUncheckedUpdateManyWithoutUserInput = {
   sourceName?: Prisma.StringFieldUpdateOperationsInput | string
   sourceType?: Prisma.EnumJobSourceTypeFieldUpdateOperationsInput | $Enums.JobSourceType
   lifecycle?: Prisma.EnumJobLifecycleFieldUpdateOperationsInput | $Enums.JobLifecycle
+  disposition?: Prisma.EnumJobDispositionFieldUpdateOperationsInput | $Enums.JobDisposition
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1439,6 +1480,7 @@ export type JobSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   sourceName?: boolean
   sourceType?: boolean
   lifecycle?: boolean
+  disposition?: boolean
   publishedAt?: boolean
   expiresAt?: boolean
   lastVerifiedAt?: boolean
@@ -1470,6 +1512,7 @@ export type JobSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   sourceName?: boolean
   sourceType?: boolean
   lifecycle?: boolean
+  disposition?: boolean
   publishedAt?: boolean
   expiresAt?: boolean
   lastVerifiedAt?: boolean
@@ -1498,6 +1541,7 @@ export type JobSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
   sourceName?: boolean
   sourceType?: boolean
   lifecycle?: boolean
+  disposition?: boolean
   publishedAt?: boolean
   expiresAt?: boolean
   lastVerifiedAt?: boolean
@@ -1526,6 +1570,7 @@ export type JobSelectScalar = {
   sourceName?: boolean
   sourceType?: boolean
   lifecycle?: boolean
+  disposition?: boolean
   publishedAt?: boolean
   expiresAt?: boolean
   lastVerifiedAt?: boolean
@@ -1535,7 +1580,7 @@ export type JobSelectScalar = {
   updatedAt?: boolean
 }
 
-export type JobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "title" | "company" | "description" | "location" | "workplaceType" | "employmentType" | "salaryMin" | "salaryMax" | "salaryCurrency" | "salaryPeriod" | "salaryIsEstimated" | "canonicalUrl" | "sourceName" | "sourceType" | "lifecycle" | "publishedAt" | "expiresAt" | "lastVerifiedAt" | "contentHash" | "isPrivate" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
+export type JobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "title" | "company" | "description" | "location" | "workplaceType" | "employmentType" | "salaryMin" | "salaryMax" | "salaryCurrency" | "salaryPeriod" | "salaryIsEstimated" | "canonicalUrl" | "sourceName" | "sourceType" | "lifecycle" | "disposition" | "publishedAt" | "expiresAt" | "lastVerifiedAt" | "contentHash" | "isPrivate" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
 export type JobInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   applications?: boolean | Prisma.Job$applicationsArgs<ExtArgs>
@@ -1574,6 +1619,7 @@ export type $JobPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     sourceName: string
     sourceType: $Enums.JobSourceType
     lifecycle: $Enums.JobLifecycle
+    disposition: $Enums.JobDisposition
     publishedAt: Date | null
     expiresAt: Date | null
     lastVerifiedAt: Date | null
@@ -2024,6 +2070,7 @@ export interface JobFieldRefs {
   readonly sourceName: Prisma.FieldRef<"Job", 'String'>
   readonly sourceType: Prisma.FieldRef<"Job", 'JobSourceType'>
   readonly lifecycle: Prisma.FieldRef<"Job", 'JobLifecycle'>
+  readonly disposition: Prisma.FieldRef<"Job", 'JobDisposition'>
   readonly publishedAt: Prisma.FieldRef<"Job", 'DateTime'>
   readonly expiresAt: Prisma.FieldRef<"Job", 'DateTime'>
   readonly lastVerifiedAt: Prisma.FieldRef<"Job", 'DateTime'>

@@ -20,11 +20,15 @@ import { bkashPublicRouter } from './modules/billing/bkash.public.router';
 import { contentRouter } from './modules/content/content.router';
 import { aiChatRouter } from './modules/aiChat/aiChat.router';
 import { jobRouter } from './modules/job/job.router';
+import { harnessRouter } from './modules/harness/harness.router';
+import { workerRouter } from './modules/worker/worker.router';
 
 import { careerRouter } from './modules/career/career.router';
 import { contactRouter } from './modules/contact/contact.router';
 
 const router = Router();
+router.use('/harness', harnessRouter);
+router.use('/worker', workerRouter);
 router.use('/career', careerRouter);
 router.use('/contact', contactRouter);
 

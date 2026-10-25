@@ -464,6 +464,13 @@ export type EnumJobLifecycleFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumJobLifecycleFilter<$PrismaModel> | $Enums.JobLifecycle
 }
 
+export type EnumJobDispositionFilter<$PrismaModel = never> = {
+  equals?: $Enums.JobDisposition | Prisma.EnumJobDispositionFieldRefInput<$PrismaModel>
+  in?: $Enums.JobDisposition[] | Prisma.ListEnumJobDispositionFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JobDisposition[] | Prisma.ListEnumJobDispositionFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJobDispositionFilter<$PrismaModel> | $Enums.JobDisposition
+}
+
 export type EnumWorkplaceTypeWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.WorkplaceType | Prisma.EnumWorkplaceTypeFieldRefInput<$PrismaModel>
   in?: $Enums.WorkplaceType[] | Prisma.ListEnumWorkplaceTypeFieldRefInput<$PrismaModel>
@@ -516,6 +523,16 @@ export type EnumJobLifecycleWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumJobLifecycleFilter<$PrismaModel>
   _max?: Prisma.NestedEnumJobLifecycleFilter<$PrismaModel>
+}
+
+export type EnumJobDispositionWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.JobDisposition | Prisma.EnumJobDispositionFieldRefInput<$PrismaModel>
+  in?: $Enums.JobDisposition[] | Prisma.ListEnumJobDispositionFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JobDisposition[] | Prisma.ListEnumJobDispositionFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJobDispositionWithAggregatesFilter<$PrismaModel> | $Enums.JobDisposition
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumJobDispositionFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumJobDispositionFilter<$PrismaModel>
 }
 
 export type EnumApplicationEventTypeFilter<$PrismaModel = never> = {
@@ -1250,6 +1267,13 @@ export type NestedEnumJobLifecycleFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumJobLifecycleFilter<$PrismaModel> | $Enums.JobLifecycle
 }
 
+export type NestedEnumJobDispositionFilter<$PrismaModel = never> = {
+  equals?: $Enums.JobDisposition | Prisma.EnumJobDispositionFieldRefInput<$PrismaModel>
+  in?: $Enums.JobDisposition[] | Prisma.ListEnumJobDispositionFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JobDisposition[] | Prisma.ListEnumJobDispositionFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJobDispositionFilter<$PrismaModel> | $Enums.JobDisposition
+}
+
 export type NestedEnumWorkplaceTypeWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.WorkplaceType | Prisma.EnumWorkplaceTypeFieldRefInput<$PrismaModel>
   in?: $Enums.WorkplaceType[] | Prisma.ListEnumWorkplaceTypeFieldRefInput<$PrismaModel>
@@ -1302,6 +1326,16 @@ export type NestedEnumJobLifecycleWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumJobLifecycleFilter<$PrismaModel>
   _max?: Prisma.NestedEnumJobLifecycleFilter<$PrismaModel>
+}
+
+export type NestedEnumJobDispositionWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.JobDisposition | Prisma.EnumJobDispositionFieldRefInput<$PrismaModel>
+  in?: $Enums.JobDisposition[] | Prisma.ListEnumJobDispositionFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JobDisposition[] | Prisma.ListEnumJobDispositionFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJobDispositionWithAggregatesFilter<$PrismaModel> | $Enums.JobDisposition
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumJobDispositionFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumJobDispositionFilter<$PrismaModel>
 }
 
 export type NestedEnumApplicationEventTypeFilter<$PrismaModel = never> = {
