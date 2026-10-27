@@ -59,3 +59,28 @@ export const changePasswordSchema = z.object({
 
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>['body'];
 export type ChangePasswordInput = z.infer<typeof changePasswordSchema>['body'];
+
+const dateField = z.string().refine(value => !value || /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(value)), 'Use a valid date.');
+export const updateExperiencesSchema = z.object({ body: z.object({ items: z.array(z.object({
+  id: z.string().optional(), company: z.string().trim().min(1).max(200), role: z.string().trim().min(1).max(200),
+  startDate: dateField, endDate: dateField.nullable().optional(), current: z.boolean().optional(), description: z.string().max(10000).optional(),
+}).refine(item => item.current || !item.startDate || !item.endDate || item.endDate >= item.startDate, 'End date must follow start date.')).max(100) }) });
+
+export const updateEducationsSchema = z.object({ body: z.object({ items: z.array(z.object({
+  id: z.string().optional(), school: z.string().trim().min(1).max(200), degree: z.string().trim().min(1).max(200), field: z.string().max(200).optional(),
+  startYear: z.number().int().min(1900).max(2200), endYear: z.number().int().min(1900).max(2200).nullable().optional(),
+}).refine(item => item.endYear == null || item.endYear >= item.startYear, 'End year must follow start year.')).max(100) }) });
+
+export const updateSkillsSchema = z.object({ body: z.object({ items: z.array(z.union([
+  z.string().trim().min(1).max(100), z.object({ name: z.string().trim().min(1).max(100) }),
+])).max(200) }) });
+
+export const notificationPreferencesSchema = z.object({ body: z.object({
+  emailMarketing: z.boolean().optional(), emailProduct: z.boolean().optional(), emailSecurity: z.boolean().optional(),
+  emailResumeTips: z.boolean().optional(), pushEnabled: z.boolean().optional(), inAppEnabled: z.boolean().optional(),
+  digestFrequency: z.enum(['OFF', 'DAILY', 'WEEKLY']).optional(),
+}) });
+
+export const trustDeviceSchema = z.object({
+  body: z.object({ isTrusted: z.boolean() }),
+});

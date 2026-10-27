@@ -79,6 +79,36 @@ export const revokeDevice = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, { status: status.OK, success: true, message: result.message, data: null });
 });
 
+export const getSessions = catchAsync(async (req: Request, res: Response) => {
+  const token = req.cookies?.accessToken || '';
+  const data = await userService.getSessions(req.user.userId, token);
+  sendResponse(res, { status: status.OK, success: true, message: 'Sessions retrieved.', data });
+});
+
+export const revokeSession = catchAsync(async (req: Request, res: Response) => {
+  const id = typeof req.params.id === 'string' ? req.params.id : '';
+  const result = await userService.revokeSession(req.user.userId, id);
+  sendResponse(res, { status: status.OK, success: true, message: result.message, data: null });
+});
+
+export const revokeAllSessions = catchAsync(async (req: Request, res: Response) => {
+  const token = req.cookies?.accessToken || '';
+  const result = await userService.revokeAllSessions(req.user.userId, token);
+  sendResponse(res, { status: status.OK, success: true, message: result.message, data: { count: result.count } });
+});
+
+export const getLoginDevices = catchAsync(async (req: Request, res: Response) => {
+  const token = req.cookies?.accessToken || '';
+  const data = await userService.getLoginDevices(req.user.userId, token);
+  sendResponse(res, { status: status.OK, success: true, message: 'Login devices retrieved.', data });
+});
+
+export const setDeviceTrust = catchAsync(async (req: Request, res: Response) => {
+  const id = typeof req.params.id === 'string' ? req.params.id : '';
+  const data = await userService.setDeviceTrust(req.user.userId, id, req.body.isTrusted);
+  sendResponse(res, { status: status.OK, success: true, message: 'Device trust updated.', data });
+});
+
 export const getLimits = catchAsync(async (req: Request, res: Response) => {
   const data = await userService.getUserLimits(req.user.userId);
   sendResponse(res, { status: status.OK, success: true, message: 'Limits retrieved.', data });

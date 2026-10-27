@@ -71,10 +71,10 @@ export const updateProfile = async (userId: string, data: UpdateProfileInput) =>
       userId,
       firstName: firstName || '',
       lastName: lastName || '',
-      education: [] as unknown as Prisma.InputJsonValue,
-      experience: [] as unknown as Prisma.InputJsonValue,
-      skills: [] as string[],
-      languages: [] as string[],
+      education: (rest.education ?? []) as unknown as Prisma.InputJsonValue,
+      experience: (rest.experience ?? []) as unknown as Prisma.InputJsonValue,
+      skills: rest.skills ?? [],
+      languages: rest.languages ?? [],
     },
   });
 
@@ -124,7 +124,7 @@ export const updateExperiences = async (userId: string, items: unknown) => {
   const normalized = (items as ExperienceItem[]).map((item) => ({
     id: item.id || crypto.randomUUID(), company: item.company?.trim() ?? '',
     role: item.role?.trim() ?? '', from: item.startDate ?? '',
-    ...(item.endDate ? { to: item.endDate } : {}), current: Boolean(item.current),
+    ...(!item.current && item.endDate ? { to: item.endDate } : {}), current: Boolean(item.current),
     desc: item.description?.trim() ?? '',
   }));
   await prisma.userProfile.update({ where: { userId }, data: { experience: normalized } });
@@ -270,6 +270,92 @@ export const revokeDevice = async (userId: string, deviceId: string) => {
   await prisma.loginDevice.delete({ where: { id: deviceId } });
 
   return { message: 'Device revoked successfully.' };
+};
+
+// ─── Sessions ─────────────────────────────────────────
+
+export const getSessions = async (userId: string, currentSessionToken: string) => {
+  const sessions = await prisma.session.findMany({
+    where: { userId },
+    orderBy: { updatedAt: 'desc' },
+    include: {
+      device: { select: { deviceName: true } },
+    },
+  });
+
+  return sessions.map((session) => ({
+    id: session.id,
+    ipAddress: session.ipAddress,
+    userAgent: session.userAgent,
+    deviceLabel: session.device?.deviceName ?? null,
+    isCurrent: Boolean(currentSessionToken) && session.token === currentSessionToken,
+    lastActiveAt: session.updatedAt,
+    createdAt: session.createdAt,
+  }));
+};
+
+export const revokeSession = async (userId: string, sessionId: string) => {
+  const session = await prisma.session.findFirst({
+    where: { id: sessionId, userId },
+  });
+  if (!session) throw new AppError(status.NOT_FOUND, 'Session not found.');
+
+  await prisma.session.delete({ where: { id: sessionId } });
+  return { message: 'Session revoked successfully.' };
+};
+
+export const revokeAllSessions = async (userId: string, currentSessionToken: string) => {
+  const result = await prisma.session.deleteMany({
+    where: {
+      userId,
+      ...(currentSessionToken ? { token: { not: currentSessionToken } } : {}),
+    },
+  });
+  return { message: 'Other sessions revoked successfully.', count: result.count };
+};
+
+export const getLoginDevices = async (userId: string, currentSessionToken: string) => {
+  const devices = await prisma.loginDevice.findMany({
+    where: { userId },
+    orderBy: { lastSeenAt: 'desc' },
+    include: {
+      sessions: {
+        where: { token: currentSessionToken },
+        select: { id: true },
+      },
+    },
+  });
+
+  return devices.map((device) => ({
+    id: device.id,
+    ipAddress: device.ipAddress,
+    deviceLabel: device.deviceName,
+    location: null,
+    lastLoginAt: device.lastSeenAt,
+    isTrusted: device.isTrusted,
+    isCurrentDevice: device.sessions.length > 0,
+  }));
+};
+
+export const setDeviceTrust = async (userId: string, deviceId: string, isTrusted: boolean) => {
+  const device = await prisma.loginDevice.findFirst({
+    where: { id: deviceId, userId },
+  });
+  if (!device) throw new AppError(status.NOT_FOUND, 'Device not found.');
+
+  const updated = await prisma.loginDevice.update({
+    where: { id: deviceId },
+    data: { isTrusted },
+  });
+
+  return {
+    id: updated.id,
+    ipAddress: updated.ipAddress,
+    deviceLabel: updated.deviceName,
+    location: null,
+    lastLoginAt: updated.lastSeenAt,
+    isTrusted: updated.isTrusted,
+  };
 };
 
 // ─── Limits ───────────────────────────────────────────
