@@ -98,6 +98,12 @@ router.post('/tasks/claim', workerAccessAuth, respond('Task claim evaluated.', r
   z.object({ deviceId: z.string().min(1).max(200) }).parse(req.body);
   return service.claimTask(req.worker!.userId, req.worker!.deviceId);
 }));
+router.get('/search-plan', workerAccessAuth, respond('Automatic public search plan loaded.', req =>
+  service.getAutomaticSearchPlan(req.worker!.userId, req.worker!.deviceId),
+));
+router.get('/workspace', workerAccessAuth, respond('Worker account workspace loaded.', req =>
+  service.getWorkerWorkspace(req.worker!.userId),
+));
 router.post('/tasks/:id/events', workerAccessAuth, respond('Worker events accepted.', req =>
   service.recordEvents(req.worker!.userId, req.worker!.deviceId, id(req), workerEventsSchema.parse(req.body).events),
 ));
@@ -115,6 +121,10 @@ router.post('/tasks/:id/approvals', workerAccessAuth, respond('Approval request 
 router.post('/listings', workerAccessAuth, respond('Captured listings stored.', req => {
   const listings = workerListingBatchSchema.parse(req.body).listings;
   return service.saveCapturedListings(req.worker!.userId, req.worker!.deviceId, listings);
+}));
+router.post('/search-activity', workerAccessAuth, respond('Local search activity stored.', req => {
+  const event = z.object({ taskId: z.string().regex(/^local_schedule_[a-zA-Z0-9_-]+$/).max(200), seq: z.number().int().min(0), type: z.enum(['RUN_STARTED', 'JOB_CAPTURED', 'RUN_COMPLETED', 'SENSITIVE_STOP', 'ERROR', 'PROGRESS']), message: z.string().min(1).max(500), at: z.string().datetime() }).parse(req.body);
+  return service.recordLocalSearchActivity(req.worker!.userId, req.worker!.deviceId, event);
 }));
 router.get('/approvals/pending', workerAccessAuth, respond('Device approval state loaded.', req =>
   service.listApprovalsForDevice(req.worker!.userId, req.worker!.deviceId),

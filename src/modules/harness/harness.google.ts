@@ -4,6 +4,7 @@ import { prisma } from '../../lib/prisma';
 import AppError from '../../errorHelpers/AppError';
 import { decryptToken, encryptToken } from '../career/career.crypto';
 import type { GoogleCapabilityName, HarnessPreferences } from './harness.schema';
+import { findTrackerUrl } from './harness.sheet-identity';
 
 const CAPABILITY_SCOPES: Record<GoogleCapabilityName, string[]> = {
   DRIVE_DOCUMENTS: ['https://www.googleapis.com/auth/drive.file'],
@@ -208,19 +209,15 @@ const TRACKER_HEADERS = ['Company', 'Role', 'Match score', 'Location', 'Salary',
 
 export async function createGoogleTracker(userId: string, name: string) {
   const token = await googleAccessToken(userId, 'SHEET_TRACKER');
-  const file = await googleJson<{ id: string; webViewLink?: string }>('https://www.googleapis.com/drive/v3/files?fields=id,webViewLink', token, {
+  const file = await googleJson<{ spreadsheetId: string; spreadsheetUrl?: string }>('https://sheets.googleapis.com/v4/spreadsheets', token, {
     method: 'POST',
-    body: JSON.stringify({ name, mimeType: 'application/vnd.google-apps.spreadsheet' }),
+    body: JSON.stringify({ properties: { title: name }, sheets: [{ properties: { title: 'Sheet1' }, data: [{ startRow: 0, startColumn: 0, rowData: [{ values: TRACKER_HEADERS.map(value => ({ userEnteredValue: { stringValue: value } })) }] }] }] }),
   });
-  await googleJson(`https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(file.id)}/values/Sheet1!A1:Q1?valueInputOption=RAW`, token, {
-    method: 'PUT',
-    body: JSON.stringify({ range: 'Sheet1!A1:Q1', majorDimension: 'ROWS', values: [TRACKER_HEADERS] }),
-  });
-  const externalUrl = file.webViewLink ?? `https://docs.google.com/spreadsheets/d/${file.id}/edit`;
+  const externalUrl = file.spreadsheetUrl ?? `https://docs.google.com/spreadsheets/d/${file.spreadsheetId}/edit`;
   const sync = await prisma.harnessExternalSync.upsert({
     where: { userId_kind_syncKey: { userId, kind: 'SHEET_TRACKER', syncKey: 'primary' } },
-    create: { userId, kind: 'SHEET_TRACKER', syncKey: 'primary', externalId: file.id, externalUrl, metadata: { headers: TRACKER_HEADERS } },
-    update: { externalId: file.id, externalUrl, state: 'SYNCED', lastSyncedAt: new Date(), metadata: { headers: TRACKER_HEADERS } },
+    create: { userId, kind: 'SHEET_TRACKER', syncKey: 'primary', externalId: file.spreadsheetId, externalUrl, metadata: { headers: TRACKER_HEADERS } },
+    update: { externalId: file.spreadsheetId, externalUrl, state: 'SYNCED', lastSyncedAt: new Date(), metadata: { headers: TRACKER_HEADERS } },
   });
   return sync;
 }
@@ -233,9 +230,14 @@ export async function appendJobToTracker(userId: string, jobId: string, score: n
   const job = await prisma.job.findFirst({ where: { id: jobId, userId } });
   if (!job) throw new AppError(404, 'Job not found.');
   const token = await googleAccessToken(userId, 'SHEET_TRACKER');
+  if (job.canonicalUrl) {
+    const existingRows = await googleJson<{ values?: unknown[][] }>(`https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(tracker.externalId)}/values/Sheet1!F:F`, token, { method: 'GET' });
+    const row = findTrackerUrl(existingRows.values, job.canonicalUrl);
+    if (row !== null) return prisma.harnessExternalSync.create({ data: { userId, jobId, kind: 'SHEET_ROW', syncKey: jobId, externalId: tracker.externalId, externalUrl: tracker.externalUrl, metadata: { existingRow: row } } });
+  }
   const salary = job.salaryMin ? `${job.salaryCurrency ?? ''} ${job.salaryMin}`.trim() : '';
   const values = [[job.company, job.title, score, job.location ?? '', salary, job.canonicalUrl ?? '', job.sourceName, new Date().toISOString().slice(0, 10), job.expiresAt?.toISOString().slice(0, 10) ?? '', '', '', 'Saved', '', '', blocker, '', job.id]];
-  const result = await googleJson<{ updates?: { updatedRange?: string } }>(`https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(tracker.externalId)}/values/Sheet1!A:Q:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`, token, { method: 'POST', body: JSON.stringify({ values }) });
+  const result = await googleJson<{ updates?: { updatedRange?: string } }>(`https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(tracker.externalId)}/values/Sheet1!A:Q:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`, token, { method: 'POST', body: JSON.stringify({ values }) });
   return prisma.harnessExternalSync.create({ data: { userId, jobId, kind: 'SHEET_ROW', syncKey: jobId, externalId: tracker.externalId, externalUrl: tracker.externalUrl, metadata: { updatedRange: result.updates?.updatedRange } } });
 }
 

@@ -5,6 +5,9 @@ import { prisma } from '../../lib/prisma';
 import { ownerLock } from '../career/career.service';
 import { discover, importPosting } from '../career/career.sources';
 import { jobSearchProviders, normalizeJobSearchQuery } from '../harness/harness.jobs';
+import { harnessPreferenceSchema } from '../harness/harness.schema';
+import { companyNeedsVerification } from '../harness/harness.policy';
+import { resolveCompanyCareer } from './company-career';
 import {
   assertEd25519PublicKey,
   canonicalJson,
@@ -46,6 +49,53 @@ import type { workerCapturedListingSchema, workerCheckpointSchema, workerEventSc
 
 const PAIRING_TTL_MS = 10 * 60_000;
 const TASK_TTL_MS = 15 * 60_000;
+
+export async function getWorkerWorkspace(userId: string) {
+  const [account, profile, preference, jobs] = await Promise.all([
+    prisma.user.findUniqueOrThrow({ where: { id: userId }, select: { name: true, email: true } }),
+    prisma.userProfile.findUnique({ where: { userId }, select: { headline: true, location: true, skills: true } }),
+    prisma.harnessPreferenceVersion.findFirst({ where: { userId }, orderBy: { version: 'desc' }, select: { version: true, preferences: true } }),
+    prisma.job.findMany({ where: { userId }, orderBy: { updatedAt: 'desc' }, take: 100, select: { id: true, title: true, company: true, location: true, workplaceType: true, canonicalUrl: true, sourceName: true, lifecycle: true, disposition: true, updatedAt: true } }),
+  ]);
+  const parsed = preference ? harnessPreferenceSchema.safeParse(preference.preferences) : null;
+  return {
+    account,
+    profile,
+    preferences: parsed?.success ? { version: preference!.version, roles: parsed.data.roles, workplace: parsed.data.workplace, countries: parsed.data.preferredCountries.length ? parsed.data.preferredCountries : parsed.data.allowedCountries, automaticSearchHours: parsed.data.automaticSearchHours } : null,
+    jobs,
+  };
+}
+
+export async function getAutomaticSearchPlan(userId: string, deviceId: string): Promise<{ tasks: TaskEnvelope[] }> {
+  const preference = await prisma.harnessPreferenceVersion.findFirst({ where: { userId }, orderBy: { version: 'desc' } });
+  if (!preference) return { tasks: [] };
+  const settings = harnessPreferenceSchema.parse(preference.preferences);
+  if (!settings.automaticSearchHours || settings.excludedSources.some(source => source.toLowerCase() === 'remotive')) return { tasks: [] };
+  const key = await getServerSigningKey();
+  const policy = policyForSource('REMOTIVE');
+  const now = new Date();
+  const runBudget = Math.floor(settings.dailySearchLimit / (settings.automaticSearchHours === 12 ? 2 : 1));
+  const scheduledRoles = settings.roles.slice(0, runBudget);
+  const tasks = scheduledRoles.map((role, index) => signTaskEnvelope({
+    protocolVersion: 1,
+    taskId: `schedule_${preference.id}_${index}`,
+    deviceId,
+    runId: null,
+    type: 'DISCOVER',
+    mode: 'RESEARCH',
+    source: 'REMOTIVE',
+    targetUrl: `https://remotive.com/remote-jobs?query=${encodeURIComponent(normalizeJobSearchQuery(role))}`,
+    allowedDomains: policy.domains,
+    limits: { maxPages: 3, maxActions: 60, maxDurationMs: 600_000, maxConcurrentPages: 1 },
+    policyVersion: policy.version,
+    issuedAt: now.toISOString(),
+    expiresAt: new Date(now.getTime() + 36 * 60 * 60_000).toISOString(),
+    nonce: randomBytes(18).toString('hex'),
+    payload: { search: { query: role, maxResults: Math.min(25, Math.floor(runBudget / scheduledRoles.length)), scrollRounds: 0 }, schedule: { intervalHours: settings.automaticSearchHours } },
+    documents: [],
+  }, key.privateKey));
+  return { tasks };
+}
 
 type StoredEvent = z.infer<typeof workerEventSchema>;
 type StoredCheckpoint = z.infer<typeof workerCheckpointSchema>;
@@ -554,7 +604,7 @@ function buildSearchUrl(source: string, query: string | undefined, startUrl: str
   if (source === 'LINKEDIN') return `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(query)}`;
   if (source === 'FACEBOOK') return `https://www.facebook.com/search/posts?q=${encodeURIComponent(query)}`;
   if (source === 'BDJOBS') return `https://bdjobs.com/h/jobs/?search=${encodeURIComponent(query)}`;
-  if (source === 'REMOTIVE') return `https://remotive.com/remote-jobs?search=${encodeURIComponent(query)}`;
+  if (source === 'REMOTIVE') return `https://remotive.com/remote-jobs?query=${encodeURIComponent(query)}`;
   throw new AppError(400, `A start URL is required for ${source} searches.`);
 }
 
@@ -579,11 +629,24 @@ export async function createSearchTask(userId: string, input: WorkerSearchTaskIn
   }
   const requestedSource = input.source ?? (input.startUrl ? classifyTaskSource('SEARCH', input.startUrl, null) : null);
   if (!requestedSource) throw new AppError(400, 'Choose a source or provide a start URL so the worker can classify it.');
-  const targetUrl = buildSearchUrl(requestedSource, input.query, input.startUrl);
+  let discoveredCompany: string | undefined;
+  let discoveredUrl: string | undefined;
+  if (requestedSource === 'COMPANY_CAREER' && !input.startUrl) {
+    if (!input.company) throw new AppError(400, 'Enter the company name to find its career page.');
+    const companyConsent = await activeConsent(userId, 'COMPANY_CAREER');
+    if (!companyConsent?.search) throw new AppError(403, 'Grant company career page search permission first.');
+    const boards = await prisma.careerSource.findMany({ where: { enabled: true }, select: { company: true, provider: true, board: true }, take: 1000 });
+    const discovered = await resolveCompanyCareer(input.company, boards);
+    if (!discovered) throw new AppError(404, `No verified career board found for ${input.company}. Check the company name or enter its career-page URL.`);
+    discoveredCompany = discovered.company;
+    discoveredUrl = discovered.url;
+  }
+  const targetUrl = buildSearchUrl(requestedSource, input.query, input.startUrl ?? discoveredUrl);
   const source = classifyTaskSource('SEARCH', targetUrl, requestedSource);
   const policy = sourcePolicyOrThrow(source);
   if (!policy.search) throw new AppError(403, `${policy.name} does not support browser search.`);
-  const consent = await activeConsent(userId, source);
+  const consentSource = discoveredCompany ? 'COMPANY_CAREER' : source;
+  const consent = await activeConsent(userId, consentSource);
   if (!consent || !consent.search) {
     throw new AppError(403, `Grant search permission for ${policy.name} from the worker dashboard first.`);
   }
@@ -612,6 +675,7 @@ export async function createSearchTask(userId: string, input: WorkerSearchTaskIn
         taskType: 'DISCOVER',
         search: {
           query: input.query ?? '',
+          ...(discoveredCompany ? { company: discoveredCompany, consentSource } : {}),
           startUrl: url.toString(),
           source,
           scrollRounds: input.scrollRounds,
@@ -870,6 +934,10 @@ export async function claimTask(userId: string, deviceId: string): Promise<{ tas
       data: { state: 'WAITING_FOR_USER', error: 'The worker did not finish this task in time. Verify the page before retrying.' },
     });
 
+    const activeRuns = await tx.harnessRun.findMany({
+      where: { userId, state: { in: ['SCHEDULED', 'RUNNING', 'WAITING_FOR_USER'] } },
+      select: { id: true },
+    });
     for (let candidates = 0; candidates < 8; candidates += 1) {
       const task = await tx.browserTask.findFirst({
         where: {
@@ -879,18 +947,28 @@ export async function claimTask(userId: string, deviceId: string): Promise<{ tas
           AND: [
             { OR: [{ deviceId: null }, { deviceId }] },
             { OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }] },
+            { OR: [{ runId: null }, { runId: { in: activeRuns.map(run => run.id) } }] },
           ],
         },
         orderBy: [{ priority: 'desc' }, { createdAt: 'asc' }],
       });
       if (!task) return { task: null };
+      if (task.jobId && task.adapter !== 'SEARCH') {
+        const job = await tx.job.findFirst({ where: { id: task.jobId, userId }, select: { company: true } });
+        if (!job || companyNeedsVerification(job.company)) {
+          await tx.browserTask.update({ where: { id: task.id }, data: { state: 'BLOCKED', error: 'Verify the employer before preparing this application.' } });
+          continue;
+        }
+      }
       const source = classifyTaskSource(task.adapter, task.targetUrl, task.source);
       const claimPolicy = policyForSource(source);
       const taskPayload = asObject(task.payload);
       const taskType = readString(taskPayload.taskType, task.adapter === 'SEARCH' ? 'DISCOVER' : 'PREPARE');
       const assistedRead = taskType === 'DISCOVER' || taskType === 'CAPTURE';
+      const searchPayload = asObject(taskPayload.search);
+      const consentSource = taskType === 'DISCOVER' && ['GREENHOUSE', 'LEVER'].includes(source) && searchPayload.consentSource === 'COMPANY_CAREER' && typeof searchPayload.company === 'string' ? 'COMPANY_CAREER' : source;
       const consent = assistedRead
-        ? await tx.workerSiteConsent.findUnique({ where: { userId_source: { userId, source } } })
+        ? await tx.workerSiteConsent.findUnique({ where: { userId_source: { userId, source: consentSource } } })
         : null;
       const capability = taskType === 'CAPTURE' ? claimPolicy.extraction : claimPolicy.search;
       const consentAllows = Boolean(
@@ -1102,6 +1180,10 @@ export async function reportResult(userId: string, deviceId: string, taskId: str
       if (task.state === report.state) return task;
       throw new AppError(409, `This task already finished as ${task.state} and cannot change to ${report.state}.`);
     }
+    if (task.runId) {
+      const run = await tx.harnessRun.findFirst({ where: { id: task.runId, userId }, select: { state: true } });
+      if (!run || run.state === 'CANCELLED') throw new AppError(409, 'The parent harness run was cancelled.');
+    }
     const now = new Date();
     const policy = policyForSource(classifyTaskSource(task.adapter, task.targetUrl, task.source));
 
@@ -1260,6 +1342,7 @@ async function decideApprovalRecord(
   options: { deviceId?: string } = {},
 ) {
   const result = await prisma.$transaction(async tx => {
+    await ownerLock(tx, userId);
     const approval = await tx.workerApproval.findFirst({ where: { id: approvalId, userId } });
     if (!approval) throw new AppError(404, 'Approval not found.');
     if (options.deviceId && approval.deviceId !== options.deviceId) throw new AppError(403, 'Approval belongs to another worker device.');
@@ -1271,6 +1354,11 @@ async function decideApprovalRecord(
     const task = await tx.browserTask.findFirst({ where: { id: approval.taskId, userId } });
     if (!task) throw new AppError(404, 'Browser task not found.');
     if (options.deviceId && task.deviceId && task.deviceId !== options.deviceId) throw new AppError(403, 'Browser task belongs to another worker.');
+    if (['COMPLETED', 'SUBMITTED', 'FAILED', 'CANCELLED'].includes(task.state)) throw new AppError(409, 'This task has already finished.');
+    if (task.runId) {
+      const run = await tx.harnessRun.findFirst({ where: { id: task.runId, userId } });
+      if (!run || ['COMPLETED', 'FAILED', 'CANCELLED'].includes(run.state)) throw new AppError(409, 'This harness run has already finished.');
+    }
     const now = new Date();
     const updated = await tx.workerApproval.update({
       where: { id: approval.id },
@@ -1319,11 +1407,22 @@ export async function decideApprovalFromDevice(userId: string, deviceId: string,
 
 export async function controlTask(userId: string, taskId: string, action: 'pause' | 'resume' | 'stop' | 'takeover' | 'handback') {
   const result = await prisma.$transaction(async tx => {
+    await ownerLock(tx, userId);
     const task = await tx.browserTask.findFirst({ where: { id: taskId, userId } });
     if (!task) throw new AppError(404, 'Browser task not found.');
     if (['COMPLETED', 'SUBMITTED', 'FAILED', 'CANCELLED'].includes(task.state)) throw new AppError(409, 'This task has already finished.');
+    if (action === 'resume' && task.state !== 'PAUSED') throw new AppError(409, 'Only a paused task can be resumed.');
+    if (action === 'handback' && task.state !== 'TAKEOVER') throw new AppError(409, 'Only a task under your control can be handed back.');
+    if (action === 'resume' || action === 'handback') {
+      if (task.runId) {
+        const run = await tx.harnessRun.findFirst({ where: { id: task.runId, userId } });
+        if (!run || !['SCHEDULED', 'RUNNING', 'WAITING_FOR_USER'].includes(run.state)) {
+          throw new AppError(409, 'Resume the active harness run before resuming its task.');
+        }
+      }
+    }
     const now = new Date();
-    const state = action === 'pause' ? 'PAUSED' : action === 'resume' || action === 'handback' ? 'CLAIMED' : action === 'takeover' ? 'TAKEOVER' : 'CANCELLED';
+    const state = action === 'pause' ? 'PAUSED' : action === 'resume' || action === 'handback' ? (task.deviceId ? 'CLAIMED' : 'QUEUED') : action === 'takeover' ? 'TAKEOVER' : 'CANCELLED';
     const updated = await tx.browserTask.update({
       where: { id: task.id },
       data: {
@@ -1506,74 +1605,96 @@ export async function listApprovalsForDevice(userId: string, deviceId: string) {
 }
 
 export async function saveCapturedListings(userId: string, deviceId: string, listings: z.infer<typeof workerCapturedListingSchema>[]) {
-  let accepted = 0;
-  for (const listing of listings) {
-    const fingerprint = sha256Hex(canonicalJson({
-      source: listing.source,
-      canonicalUrl: listing.canonicalUrl,
-      title: listing.title,
-      company: listing.company,
-    }));
-    const result = await prisma.capturedListing.upsert({
-      where: { userId_fingerprint: { userId, fingerprint } },
-      create: {
-        userId,
-        deviceId,
+  const accepted = await prisma.$transaction(async tx => {
+    await ownerLock(tx, userId);
+    let count = 0;
+    let newJobs = 0;
+    for (const listing of listings) {
+      const fingerprint = sha256Hex(canonicalJson({
         source: listing.source,
-        externalId: listing.externalId,
-        fingerprint,
         canonicalUrl: listing.canonicalUrl,
-        payload: listing as unknown as Prisma.InputJsonValue,
-        capturedAt: Number.isFinite(Date.parse(listing.capturedAt)) ? new Date(listing.capturedAt) : new Date(),
-      },
-      update: {
-        externalId: listing.externalId,
+        title: listing.title,
+        company: listing.company,
+      }));
+      const result = await tx.capturedListing.upsert({
+        where: { userId_fingerprint: { userId, fingerprint } },
+        create: {
+          userId,
+          deviceId,
+          source: listing.source,
+          externalId: listing.externalId,
+          fingerprint,
+          canonicalUrl: listing.canonicalUrl,
+          payload: listing as unknown as Prisma.InputJsonValue,
+          capturedAt: Number.isFinite(Date.parse(listing.capturedAt)) ? new Date(listing.capturedAt) : new Date(),
+        },
+        update: {
+          externalId: listing.externalId,
+          canonicalUrl: listing.canonicalUrl,
+          payload: listing as unknown as Prisma.InputJsonValue,
+          capturedAt: Number.isFinite(Date.parse(listing.capturedAt)) ? new Date(listing.capturedAt) : new Date(),
+        },
+      });
+      const sourceType = listing.source === 'GREENHOUSE'
+        ? 'GREENHOUSE'
+        : listing.source === 'LEVER'
+          ? 'LEVER'
+          : listing.source === 'COMPANY_CAREER' || listing.source === 'ASHBY'
+            ? 'COMPANY_CAREER'
+            : 'USER_URL';
+      const workplaceType = listing.workplaceType === 'ONSITE'
+        ? 'ON_SITE'
+        : listing.workplaceType === 'UNKNOWN'
+          ? 'UNSPECIFIED'
+          : listing.workplaceType;
+      const publishedAt = listing.publishedAt && Number.isFinite(Date.parse(listing.publishedAt))
+        ? new Date(listing.publishedAt)
+        : null;
+      const existingJob = await tx.job.findFirst({ where: { userId, canonicalUrl: listing.canonicalUrl } });
+      const jobData = {
+        title: listing.title,
+        company: listing.company,
+        description: listing.description,
+        location: listing.location || null,
+        workplaceType: workplaceType as 'REMOTE' | 'HYBRID' | 'ON_SITE' | 'UNSPECIFIED',
+        employmentType: listing.employmentType || null,
+        salaryMin: listing.salaryMin,
+        salaryMax: listing.salaryMax,
+        salaryCurrency: listing.salaryCurrency || null,
         canonicalUrl: listing.canonicalUrl,
-        payload: listing as unknown as Prisma.InputJsonValue,
-        capturedAt: Number.isFinite(Date.parse(listing.capturedAt)) ? new Date(listing.capturedAt) : new Date(),
-      },
-    });
-    const sourceType = listing.source === 'GREENHOUSE'
-      ? 'GREENHOUSE'
-      : listing.source === 'LEVER'
-        ? 'LEVER'
-        : listing.source === 'COMPANY_CAREER' || listing.source === 'ASHBY'
-          ? 'COMPANY_CAREER'
-          : 'USER_URL';
-    const workplaceType = listing.workplaceType === 'ONSITE'
-      ? 'ON_SITE'
-      : listing.workplaceType === 'UNKNOWN'
-        ? 'UNSPECIFIED'
-        : listing.workplaceType;
-    const publishedAt = listing.publishedAt && Number.isFinite(Date.parse(listing.publishedAt))
-      ? new Date(listing.publishedAt)
-      : null;
-    const existingJob = await prisma.job.findFirst({ where: { userId, canonicalUrl: listing.canonicalUrl } });
-    const jobData = {
-      title: listing.title,
-      company: listing.company,
-      description: listing.description,
-      location: listing.location || null,
-      workplaceType: workplaceType as 'REMOTE' | 'HYBRID' | 'ON_SITE' | 'UNSPECIFIED',
-      employmentType: listing.employmentType || null,
-      salaryMin: listing.salaryMin,
-      salaryMax: listing.salaryMax,
-      salaryCurrency: listing.salaryCurrency || null,
-      canonicalUrl: listing.canonicalUrl,
-      sourceName: `Local Worker · ${listing.source}`,
-      sourceType: sourceType as 'GREENHOUSE' | 'LEVER' | 'COMPANY_CAREER' | 'USER_URL',
-      lifecycle: 'ACTIVE' as const,
-      publishedAt,
-      lastVerifiedAt: new Date(),
-      contentHash: fingerprint,
-      isPrivate: true,
-    };
-    if (existingJob) await prisma.job.update({ where: { id: existingJob.id }, data: jobData });
-    else await prisma.job.create({ data: { userId, ...jobData } });
-    if (result) accepted += 1;
-  }
+        sourceName: `Local Worker · ${listing.source}`,
+        sourceType: sourceType as 'GREENHOUSE' | 'LEVER' | 'COMPANY_CAREER' | 'USER_URL',
+        lifecycle: 'ACTIVE' as const,
+        publishedAt,
+        lastVerifiedAt: new Date(),
+        contentHash: fingerprint,
+        isPrivate: true,
+      };
+      if (existingJob) await tx.job.update({ where: { id: existingJob.id }, data: jobData });
+      else { await tx.job.create({ data: { userId, ...jobData } }); newJobs += 1; }
+      if (result) count += 1;
+    }
+    if (newJobs) {
+      const preference = await tx.harnessPreferenceVersion.findFirst({ where: { userId }, orderBy: { version: 'desc' } });
+      if (preference && harnessPreferenceSchema.parse(preference.preferences).automaticSearchHours) {
+        await tx.harnessAuditEvent.create({ data: { userId, action: 'WORKER_UPLOAD_PENDING', entityType: 'CapturedListing', outcome: 'PENDING', metadata: { deviceId, count: newJobs } } });
+      }
+    }
+    return count;
+  }, { timeout: 30_000 });
   await audit(userId, 'WORKER_LISTINGS_CAPTURED', 'CapturedListing', null, 'SUCCESS', { deviceId, accepted });
   return { accepted, skipped: Math.max(0, listings.length - accepted) };
+}
+
+export async function recordLocalSearchActivity(userId: string, deviceId: string, event: { taskId: string; seq: number; type: string; message: string; at: string }) {
+  const entityId = `${deviceId}:${event.taskId}:${event.seq}`;
+  return prisma.$transaction(async tx => {
+    await ownerLock(tx, userId);
+    const existing = await tx.harnessAuditEvent.findFirst({ where: { userId, action: 'WORKER_LOCAL_PROGRESS', entityId }, select: { id: true } });
+    if (existing) return { stored: false };
+    await tx.harnessAuditEvent.create({ data: { userId, action: 'WORKER_LOCAL_PROGRESS', entityType: 'LocalWorkerSearch', entityId, outcome: event.type === 'ERROR' || event.type === 'SENSITIVE_STOP' ? 'PARTIAL' : 'INFO', metadata: { message: event.message, taskId: event.taskId, eventAt: event.at, type: event.type } } });
+    return { stored: true };
+  });
 }
 
 export async function authenticateWorkerToken(rawToken: string) {

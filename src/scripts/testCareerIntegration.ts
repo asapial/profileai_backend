@@ -22,7 +22,7 @@ try {
   assert.equal(first.id, second.id);
   const usage = await prisma.careerUsage.findFirst({ where: { userId, feature: 'alignment' } });
   assert.equal(usage?.used, 1);
-  const input = { jobId: job.id, resumeId: resume.id, evidenceIds: [evidence.id], kind: 'APPLICATION' as const, tone: 'neutral' as const, length: 'standard' as const };
+  const input = { jobId: job.id, resumeId: resume.id, evidenceIds: [evidence.id], kind: 'APPLICATION' as const, tone: 'neutral' as const, length: 'standard' as const, targetCharacters: 1000 };
   await assert.rejects(() => createDraft(otherId, input), /not found/);
   const draft = await createDraft(userId, input);
   await assert.rejects(() => editDraft(otherId, draft.id, { subject: 'Test', body: 'Edited', reviewed: true }), /not found/);

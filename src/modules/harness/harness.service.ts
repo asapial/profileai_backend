@@ -6,6 +6,7 @@ import { ownerLock } from '../career/career.service';
 import { normalizeRoleLabel } from './harness.jobs';
 import { DEFAULT_HARNESS_PREFERENCES, harnessPreferenceSchema, type HarnessPreferences } from './harness.schema';
 import { effectiveGoogleCapabilities, googleHarnessConfigured } from './harness.google';
+import { companyNeedsVerification } from './harness.policy';
 
 const STEP_KEYS = ['DISCOVER', 'VERIFY', 'MATCH', 'PREPARE_DOCUMENTS', 'GOOGLE_SYNC', 'BROWSER_PREPARE'] as const;
 
@@ -159,6 +160,11 @@ export async function controlRun(userId: string, runId: string, action: 'pause' 
     await ownerLock(tx, userId);
     const run = await tx.harnessRun.findFirst({ where: { id: runId, userId } });
     if (!run) throw new AppError(404, 'Harness run not found.');
+    if (['COMPLETED', 'FAILED', 'CANCELLED'].includes(run.state)) throw new AppError(409, 'This harness run has already finished.');
+    const assigned = await tx.browserTask.findMany({
+      where: { userId, runId, deviceId: { not: null }, state: { notIn: ['COMPLETED', 'SUBMITTED', 'FAILED', 'CANCELLED'] } },
+      select: { id: true, deviceId: true },
+    });
     const now = new Date();
     if (action === 'pause') {
       if (!['SCHEDULED', 'RUNNING', 'WAITING_FOR_USER'].includes(run.state)) throw new AppError(409, 'This run cannot be paused.');
@@ -170,18 +176,15 @@ export async function controlRun(userId: string, runId: string, action: 'pause' 
     } else {
       await tx.harnessRun.update({ where: { id: run.id }, data: { state: 'CANCELLED', stoppedAt: now, finishedAt: now } });
       await tx.harnessStep.updateMany({ where: { runId: run.id, state: { in: ['PENDING', 'RUNNING', 'RETRYABLE', 'BLOCKED'] } }, data: { state: 'CANCELLED', finishedAt: now } });
-      await tx.browserTask.updateMany({ where: { runId: run.id, state: { in: ['QUEUED', 'CLAIMED', 'OPENED', 'FILLED', 'WAITING_FOR_USER'] } }, data: { state: 'CANCELLED', finishedAt: now } });
+      await tx.browserTask.updateMany({ where: { runId: run.id, state: { in: ['QUEUED', 'CLAIMED', 'OPENED', 'FILLED', 'WAITING_FOR_USER', 'PAUSED', 'TAKEOVER', 'BLOCKED'] } }, data: { state: 'CANCELLED', finishedAt: now } });
     }
     await tx.harnessAuditEvent.create({ data: { userId, runId, action: action === 'emergency-stop' ? 'EMERGENCY_STOP' : `RUN_${action.toUpperCase()}`, entityType: 'HarnessRun', entityId: runId, outcome: 'SUCCESS', metadata: { message: action === 'resume' ? 'Run resumed.' : action === 'pause' ? 'Run paused.' : 'Run stopped.' } } });
-    return tx.harnessRun.findUnique({ where: { id: runId }, include: { steps: { orderBy: { position: 'asc' } } } });
+    return { run: await tx.harnessRun.findUnique({ where: { id: runId }, include: { steps: { orderBy: { position: 'asc' } } } }), assigned };
   });
   // Existing browser companions keep polling the REST task endpoints. Paired
   // local workers additionally receive the same run control over the gateway.
   const workerAction = action === 'cancel' || action === 'emergency-stop' ? 'stop' : action;
-  const assigned = await prisma.browserTask.findMany({
-    where: { userId, runId, deviceId: { not: null }, state: { notIn: ['COMPLETED', 'SUBMITTED', 'FAILED', 'CANCELLED'] } },
-    select: { id: true, deviceId: true },
-  });
+  const { assigned } = result;
   if (assigned.length) {
     void import('../worker/worker.gateway').then(({ workerGateway }) => {
       for (const task of assigned) {
@@ -189,7 +192,7 @@ export async function controlRun(userId: string, runId: string, action: 'pause' 
       }
     }).catch(() => undefined);
   }
-  return result;
+  return result.run;
 }
 
 export async function pairBrowserCompanion(userId: string, name: string) {
@@ -218,8 +221,19 @@ export async function claimBrowserTask(userId: string) {
   return prisma.$transaction(async tx => {
     await ownerLock(tx, userId);
     await tx.browserTask.updateMany({ where: { userId, state: 'CLAIMED', claimedAt: { lt: new Date(Date.now() - 15 * 60_000) } }, data: { state: 'WAITING_FOR_USER', error: 'Browser companion was interrupted. Verify the page before retrying.' } });
-    const task = await tx.browserTask.findFirst({ where: { userId, state: 'QUEUED' }, orderBy: { createdAt: 'asc' } });
+    const activeRuns = await tx.harnessRun.findMany({ where: { userId, state: { in: ['SCHEDULED', 'RUNNING', 'WAITING_FOR_USER'] } }, select: { id: true } });
+    const task = await tx.browserTask.findFirst({ where: {
+      userId, state: 'QUEUED', deviceId: null,
+      OR: [{ runId: null }, { runId: { in: activeRuns.map(run => run.id) } }],
+    }, orderBy: { createdAt: 'asc' } });
     if (!task) return null;
+    if (task.jobId && task.adapter !== 'SEARCH') {
+      const job = await tx.job.findFirst({ where: { id: task.jobId, userId }, select: { company: true } });
+      if (!job || companyNeedsVerification(job.company)) {
+        await tx.browserTask.update({ where: { id: task.id }, data: { state: 'BLOCKED', error: 'Verify the employer before preparing this application.' } });
+        return null;
+      }
+    }
     const claimed = await tx.browserTask.updateMany({ where: { id: task.id, state: 'QUEUED' }, data: { state: 'CLAIMED', claimedAt: new Date() } });
     if (!claimed.count) return null;
     return tx.browserTask.findUnique({ where: { id: task.id } });
@@ -231,6 +245,14 @@ export async function reportBrowserTask(userId: string, taskId: string, report: 
     await ownerLock(tx, userId);
     const task = await tx.browserTask.findFirst({ where: { id: taskId, userId } });
     if (!task) throw new AppError(404, 'Browser task not found.');
+    if (task.deviceId) throw new AppError(409, 'This task belongs to a paired worker.');
+    const run = task.runId ? await tx.harnessRun.findFirst({ where: { id: task.runId, userId }, select: { state: true } }) : null;
+    if (task.state === 'CANCELLED' || run?.state === 'CANCELLED' || (task.runId && !run)) throw new AppError(409, 'Browser task was cancelled.');
+    if (['COMPLETED', 'SUBMITTED', 'FAILED'].includes(task.state)) {
+      if (task.state === report.state) return task;
+      throw new AppError(409, 'Browser task has already finished.');
+    }
+    if (task.state === 'QUEUED') throw new AppError(409, 'Claim the browser task before reporting progress.');
     const terminal = ['COMPLETED', 'SUBMITTED', 'BLOCKED', 'FAILED'].includes(report.state);
     const updated = await tx.browserTask.update({ where: { id: task.id }, data: { state: report.state, adapter: report.adapter, result: report, error: report.blocker ?? null, finishedAt: terminal ? new Date() : null } });
     if (report.state === 'SUBMITTED') {
@@ -259,9 +281,17 @@ export async function reportBrowserTask(userId: string, taskId: string, report: 
 }
 
 export async function approveBrowserTask(userId: string, taskId: string) {
-  const result = await prisma.browserTask.updateMany({ where: { id: taskId, userId, state: { in: ['WAITING_FOR_USER', 'BLOCKED'] } }, data: { state: 'QUEUED', approvedAt: new Date(), error: null } });
-  if (!result.count) throw new AppError(409, 'Browser task is not waiting for approval.');
-  return prisma.browserTask.findUnique({ where: { id: taskId } });
+  return prisma.$transaction(async tx => {
+    await ownerLock(tx, userId);
+    const task = await tx.browserTask.findFirst({ where: { id: taskId, userId } });
+    if (!task || !['WAITING_FOR_USER', 'BLOCKED'].includes(task.state)) throw new AppError(409, 'Browser task is not waiting for approval.');
+    if (task.deviceId) throw new AppError(409, 'Review this task in the local worker approval queue.');
+    if (task.runId) {
+      const run = await tx.harnessRun.findFirst({ where: { id: task.runId, userId } });
+      if (!run || ['COMPLETED', 'FAILED', 'CANCELLED'].includes(run.state)) throw new AppError(409, 'This harness run has already finished.');
+    }
+    return tx.browserTask.update({ where: { id: task.id }, data: { state: 'QUEUED', approvedAt: new Date(), error: null } });
+  });
 }
 
 export function parseStoredPreferences(value: unknown): HarnessPreferences {

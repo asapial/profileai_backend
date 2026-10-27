@@ -160,7 +160,7 @@ export const REVIEWED_POLICIES: readonly ReviewedPolicy[] = [
     maxRequestsPerMinute: 1,
     reviewedAt,
     reviewReference: 'SEC-2026-047',
-    notes: 'Search and scroll only after explicit consent. No application automation, messaging, profile collection, or form filling; continue on the employer site.',
+    notes: 'Visible job cards may be read during a consented search. No application automation, messaging, profile collection, or form filling; continue on the employer site.',
     enabled: true,
   },
   {

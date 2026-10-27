@@ -17,6 +17,7 @@ type JobLike = {
 
 const words = (value: string) => new Set(value.toLowerCase().split(/[^a-z0-9+#.]+/).filter(Boolean));
 const includesPhrase = (haystack: string, needle: string) => haystack.toLowerCase().includes(needle.toLowerCase());
+export const companyNeedsVerification = (company: string) => !company.trim() || /^unknown company$/i.test(company.trim());
 
 const editDistance = (left: string, right: string) => {
   const row = Array.from({ length: right.length + 1 }, (_, index) => index);
@@ -72,6 +73,11 @@ export function evaluateCandidate(job: JobLike, preferences: HarnessPreferences)
   if (preferences.excludedCompanies.some(company => includesPhrase(job.company, company))) {
     score = 0; missing.push('Company is excluded');
   }
+  const companyUnknown = companyNeedsVerification(job.company);
+  if (companyUnknown) {
+    missing.push('Company name needs verification');
+    reasons.push({ rule: 'company', outcome: 'RISK', detail: 'The listing does not identify the employer.' });
+  }
 
   if (preferences.workplace !== 'ANY' && job.workplaceType !== preferences.workplace) {
     score -= 18; missing.push(`Workplace must be ${preferences.workplace.toLowerCase()}`);
@@ -100,7 +106,7 @@ export function evaluateCandidate(job: JobLike, preferences: HarnessPreferences)
   const hardBlock = missing.includes('Company is excluded') || job.lifecycle === 'EXPIRED' || job.lifecycle === 'REMOVED';
   const decision = hardBlock || score < preferences.autoSaveThreshold
     ? 'NOT_ELIGIBLE'
-    : score >= preferences.minimumMatchScore
+    : score >= preferences.minimumMatchScore && !companyUnknown
       ? 'ELIGIBLE'
       : 'REVIEW_REQUIRED';
 

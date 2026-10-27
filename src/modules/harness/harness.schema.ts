@@ -25,6 +25,7 @@ export const harnessPreferenceSchema = z.object({
   maximumJobAgeDays: z.number().int().min(1).max(120).default(30),
   minimumMatchScore: z.number().int().min(0).max(100).default(72),
   dailySearchLimit: z.number().int().min(1).max(500).default(50),
+  automaticSearchHours: z.union([z.literal(0), z.literal(12), z.literal(24)]).default(0),
   dailyApplicationLimit: z.number().int().min(1).max(50).default(5),
   autoSaveThreshold: z.number().int().min(0).max(100).default(65),
   autoPrepareThreshold: z.number().int().min(0).max(100).default(78),
@@ -47,6 +48,9 @@ export const harnessPreferenceSchema = z.object({
   neverAnswerDemographic: z.literal(true).default(true),
   neverAnswerDisability: z.literal(true).default(true),
   neverAnswerCriminalHistory: z.literal(true).default(true),
+}).refine(value => value.automaticSearchHours !== 12 || value.dailySearchLimit >= 2, {
+  message: 'Twice-daily automatic search needs a daily search limit of at least 2.',
+  path: ['dailySearchLimit'],
 });
 
 export type HarnessPreferences = z.infer<typeof harnessPreferenceSchema>;

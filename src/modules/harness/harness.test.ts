@@ -37,6 +37,13 @@ test('candidate policy explains role, skill and workplace matches', () => {
   assert.ok(result.reasons.some(row => row.rule === 'required-skills'));
 });
 
+test('an otherwise matching job with an unknown employer requires review', () => {
+  const preferences = harnessPreferenceSchema.parse({ roles: ['Frontend Developer'], workplace: 'REMOTE', minimumMatchScore: 60 });
+  const result = evaluateCandidate({ id: 'job', title: 'Frontend Developer', company: 'Unknown company', description: 'Remote frontend role.', location: null, workplaceType: 'REMOTE', employmentType: null, salaryMin: null, salaryCurrency: null, publishedAt: new Date(), lastVerifiedAt: new Date(), lifecycle: 'ACTIVE' }, preferences);
+  assert.equal(result.decision, 'REVIEW_REQUIRED');
+  assert.ok(result.missing.includes('Company name needs verification'));
+});
+
 test('auto submit needs mode, threshold, allowlist and explicit no-review preference', () => {
   const preferences = harnessPreferenceSchema.parse({
     ...DEFAULT_HARNESS_PREFERENCES,

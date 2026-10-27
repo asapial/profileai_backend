@@ -5,8 +5,11 @@ import { discover, importPosting } from '../career/career.sources';
 import { duplicateResume, exportPdf, optimizeForAts, updateResume } from '../resume/resume.service';
 import { appendJobToTracker, createGmailDraft, createGoogleTracker, effectiveGoogleCapabilities, uploadCareerDocumentToDrive, uploadResumeBufferToDrive } from './harness.google';
 import { jobSearchProviders } from './harness.jobs';
-import { canAutoSubmit, evaluateCandidate } from './harness.policy';
+import { canAutoSubmit, companyNeedsVerification, evaluateCandidate } from './harness.policy';
 import { harnessPreferenceSchema } from './harness.schema';
+import { startRun } from './harness.service';
+import { createSearchTask } from '../worker/worker.service';
+import AppError from '../../errorHelpers/AppError';
 
 const asObject = (value: unknown) => value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {};
 
@@ -97,6 +100,28 @@ async function executeStep(run: { id: string; userId: string; mode: string; pref
       } catch (error) {
         failures.push({ sourceId: source.id, error: error instanceof Error ? error.message : 'Source failed.' });
       }
+    }
+    const companyConsent = await prisma.workerSiteConsent.findUnique({ where: { userId_source: { userId: run.userId, source: 'COMPANY_CAREER' } } });
+    const workerDevice = await prisma.workerDevice.findFirst({ where: { userId: run.userId, status: 'ACTIVE', revokedAt: null }, select: { id: true } });
+    if (companyConsent?.search && companyConsent.acknowledgedRisk && !companyConsent.revokedAt && workerDevice && !excluded('COMPANY_CAREER')) {
+      const discoveredJobs = await prisma.job.findMany({ where: { userId: run.userId, id: { in: [...jobIds] } }, select: { company: true } });
+      const recentTasks = await prisma.browserTask.findMany({ where: { userId: run.userId, adapter: 'SEARCH', createdAt: { gte: new Date(Date.now() - 12 * 60 * 60_000) } }, select: { payload: true }, take: 100 });
+      const recentFailures = await prisma.harnessAuditEvent.findMany({ where: { userId: run.userId, action: 'COMPANY_CAREER_UNAVAILABLE', createdAt: { gte: new Date(Date.now() - 12 * 60 * 60_000) } }, select: { metadata: true }, take: 100 });
+      const recentlySearched = new Set([...recentTasks.map(task => asObject(asObject(task.payload).search).company), ...recentFailures.map(event => asObject(event.metadata).company)].map(name => String(name ?? '').trim().toLowerCase()).filter(Boolean));
+      const excludedCompanies = new Set(preferences.excludedCompanies.map(name => name.toLowerCase()));
+      const companies = [...new Set(discoveredJobs.map(job => job.company.trim()))].filter(name => name && !companyNeedsVerification(name) && !excludedCompanies.has(name.toLowerCase()) && !recentlySearched.has(name.toLowerCase())).slice(0, 4);
+      let queued = 0;
+      for (const company of companies) {
+        if (queued >= 2) break;
+        try {
+          await createSearchTask(run.userId, { source: 'COMPANY_CAREER', company, query: preferences.roles[0] || '', maxPages: 1, maxResults: 10, scrollRounds: 0, mode: 'RESEARCH', consentAcknowledged: true });
+          queued += 1;
+          await activity(run.userId, run.id, 'COMPANY_CAREER_QUEUED', `Queued a career-page search for ${company}. Results appear after the local worker uploads them.`, 'SUCCESS', { company });
+        } catch (error) {
+          await activity(run.userId, run.id, 'COMPANY_CAREER_UNAVAILABLE', `Could not verify a career page for ${company}.`, 'INFO', { company });
+        }
+      }
+      if (queued) await activity(run.userId, run.id, 'COMPANY_CAREER_PENDING', `${queued} company career-page search${queued === 1 ? '' : 'es'} queued for the local worker.`, 'INFO', { queued });
     }
     if (!jobIds.size) {
       const existing = await prisma.job.findMany({ where: { userId: run.userId, lifecycle: 'ACTIVE' }, select: { id: true }, orderBy: { updatedAt: 'desc' }, take: preferences.dailySearchLimit });
@@ -325,6 +350,15 @@ async function processRun(runId: string) {
     const current = await prisma.harnessRun.findUnique({ where: { id: run.id }, select: { state: true } });
     if (!current || current.state !== 'RUNNING') return;
     if (step.state === 'SUCCEEDED' || step.state === 'CANCELLED') continue;
+    if (step.state === 'RUNNING' && step.startedAt && Date.now() - step.startedAt.getTime() > 60 * 60_000) {
+      const blocker = 'This step stopped reporting progress for over an hour. Review its results before resuming.';
+      const changed = await prisma.harnessStep.updateMany({ where: { id: step.id, state: 'RUNNING', startedAt: step.startedAt }, data: { state: 'BLOCKED', blocker, finishedAt: new Date() } });
+      if (changed.count) {
+        await prisma.harnessRun.updateMany({ where: { id: run.id, state: 'RUNNING' }, data: { state: 'WAITING_FOR_USER', error: blocker } });
+        await activity(run.userId, run.id, 'STEP_BLOCKED', blocker, 'WAITING_FOR_USER', { step: step.key });
+      }
+      return;
+    }
     const claimed = await prisma.harnessStep.updateMany({ where: { id: step.id, state: { in: ['PENDING', 'RETRYABLE'] }, nextAttemptAt: { lte: new Date() } }, data: { state: 'RUNNING', startedAt: new Date(), attempt: { increment: 1 }, error: null } });
     if (!claimed.count) return;
     try {
@@ -352,11 +386,37 @@ async function processRun(runId: string) {
   const browserStep = await prisma.harnessStep.findUnique({ where: { runId_key: { runId: run.id, key: 'BROWSER_PREPARE' } } });
   const browserOutput = asObject(browserStep?.output);
   const browserTasks = Array.isArray(browserOutput.tasks) ? browserOutput.tasks.length : 0;
-  await prisma.harnessRun.update({ where: { id: run.id }, data: { state: 'COMPLETED', finishedAt: new Date(), summary: { browserTasks } } });
-  await activity(run.userId, run.id, 'RUN_PIPELINE_FINISHED', browserTasks ? `Harness run completed. ${browserTasks} application tab${browserTasks === 1 ? '' : 's'} wait in the review queue.` : 'Harness run completed. The job sheet, CVs and email drafts are ready.', 'COMPLETED', { browserTasks });
+  const steps = await prisma.harnessStep.findMany({ where: { runId: run.id }, select: { key: true, output: true } });
+  const partialSteps = steps.filter(step => {
+    const output = asObject(step.output);
+    return output.partial === true || ['warnings', 'failures', 'needsUser'].some(key => Array.isArray(output[key]) && (output[key] as unknown[]).length > 0);
+  }).map(step => step.key);
+  const partial = partialSteps.length > 0;
+  await prisma.harnessRun.update({ where: { id: run.id }, data: { state: partial ? 'PARTIAL' : 'COMPLETED', finishedAt: new Date(), summary: { browserTasks, partialSteps } } });
+  const message = partial
+    ? 'Run finished with issues. Review the activity above for missing documents, failed sources, or Google sync actions.'
+    : browserTasks ? `Run finished. ${browserTasks} application tab${browserTasks === 1 ? '' : 's'} wait in the review queue.` : 'Run finished. Review the results and activity above.';
+  await activity(run.userId, run.id, 'RUN_PIPELINE_FINISHED', message, partial ? 'PARTIAL' : 'COMPLETED', { browserTasks, partialSteps });
 }
 
 export async function processHarnessRuns() {
+  const pending = await prisma.harnessAuditEvent.findMany({ where: { action: 'WORKER_UPLOAD_PENDING', outcome: 'PENDING' }, orderBy: { createdAt: 'asc' }, take: 100 });
+  for (const userId of new Set(pending.map(event => event.userId))) {
+    const cutoff = new Date();
+    const preference = await prisma.harnessPreferenceVersion.findFirst({ where: { userId }, orderBy: { version: 'desc' } });
+    const enabled = preference && harnessPreferenceSchema.parse(preference.preferences).automaticSearchHours;
+    if (!enabled) {
+      await prisma.harnessAuditEvent.updateMany({ where: { userId, action: 'WORKER_UPLOAD_PENDING', outcome: 'PENDING', createdAt: { lte: cutoff } }, data: { outcome: 'CANCELLED' } });
+      continue;
+    }
+    try {
+      const run = await startRun(userId, 'PREPARE', {});
+      await activity(userId, run.id, 'WORKER_UPLOAD_QUEUED', 'New local-worker listings arrived. Preparing matching jobs and syncing connected services.', 'QUEUED');
+      await prisma.harnessAuditEvent.updateMany({ where: { userId, action: 'WORKER_UPLOAD_PENDING', outcome: 'PENDING', createdAt: { lte: cutoff } }, data: { outcome: 'QUEUED' } });
+    } catch (error) {
+      if (!(error instanceof AppError && error.statusCode === 409)) console.error('[Harness] Could not queue uploaded listings:', error instanceof Error ? error.message : 'Unknown error');
+    }
+  }
   const runs = await prisma.harnessRun.findMany({ where: { state: { in: ['SCHEDULED', 'RUNNING'] } }, orderBy: { requestedAt: 'asc' }, take: 3 });
   for (const run of runs) await processRun(run.id);
 }

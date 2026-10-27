@@ -156,13 +156,14 @@ export const workerSearchTaskSchema = z.object({
   source: workerSource.optional(),
   startUrl: z.string().url().max(4000).optional(),
   query: z.string().trim().max(200).optional(),
+  company: z.string().trim().min(2).max(120).optional(),
   maxPages: z.number().int().min(1).max(10).default(1),
   maxResults: z.number().int().min(1).max(25).default(10),
   scrollRounds: z.number().int().min(0).max(20).default(0),
   mode: z.enum(['RESEARCH', 'DRAFT']).default('RESEARCH'),
   consentAcknowledged: z.boolean(),
-}).refine(value => Boolean(value.startUrl || value.query), {
-  message: 'Provide a start URL or a search query.',
+}).refine(value => Boolean(value.startUrl || value.query || (value.source === 'COMPANY_CAREER' && value.company)), {
+  message: 'Provide a company, start URL or search query.',
   path: ['query'],
 });
 
