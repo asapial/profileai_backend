@@ -4,12 +4,15 @@ import { envVars } from "../config/env";
 // OpenRouter's free router stays current as individual free model IDs change.
 // Explicit fallbacks keep the feature available if the router is temporarily busy.
 // ─────────────────────────────────────────────
+// Ordered by observed availability on the configured OpenRouter account.
+// Keep working models first so latency-sensitive features do not spend their
+// whole fallback budget on an unavailable or rate-limited upstream.
 const FREE_MODELS: string[] = [
-  "qwen/qwen3.8-27b:free",
-  "google/gemma-4-26b-a4b-it:free",
+  "nvidia/nemotron-3.5-lightning:free",
   "nvidia/nemotron-3-ultra-550b-a55b:free",
-  "nvidia/nemotron-3-super-120b-a12b:free",
   "openrouter/free",
+  "google/gemma-4-26b-a4b-it:free",
+  "google/gemma-4-31b-it:free",
 ];
 
 // ─────────────────────────────────────────────
@@ -114,6 +117,8 @@ async function fetchFromModel(
         headers: {
           Authorization: `Bearer ${envVars.OpenRouter_API_KEY}`,
           "Content-Type": "application/json",
+          "HTTP-Referer": envVars.FRONTEND_URL,
+          "X-Title": "ProfileAI",
         },
         body: JSON.stringify({
           model,

@@ -6,6 +6,20 @@ import { DEFAULT_HOMEPAGE, type HomepageConfig } from "./content.defaults";
 
 const asJson = (value: unknown) => value as Prisma.InputJsonValue;
 
+export const getPublishedHelpArticles = async () => {
+  const rows = await prisma.adminResource.findMany({
+    where: { type: "HELP_ARTICLE", data: { path: ["status"], equals: "PUBLISHED" } },
+    orderBy: { updatedAt: "desc" },
+  });
+  return rows.map(row => {
+    const data = row.data as Record<string, unknown>;
+    const body = String(data.body ?? "");
+    return { slug: row.key ?? String(data.slug ?? ""), title: String(data.title ?? ""),
+      excerpt: String(data.excerpt ?? ""), body, category: String(data.category ?? "general"),
+      readTime: Math.max(1, Math.ceil(body.split(/\s+/).length / 200)), updatedAt: row.updatedAt.toISOString() };
+  });
+};
+
 export const getPublishedHomepage = async (): Promise<HomepageConfig> => {
   const row = await prisma.homepageContent.findUnique({
     where: { id: "homepage" },

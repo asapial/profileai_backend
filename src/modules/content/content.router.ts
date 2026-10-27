@@ -4,6 +4,7 @@ import * as contentController from "./content.controller";
 const router = Router();
 
 router.get("/homepage", contentController.homepage);
+router.get("/help-articles", contentController.helpArticles);
 router.get("/pages/:slug", contentController.page);
 
 export const contentRouter = router;

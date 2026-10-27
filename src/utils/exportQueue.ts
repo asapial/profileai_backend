@@ -10,6 +10,7 @@ import { redis } from '../lib/redis';
 import { uploadBuffer, getPresignedUrl } from '../lib/minio';
 import AppError from '../errorHelpers/AppError';
 import status from 'http-status';
+import { buildCoverLetterPdf } from '../modules/coverLetter/coverLetter.document';
 
 const QUEUE_NAME = 'profileai-export';
 
@@ -60,8 +61,10 @@ export const exportWorker = new Worker(
         // The actual PDF rendering is owned by the resume module's /export
         // endpoint. Here we export the contentData blob as a placeholder so
         // the queue job is testable end-to-end without the PDF pipeline.
-        buffer = Buffer.from(JSON.stringify(resume, null, 2), 'utf8');
-        objectName = `exports/${userId}/resume-${resumeId}-${jobId}.json`;
+        const { exportPdf } = await import('../modules/resume/resume.service');
+        const rendered = await exportPdf(userId, resumeId);
+        buffer = Buffer.from(rendered.base64, 'base64');
+        objectName = `exports/${userId}/resume-${resumeId}-${jobId}.pdf`;
       } else if (kind === 'COVER_LETTER_PDF') {
         const { coverLetterId } = job.data as Extract<
           ExportJobPayload,
@@ -75,19 +78,20 @@ export const exportWorker = new Worker(
             targetCompany: true,
             targetJobTitle: true,
             contentJson: true,
+            contentText: true,
           },
         });
         if (!letter) throw new AppError(status.NOT_FOUND, 'Cover letter not found.');
         // The actual PDF rendering is owned by the coverLetter module's
         // /:id/export endpoint. We persist a JSON snapshot of the TipTap
         // document so the queue job is observable end-to-end.
-        buffer = Buffer.from(JSON.stringify(letter, null, 2), 'utf8');
-        objectName = `exports/${userId}/cover-letter-${coverLetterId}-${jobId}.json`;
+        buffer = await buildCoverLetterPdf(letter);
+        objectName = `exports/${userId}/cover-letter-${coverLetterId}-${jobId}.pdf`;
       } else {
         throw new AppError(status.BAD_REQUEST, 'Unknown export kind.');
       }
 
-      await uploadBuffer(objectName, buffer, 'application/octet-stream');
+      await uploadBuffer(objectName, buffer, kind === 'USER_DATA' ? 'application/json' : 'application/pdf');
       const resultUrl = await getPresignedUrl(objectName, 900);
 
       await prisma.exportJob.update({

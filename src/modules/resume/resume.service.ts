@@ -1,8 +1,8 @@
 import status from 'http-status';
 import { randomBytes } from 'node:crypto';
-import { existsSync } from 'node:fs';
 import Handlebars from 'handlebars';
 import puppeteer from 'puppeteer-core';
+import { browserExecutable, renderPdfWithLocalBrowser } from '../../utils/browserPdf';
 import { Prisma } from '../../../prisma/generated/prisma/client';
 import { prisma } from '../../lib/prisma';
 import { getAiResponse } from '../../utils/aiResponse';
@@ -237,46 +237,6 @@ ${template.cssStyles}
 </style></head><body><main class="profileai-template-stage">${content}</main></body></html>`;
 };
 
-const browserExecutable = (): string | null => {
-  const configured = process.env.CHROME_EXECUTABLE_PATH?.trim();
-  const candidates = [
-    configured,
-    'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-    'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
-    '/usr/bin/google-chrome',
-    '/usr/bin/chromium',
-    '/usr/bin/chromium-browser',
-  ].filter((path): path is string => Boolean(path));
-  return candidates.find((path) => existsSync(path)) ?? null;
-};
-
-const renderPdfWithLocalBrowser = async (
-  html: string,
-  pageSize: 'A4' | 'Letter',
-): Promise<Buffer> => {
-  const executablePath = browserExecutable();
-  if (!executablePath) throw new Error('No local Chromium browser was found.');
-  const browser = await puppeteer.launch({
-    executablePath,
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  });
-  try {
-    const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'load', timeout: 20_000 });
-    await page.evaluate(() => document.fonts.ready);
-    const bytes = await page.pdf({
-      format: pageSize,
-      printBackground: true,
-      preferCSSPageSize: true,
-      margin: { top: 0, right: 0, bottom: 0, left: 0 },
-    });
-    return Buffer.from(bytes);
-  } finally {
-    await browser.close();
-  }
-};
-
 const renderTemplatePngPages = async (
   html: string,
   pageSize: 'A4' | 'Letter' = 'A4',
@@ -374,12 +334,20 @@ export const listResumes = async (
   page = 1,
   limit = 10,
   type?: string,
-  resumeStatus?: string
+  resumeStatus?: string,
+  search?: string
 ) => {
+  if (!Number.isInteger(page) || page < 1 || !Number.isInteger(limit) || limit < 1 || limit > 100) throw new AppError(400, 'Use a positive page and a limit between 1 and 100.');
+  if (type && !['RESUME', 'CV'].includes(type)) throw new AppError(400, 'Invalid document type.');
+  if (resumeStatus && !['DRAFT', 'GENERATED', 'EXPORTED'].includes(resumeStatus)) throw new AppError(400, 'Invalid document status.');
   const where = {
     userId,
     ...(type ? { type: type as any } : {}),
     ...(resumeStatus ? { status: resumeStatus as any } : {}),
+    ...(search?.trim() ? { OR: [
+      { title: { contains: search.trim(), mode: 'insensitive' as const } },
+      { targetJobTitle: { contains: search.trim(), mode: 'insensitive' as const } },
+    ] } : {}),
   };
 
   const [resumes, total] = await Promise.all([

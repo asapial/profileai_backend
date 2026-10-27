@@ -5,13 +5,14 @@ import { sendResponse } from '../../utils/sendResponse';
 import * as resumeService from './resume.service';
 
 export const listResumes = catchAsync(async (req: Request, res: Response) => {
-  const { page = '1', limit = '10', type, status: resumeStatus } = req.query;
+  const { page = '1', limit = '10', type, status: resumeStatus, search } = req.query;
   const result = await resumeService.listResumes(
     req.user.userId,
     parseInt(page as string),
     parseInt(limit as string),
     type as string,
-    resumeStatus as string
+    resumeStatus as string,
+    typeof search === 'string' ? search : undefined
   );
   sendResponse(res, {
     status: status.OK,

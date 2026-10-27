@@ -4,6 +4,11 @@ import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import * as contentService from "./content.service";
 
+export const helpArticles = catchAsync(async (_req: Request, res: Response) => {
+  const data = await contentService.getPublishedHelpArticles();
+  sendResponse(res, { status: status.OK, success: true, message: "Published help articles retrieved.", data });
+});
+
 export const homepage = catchAsync(async (_req: Request, res: Response) => {
   const data = await contentService.getPublishedHomepage();
   sendResponse(res, {
