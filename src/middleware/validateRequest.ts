@@ -42,7 +42,16 @@ export const validateRequest =
       if (parsed.body !== undefined) replaceKeysInPlace(req.body as Record<string, unknown>, parsed.body);
       if (parsed.cookies !== undefined) replaceKeysInPlace(req.cookies as Record<string, unknown>, parsed.cookies);
       if (parsed.params !== undefined) replaceKeysInPlace(req.params as Record<string, string>, parsed.params);
-      if (parsed.query !== undefined) replaceKeysInPlace(req.query as Record<string, unknown>, parsed.query);
+      if (parsed.query !== undefined) {
+        // Express 5 reparses query on each getter access. Shadow the getter so
+        // controllers receive the schema's coercions, defaults and stripped keys.
+        Object.defineProperty(req, 'query', {
+          value: parsed.query,
+          writable: true,
+          configurable: true,
+          enumerable: true,
+        });
+      }
 
       next();
     } catch (error) {

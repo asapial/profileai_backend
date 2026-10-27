@@ -57,8 +57,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // ─── Health Check ─────────────────────────────────────
-app.get("/", (_req, res) => {
-  console.log("Hello World");
+const healthCheck = (_req: express.Request, res: express.Response) => {
   res.status(200).json({
     success: true,
     message: "ProFile AI API is running",
@@ -68,7 +67,11 @@ app.get("/", (_req, res) => {
     uptime: process.uptime(),
     timestamp: new Date().toISOString(),
   });
-});
+};
+
+app.get("/", healthCheck);
+app.get("/health", healthCheck);
+app.get("/api/v1/health", healthCheck);
 
 // ─── Application Routes ───────────────────────────────
 app.use("/api/v1", indexRouter);
