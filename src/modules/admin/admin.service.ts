@@ -700,23 +700,31 @@ export const updateSettings = async (
 
 // ─── Analytics ──────────────────────────────────────────────────────────────
 
+const analyticsDayKey = (date: Date): string => date.toISOString().slice(0, 10);
+
+const toDailySeries = (buckets: Map<string, number>) =>
+  [...buckets.entries()]
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([date, count]) => ({ date, count }));
+
 export const getAnalytics = async (from: Date, to: Date) => {
   const [
-    userGrowth,
-    resumeVolume,
+    users,
+    resumes,
     templateUsage,
-    atsScoreDistribution,
+    sessions,
+    subscriptions,
+    invoices,
+    exportsCompleted,
   ] = await Promise.all([
-    prisma.user.groupBy({
-      by: ['createdAt'],
+    prisma.user.findMany({
       where: { createdAt: { gte: from, lte: to }, role: 'USER' },
-      _count: { id: true },
+      select: { id: true, createdAt: true },
       orderBy: { createdAt: 'asc' },
     }),
-    prisma.resume.groupBy({
-      by: ['createdAt'],
+    prisma.resume.findMany({
       where: { createdAt: { gte: from, lte: to } },
-      _count: { id: true },
+      select: { id: true, userId: true, createdAt: true, atsScore: true },
       orderBy: { createdAt: 'asc' },
     }),
     prisma.resume.groupBy({
@@ -725,13 +733,163 @@ export const getAnalytics = async (from: Date, to: Date) => {
       orderBy: { _count: { id: 'desc' } },
       take: 5,
     }),
-    prisma.resume.aggregate({
-      where: { atsScore: { not: null } },
-      _avg: { atsScore: true },
-      _min: { atsScore: true },
-      _max: { atsScore: true },
+    prisma.session.findMany({
+      where: { updatedAt: { gte: from, lte: to } },
+      select: { userId: true, updatedAt: true },
+    }),
+    prisma.subscription.findMany({
+      where: { status: { in: ['ACTIVE', 'TRIALING'] } },
+      select: {
+        status: true,
+        plan: {
+          select: {
+            slug: true,
+            amount: true,
+            currency: true,
+            interval: true,
+          },
+        },
+      },
+    }),
+    prisma.invoice.findMany({
+      where: { status: 'PAID', paidAt: { gte: from, lte: to } },
+      select: { amountPaid: true, currency: true, paidAt: true },
+      orderBy: { paidAt: 'asc' },
+    }),
+    prisma.exportJob.count({
+      where: { status: 'DONE', completedAt: { gte: from, lte: to } },
     }),
   ]);
 
-  return { userGrowth, resumeVolume, templateUsage, atsScoreDistribution };
+  const signupBuckets = new Map<string, number>();
+  for (const user of users) {
+    const key = analyticsDayKey(user.createdAt);
+    signupBuckets.set(key, (signupBuckets.get(key) ?? 0) + 1);
+  }
+
+  const resumeBuckets = new Map<string, number>();
+  for (const resume of resumes) {
+    const key = analyticsDayKey(resume.createdAt);
+    resumeBuckets.set(key, (resumeBuckets.get(key) ?? 0) + 1);
+  }
+
+  const activityBuckets = new Map<string, Set<string>>();
+  const activeUserIds = new Set<string>();
+  const addActivity = (date: Date, userId: string) => {
+    const key = analyticsDayKey(date);
+    const bucket = activityBuckets.get(key) ?? new Set<string>();
+    bucket.add(userId);
+    activityBuckets.set(key, bucket);
+    activeUserIds.add(userId);
+  };
+  for (const session of sessions) addActivity(session.updatedAt, session.userId);
+  for (const resume of resumes) addActivity(resume.createdAt, resume.userId);
+
+  const signups = toDailySeries(signupBuckets);
+  const resumeVolume = toDailySeries(resumeBuckets);
+  const activeUsers = [...activityBuckets.entries()]
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([date, ids]) => ({ date, count: ids.size }));
+
+  const atsScores = resumes
+    .map((resume) => resume.atsScore)
+    .filter((score): score is number => typeof score === 'number');
+  const atsBuckets = [
+    { bucket: '0-20', min: 0, max: 20 },
+    { bucket: '21-40', min: 21, max: 40 },
+    { bucket: '41-60', min: 41, max: 60 },
+    { bucket: '61-80', min: 61, max: 80 },
+    { bucket: '81-100', min: 81, max: 100 },
+  ];
+  const atsDistribution = atsBuckets.map((range) => ({
+    bucket: range.bucket,
+    count: atsScores.filter(
+      (score) => score >= range.min && score <= range.max,
+    ).length,
+  }));
+  const atsAverage = atsScores.length
+    ? atsScores.reduce((sum, score) => sum + score, 0) / atsScores.length
+    : null;
+
+  const activeSubscriptions = subscriptions.filter(
+    (subscription) => subscription.status === 'ACTIVE',
+  );
+  const trialingSubscriptions = subscriptions.filter(
+    (subscription) => subscription.status === 'TRIALING',
+  );
+  const monthlyAmount = (plan: { amount: number; interval: string }) =>
+    plan.interval === 'YEAR' ? plan.amount / 100 / 12 : plan.amount / 100;
+  const mrr = activeSubscriptions.reduce(
+    (sum, subscription) => sum + monthlyAmount(subscription.plan),
+    0,
+  );
+  const arpu = activeSubscriptions.length
+    ? mrr / activeSubscriptions.length
+    : 0;
+  const trialConversion =
+    activeSubscriptions.length + trialingSubscriptions.length > 0
+      ? activeSubscriptions.length /
+        (activeSubscriptions.length + trialingSubscriptions.length)
+      : 0;
+  const currency =
+    subscriptions[0]?.plan.currency ?? invoices[0]?.currency ?? 'BDT';
+
+  const planMixBuckets = new Map<string, number>();
+  for (const subscription of subscriptions) {
+    const plan = subscription.plan.slug;
+    planMixBuckets.set(plan, (planMixBuckets.get(plan) ?? 0) + 1);
+  }
+  const planMix = [...planMixBuckets.entries()]
+    .map(([plan, users]) => ({ plan, users }))
+    .sort((left, right) => right.users - left.users);
+
+  const revenueBuckets = new Map<string, number>();
+  for (const invoice of invoices) {
+    if (!invoice.paidAt) continue;
+    const key = analyticsDayKey(invoice.paidAt);
+    revenueBuckets.set(
+      key,
+      (revenueBuckets.get(key) ?? 0) + invoice.amountPaid / 100,
+    );
+  }
+  const revenue = toDailySeries(revenueBuckets);
+
+  return {
+    range: { from: from.toISOString(), to: to.toISOString() },
+    signups,
+    activeUsers,
+    funnel: [
+      { label: 'Signups', count: users.length },
+      { label: 'Resumes created', count: resumes.length },
+      { label: 'Exports completed', count: exportsCompleted },
+      { label: 'Paid invoices', count: invoices.length },
+    ],
+    planMix,
+    totals: {
+      signups: users.length,
+      activeUsers: activeUserIds.size,
+      mrr: Math.round(mrr * 100) / 100,
+      arpu: Math.round(arpu * 100) / 100,
+      trialConversion,
+      currency,
+    },
+    revenue,
+    atsDistribution,
+    // Legacy fields retained for API consumers that still read the original
+    // group-by payload.
+    userGrowth: signups.map((point) => ({
+      createdAt: point.date,
+      _count: { id: point.count },
+    })),
+    resumeVolume: resumeVolume.map((point) => ({
+      createdAt: point.date,
+      _count: { id: point.count },
+    })),
+    templateUsage,
+    atsScoreDistribution: {
+      _avg: { atsScore: atsAverage },
+      _min: { atsScore: atsScores.length ? Math.min(...atsScores) : null },
+      _max: { atsScore: atsScores.length ? Math.max(...atsScores) : null },
+    },
+  };
 };

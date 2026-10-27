@@ -22,6 +22,7 @@ import AppError from '../../errorHelpers/AppError';
 import { bustDashboardCache } from '../dashboard/dashboard.service';
 import { createNotification } from '../notification/notification.service';
 import { createBkashCheckout } from './bkash.service';
+import { serializePlanFeatures } from './billing.plan-features';
 
 const stripeEnabled = (): boolean => Boolean(envVars.STRIPE.STRIPE_SECRET_KEY);
 
@@ -171,7 +172,7 @@ const serializePlan = (p: {
   amount: p.amount,
   currency: p.currency,
   interval: p.interval,
-  features: Array.isArray(p.features) ? (p.features as string[]) : [],
+  features: serializePlanFeatures(p.features),
   apiLimit: p.apiLimit,
   resumeLimit: p.resumeLimit,
 });
@@ -257,7 +258,13 @@ export const createCheckoutSession = async (input: {
   }
   requireEnabled();
   const plan = await prisma.plan.findUnique({ where: { slug: input.planSlug } });
-  if (!plan) throw new AppError(404, `Unknown plan: ${input.planSlug}`);
+  if (!plan || !plan.isActive || plan.amount <= 0) throw new AppError(404, `Paid plan not found: ${input.planSlug}`);
+  const stripePrice = await getStripe().prices.retrieve(plan.stripePriceId);
+  const expectedInterval = input.billing === 'yearly' ? 'year' : 'month';
+  const expectedAmount = input.billing === 'yearly' ? plan.amount * 10 : plan.amount;
+  if (!stripePrice.active || stripePrice.recurring?.interval !== expectedInterval || stripePrice.recurring.interval_count !== 1 || stripePrice.currency !== plan.currency || stripePrice.unit_amount !== expectedAmount) {
+    throw new AppError(409, 'This billing interval is not configured for the selected plan. Choose another interval or contact support.');
+  }
   const customerId = await findOrCreateCustomer(input.userId, input.email, input.name);
 
   // Resolve coupon — we accept any active local row. Stripe still does
@@ -280,9 +287,9 @@ export const createCheckoutSession = async (input: {
       ...(couponId
         ? { discounts: [{ coupon: (await prisma.coupon.findUnique({ where: { id: couponId } }))?.stripeCouponId ?? 'placeholder' }] }
         : {}),
-      success_url: `${FRONTEND_BASE()}/dashboard/billing/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${FRONTEND_BASE()}/dashboard/billing/cancel`,
-      allow_promotion_codes: true,
+      success_url: `${FRONTEND_BASE()}/dashboard/billing?payment=success&provider=stripe&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${FRONTEND_BASE()}/dashboard/billing?payment=cancel&provider=stripe`,
+      ...(couponId ? {} : { allow_promotion_codes: true }),
       client_reference_id: input.userId,
       metadata: {
         userId: input.userId,

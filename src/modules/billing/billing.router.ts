@@ -26,10 +26,10 @@ router.use(checkAuth());
 
 router.get('/plans', billingController.plans);
 router.get('/subscription', billingController.current);
-router.post('/checkout', validateRequest(checkoutSchema), billingController.checkout);
+router.post('/checkout', validateRequest(z.object({ body: checkoutSchema })), billingController.checkout);
 router.post('/portal', billingController.portal);
 router.post('/cancel', billingController.cancel);
 router.get('/invoices', billingController.invoices);
-router.post('/coupons/preview', validateRequest(couponSchema), billingController.couponPreview);
+router.post('/coupons/preview', validateRequest(z.object({ body: couponSchema })), billingController.couponPreview);
 
 export const billingRouter = router;

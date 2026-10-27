@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { Prisma } from '../../../prisma/generated/prisma/client';
 import { envVars } from '../../config/env';
 import AppError from '../../errorHelpers/AppError';
 import { prisma } from '../../lib/prisma';
@@ -8,8 +9,7 @@ import { bkashClient } from './bkash.client';
 
 type BillingChoice = 'monthly' | 'yearly';
 
-const yearlyAmount = (slug: string): number | null =>
-  slug === 'pro' ? 299000 : slug === 'business' ? 599000 : null;
+const yearlyAmount = (monthlyAmount: number): number => monthlyAmount * 10;
 
 const frontendBillingUrl = (result: 'success' | 'cancel' | 'failure') =>
   `${envVars.FRONTEND_URL.replace(/\/+$/, '')}/dashboard/billing?payment=${result}`;
@@ -24,7 +24,7 @@ export async function createBkashCheckout(input: {
   if (!plan || !plan.isActive || plan.amount <= 0) throw new AppError(404, 'Paid plan not found.');
   if (plan.currency.toLowerCase() !== 'bdt') throw new AppError(400, 'bKash requires a BDT plan.');
 
-  let amount = input.billing === 'yearly' ? yearlyAmount(plan.slug) : plan.amount;
+  let amount = input.billing === 'yearly' ? yearlyAmount(plan.amount) : plan.amount;
   if (amount === null) throw new AppError(400, 'Yearly billing is not available for this plan.');
 
   let couponId: string | null = null;
@@ -48,7 +48,7 @@ export async function createBkashCheckout(input: {
       merchantInvoiceNumber,
       amount,
       expiresAt: new Date(Date.now() + 20 * 60 * 1000),
-      providerPayload: couponId ? { couponId } : undefined,
+      ...(couponId ? { providerPayload: { couponId } } : {}),
     },
   });
 
@@ -107,7 +107,7 @@ export async function completeBkashCallback(paymentID: string, callbackStatus: s
   const currency = String(provider.currency ?? '').toUpperCase();
   const trxId = String(provider.trxID ?? '');
   if (!completed || String(provider.statusCode ?? '0000') !== '0000' || providerAmount !== payment.amount || currency !== 'BDT' || !trxId) {
-    await prisma.bkashPayment.update({ where: { id: payment.id }, data: { status: 'VERIFICATION_FAILED', providerPayload: provider } });
+    await prisma.bkashPayment.update({ where: { id: payment.id }, data: { status: 'VERIFICATION_FAILED', providerPayload: provider as Prisma.InputJsonObject } });
     return { redirect: frontendBillingUrl('failure') };
   }
 
@@ -125,7 +125,7 @@ export async function completeBkashCallback(paymentID: string, callbackStatus: s
   const activated = await prisma.$transaction(async (tx) => {
     const claimed = await tx.bkashPayment.updateMany({
       where: { id: payment.id, status: { not: 'COMPLETED' } },
-      data: { trxId, status: 'COMPLETED', executedAt: now, providerPayload: provider },
+      data: { trxId, status: 'COMPLETED', executedAt: now, providerPayload: provider as Prisma.InputJsonObject },
     });
     if (!claimed.count) return false;
     const alreadyUsed = await tx.bkashPayment.findFirst({ where: { trxId } });

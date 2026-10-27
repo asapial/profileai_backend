@@ -15,6 +15,8 @@ import {
 import type { HomepageConfig } from "../content/content.defaults";
 import { createRoleNotification } from "../notification/notification.service";
 import { reviewUserTemplate } from "../template/template.service";
+import { normalizePlanFeatures, planFeatureLimits } from "./admin.plan-features";
+import { couponDiscountPatch } from "./admin.coupon-discount";
 
 const json = (value: unknown) => value as Prisma.InputJsonValue;
 const object = (value: Prisma.JsonValue): Record<string, unknown> =>
@@ -485,6 +487,8 @@ const planDto = (plan: {
   features: Prisma.JsonValue;
   isActive: boolean;
   stripePriceId: string;
+  resumeLimit: number;
+  apiLimit: number;
   subscriptions?: Array<{ id: string }>;
 }) => ({
   id: plan.id,
@@ -494,7 +498,7 @@ const planDto = (plan: {
   priceMonthly: plan.amount / 100,
   priceYearly: Math.round((plan.amount * 10) / 100),
   currency: plan.currency,
-  features: plan.features,
+  features: normalizePlanFeatures(plan.features, plan),
   isDefault: plan.slug === "free",
   isArchived: !plan.isActive,
   stripePriceIdMonthly: plan.stripePriceId.startsWith("seed_")
@@ -532,6 +536,7 @@ export const plans = {
         currency: String(payload.currency ?? "usd").toLowerCase(),
         interval: "MONTH",
         features: json(payload.features ?? []),
+        ...planFeatureLimits(payload.features),
         isActive: !Boolean(payload.isArchived),
       },
     });
@@ -552,6 +557,7 @@ export const plans = {
           ? { currency: String(payload.currency).toLowerCase() }
           : {}),
         ...(payload.features !== undefined ? { features: json(payload.features) } : {}),
+        ...planFeatureLimits(payload.features),
         ...(payload.isArchived !== undefined
           ? { isActive: !Boolean(payload.isArchived) }
           : {}),
@@ -621,17 +627,10 @@ export const coupons = {
     });
   },
   create: async (payload: Record<string, unknown>) => {
-    const discountType = String(payload.discountType ?? "PERCENT");
     const row = await prisma.coupon.create({
       data: {
         code: String(payload.code ?? "").toUpperCase(),
-        percentOff:
-          discountType === "PERCENT" ? Number(payload.percentOff ?? 0) : null,
-        amountOff:
-          discountType === "FIXED"
-            ? Math.round(Number(payload.amountOff ?? 0) * 100)
-            : null,
-        currency: String(payload.currency ?? "usd").toLowerCase(),
+        ...couponDiscountPatch(payload),
         maxRedemptions: Number(payload.maxRedemptions ?? 0) || null,
         expiresAt: payload.expiresAt ? new Date(String(payload.expiresAt)) : null,
         isActive: payload.isActive !== false,
@@ -640,18 +639,15 @@ export const coupons = {
     return couponDto(row);
   },
   update: async (id: string, payload: Record<string, unknown>) => {
+    const current = await prisma.coupon.findUnique({ where: { id } });
+    if (!current) throw new AppError(status.NOT_FOUND, "Coupon not found.");
     const row = await prisma.coupon.update({
       where: { id },
       data: {
         ...(payload.code !== undefined
           ? { code: String(payload.code).toUpperCase() }
           : {}),
-        ...(payload.percentOff !== undefined
-          ? { percentOff: Number(payload.percentOff) }
-          : {}),
-        ...(payload.amountOff !== undefined
-          ? { amountOff: Math.round(Number(payload.amountOff) * 100) }
-          : {}),
+        ...couponDiscountPatch(payload, current),
         ...(payload.expiresAt !== undefined
           ? {
               expiresAt: payload.expiresAt
