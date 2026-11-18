@@ -1608,7 +1608,7 @@ export async function saveCapturedListings(userId: string, deviceId: string, lis
   const accepted = await prisma.$transaction(async tx => {
     await ownerLock(tx, userId);
     let count = 0;
-    let newJobs = 0;
+    const newJobIds: string[] = [];
     for (const listing of listings) {
       const fingerprint = sha256Hex(canonicalJson({
         source: listing.source,
@@ -1671,13 +1671,14 @@ export async function saveCapturedListings(userId: string, deviceId: string, lis
         isPrivate: true,
       };
       if (existingJob) await tx.job.update({ where: { id: existingJob.id }, data: jobData });
-      else { await tx.job.create({ data: { userId, ...jobData } }); newJobs += 1; }
+      else { const job = await tx.job.create({ data: { userId, ...jobData }, select: { id: true } }); newJobIds.push(job.id); }
       if (result) count += 1;
     }
-    if (newJobs) {
+    if (newJobIds.length) {
+      await tx.harnessAuditEvent.create({ data: { userId, action: 'WORKER_SHEET_SYNC_PENDING', entityType: 'CapturedListing', outcome: 'PENDING', metadata: { deviceId, jobIds: newJobIds, message: 'Worker jobs are waiting to sync to your connected Sheet.' } } });
       const preference = await tx.harnessPreferenceVersion.findFirst({ where: { userId }, orderBy: { version: 'desc' } });
       if (preference && harnessPreferenceSchema.parse(preference.preferences).automaticSearchHours) {
-        await tx.harnessAuditEvent.create({ data: { userId, action: 'WORKER_UPLOAD_PENDING', entityType: 'CapturedListing', outcome: 'PENDING', metadata: { deviceId, count: newJobs } } });
+        await tx.harnessAuditEvent.create({ data: { userId, action: 'WORKER_UPLOAD_PENDING', entityType: 'CapturedListing', outcome: 'PENDING', metadata: { deviceId, count: newJobIds.length } } });
       }
     }
     return count;

@@ -8,10 +8,12 @@ import { jobSearchProviders } from './harness.jobs';
 import { canAutoSubmit, companyNeedsVerification, evaluateCandidate } from './harness.policy';
 import { harnessPreferenceSchema } from './harness.schema';
 import { startRun } from './harness.service';
+import { syncWorkerSheetBatch } from './harness.worker-sheet';
 import { createSearchTask } from '../worker/worker.service';
 import AppError from '../../errorHelpers/AppError';
 
 const asObject = (value: unknown) => value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {};
+let workerSheetCursor: string | undefined;
 
 class HarnessBlocked extends Error {
   constructor(message: string, readonly output: Record<string, unknown>) { super(message); }
@@ -400,6 +402,45 @@ async function processRun(runId: string) {
 }
 
 export async function processHarnessRuns() {
+  // Worker captures have their own durable Sheet queue. A manual search must
+  // reach the connected tracker even when scheduled discovery is disabled.
+  const sheetEvents = await prisma.harnessAuditEvent.findMany({ where: { action: 'WORKER_SHEET_SYNC_PENDING', outcome: 'PENDING' }, orderBy: [{ createdAt: 'asc' }, { id: 'asc' }], take: 100, ...(workerSheetCursor ? { cursor: { id: workerSheetCursor }, skip: 1 } : {}) });
+  workerSheetCursor = sheetEvents.length === 100 ? sheetEvents[sheetEvents.length - 1]?.id : undefined;
+  for (const event of sheetEvents) {
+    const metadata = asObject(event.metadata);
+    if (typeof metadata.nextAttemptAt === 'number' && metadata.nextAttemptAt > Date.now()) continue;
+    const ids = Array.isArray(metadata.jobIds) ? [...new Set(metadata.jobIds.filter((id): id is string => typeof id === 'string'))].slice(0, 50) : [];
+    if (!ids.length) {
+      await prisma.harnessAuditEvent.update({ where: { id: event.id }, data: { outcome: 'CANCELLED' } });
+      continue;
+    }
+    const [connection, tracker, preference, jobs] = await Promise.all([
+      prisma.googleAccountConnection.findUnique({ where: { userId: event.userId }, include: { capabilities: true } }),
+      prisma.harnessExternalSync.findUnique({ where: { userId_kind_syncKey: { userId: event.userId, kind: 'SHEET_TRACKER', syncKey: 'primary' } } }),
+      prisma.harnessPreferenceVersion.findFirst({ where: { userId: event.userId }, orderBy: { version: 'desc' } }),
+      prisma.job.findMany({ where: { userId: event.userId, id: { in: ids } } }),
+    ]);
+    if (!tracker || !connection || !effectiveGoogleCapabilities(connection).some(row => row.capability === 'SHEET_TRACKER' && row.enabled)) continue;
+    try {
+      const parsed = preference ? harnessPreferenceSchema.safeParse(preference.preferences) : null;
+      const result = await syncWorkerSheetBatch({
+        jobs,
+        maximumAgeDays: parsed?.success ? parsed.data.maximumJobAgeDays : 30,
+        now: Date.now(),
+        evaluate: job => {
+          if (!parsed?.success) return null;
+          const source = job.sourceName.replace(/^Local Worker ·\s*/i, '').toLowerCase();
+          if (parsed.data.excludedSources.some(item => item.toLowerCase() === source)) return { score: 0, decision: 'NOT_ELIGIBLE' };
+          return evaluateCandidate(job, parsed.data);
+        },
+        append: (job, score, note) => appendJobToTracker(event.userId, job.id, score, note),
+      });
+      await prisma.harnessAuditEvent.update({ where: { id: event.id }, data: { outcome: 'SUCCESS', metadata: { ...metadata, message: `${result.synced} worker job(s) synced to the connected Sheet; ${result.skipped} skipped by preferences or age.`, ...result } as Prisma.InputJsonObject } });
+    } catch (error) {
+      const message = error instanceof Error ? error.message.slice(0, 500) : 'Sheet sync failed.';
+      await prisma.harnessAuditEvent.update({ where: { id: event.id }, data: { metadata: { ...metadata, message: `Sheet sync will retry: ${message}`, nextAttemptAt: Date.now() + 5 * 60_000 } as Prisma.InputJsonObject } });
+    }
+  }
   const pending = await prisma.harnessAuditEvent.findMany({ where: { action: 'WORKER_UPLOAD_PENDING', outcome: 'PENDING' }, orderBy: { createdAt: 'asc' }, take: 100 });
   for (const userId of new Set(pending.map(event => event.userId))) {
     const cutoff = new Date();
